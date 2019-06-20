@@ -1,0 +1,9 @@
+{
+	"uuid":"%uuid%",
+	"name":"GrieferGames",
+	"mainClass":"de.wuzlwuz.griefergames.GrieferGames",
+	"description": "This add-on helps you to simplify the gameplay on GrieferGames.net",
+	"version": 1.5,
+	"author": "wuzlwuz",
+	"category": 2
+}
