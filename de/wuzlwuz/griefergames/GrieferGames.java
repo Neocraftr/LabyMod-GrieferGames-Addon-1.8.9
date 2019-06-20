@@ -32,7 +32,7 @@ public class GrieferGames extends LabyModAddon {
 	public void onEnable() {
 		setGriefergames(this);
 		setSettings(new ModSettings());
-		getApi().registerServerSupport(this, new GrieferGamesServer(Minecraft.func_71410_x()));
+		getApi().registerServerSupport(this, new GrieferGamesServer(Minecraft.getMinecraft()));
 	}
 
 	@Override
