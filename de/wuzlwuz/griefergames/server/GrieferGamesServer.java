@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -14,6 +15,9 @@ import com.mojang.authlib.GameProfile;
 import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.helper.MessageHelper;
 import de.wuzlwuz.griefergames.listener.SubServerListener;
+import de.wuzlwuz.griefergames.modules.FlyModule;
+import de.wuzlwuz.griefergames.modules.GodmodeModule;
+import de.wuzlwuz.griefergames.modules.VanishModule;
 import net.labymod.api.LabyModAPI;
 import net.labymod.api.events.MessageModifyChatEvent;
 import net.labymod.api.events.TabListEvent;
@@ -25,6 +29,8 @@ import net.labymod.settings.elements.SettingsElement;
 import net.labymod.utils.UUIDFetcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.scoreboard.Score;
@@ -35,6 +41,8 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -43,13 +51,18 @@ public class GrieferGamesServer extends Server {
 	private Minecraft mc;
 	private LabyModAPI api;
 	private MessageHelper msgHelper;
-	private String subServer = "Lobby";
+	private String subServer = "";
 	private long nextLastMessageRequest = System.currentTimeMillis()
 			+ (-GrieferGames.getSettings().getFilterDuplicateMessagesTime() * 1000L);
 	private long nextScoreboardRequest = System.currentTimeMillis() + (-1 * 1000L);
+	private long nextPayAchievement = System.currentTimeMillis() + (-1 * 1000L);
+	private long nextCheckFly = System.currentTimeMillis() + (-1 * 1000L);
 	private String lastMessage = "";
 	private boolean doClearChat = false;
 	private boolean changedSubserver = false;
+	private String playerRank = "Spieler";
+	private boolean isInTeam = false;
+	private boolean modulesLoaded = false;
 
 	public Minecraft getMc() {
 		return mc;
@@ -79,6 +92,30 @@ public class GrieferGamesServer extends Server {
 		this.msgHelper = msgHelper;
 	}
 
+	public String getPlayerRank() {
+		return playerRank;
+	}
+
+	public void setPlayerRank(String playerRank) {
+		this.playerRank = playerRank;
+	}
+
+	private void setIsInTeam(boolean isInTeam) {
+		this.isInTeam = isInTeam;
+	}
+
+	public boolean getIsInTeam() {
+		return this.isInTeam;
+	}
+
+	private void setModulesLoaded(boolean modulesLoaded) {
+		this.modulesLoaded = modulesLoaded;
+	}
+
+	public boolean getModulesLoaded() {
+		return this.modulesLoaded;
+	}
+
 	public GrieferGamesServer(Minecraft minecraft) {
 		super("GrieferGames", "griefergames.net");
 		setMc(minecraft);
@@ -87,25 +124,32 @@ public class GrieferGamesServer extends Server {
 		addSubServerListener(new SubServerListener() {
 			@Override
 			public void onSubServerChanged(String subServerNameOld, String subServerName) {
-				if (GrieferGames.getSettings().isModEnabled() && GrieferGames.getSettings().isServerSwitchMsg()) {
-					ChatComponentText switchServerMSG = new ChatComponentText("");
+				GrieferGames.getGriefergames().setGodActive(false);
+				GrieferGames.getGriefergames().setVanishActive(false);
+				if (subServerName.equalsIgnoreCase("lobby")) {
+					String accountName = getMc().thePlayer.getName().trim();
 
-					ChatComponentText switchServerMSGBefore = new ChatComponentText(
-							"\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[");
-					switchServerMSGBefore.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
-					switchServerMSG.appendSibling(switchServerMSGBefore);
+					NetHandlerPlayClient nethandlerplayclient = getMc().thePlayer.sendQueue;
+					Collection<NetworkPlayerInfo> playerMap = nethandlerplayclient.getPlayerInfoMap();
 
-					ChatComponentText switchServerMSGBetween = new ChatComponentText("SubServer: " + subServerName);
-					switchServerMSGBetween
-							.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.AQUA).setBold(true));
-					switchServerMSG.appendSibling(switchServerMSGBetween);
-
-					ChatComponentText switchServerMSGAfter = new ChatComponentText(
-							"]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500");
-					switchServerMSGAfter.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
-					switchServerMSG.appendSibling(switchServerMSGAfter);
-
-					getMc().thePlayer.addChatMessage(switchServerMSG);
+					for (NetworkPlayerInfo player : playerMap) {
+						IChatComponent tabListName = player.getDisplayName();
+						if (accountName.length() > 0 && accountName.equalsIgnoreCase(
+								getMsgHelper().getPayerName(tabListName.getUnformattedText()).trim())) {
+							setPlayerRank(getMsgHelper().getPayerRank(tabListName.getUnformattedText().trim()));
+							setIsInTeam(getMsgHelper().isInTeam(getPlayerRank()));
+						}
+					}
+					if (!getModulesLoaded()) {
+						setModulesLoaded(true);
+						new FlyModule();
+						if (getMsgHelper().showGodModule(getPlayerRank())) {
+							new GodmodeModule();
+						}
+						if (getMsgHelper().showVanishModule(getPlayerRank())) {
+							new VanishModule();
+						}
+					}
 				}
 			}
 		});
@@ -157,6 +201,18 @@ public class GrieferGamesServer extends Server {
 					return ChatDisplayAction.HIDE;
 				}
 
+				int status = getMsgHelper().isVanishMessage(unformatted, formatted);
+				if (status >= 0) {
+					GrieferGames.getGriefergames().setVanishActive(status > 0);
+					return ChatDisplayAction.NORMAL;
+				}
+
+				status = getMsgHelper().isGodmodeMessage(unformatted, formatted);
+				if (status >= 0) {
+					GrieferGames.getGriefergames().setGodActive(status > 0);
+					return ChatDisplayAction.NORMAL;
+				}
+
 				setLastMessage(formatted);
 
 				if (getMsgHelper().isSupremeBlank(unformatted, formatted) > 0) {
@@ -186,7 +242,9 @@ public class GrieferGamesServer extends Server {
 					return GrieferGames.getSettings().isPayChatRight() ? ChatDisplayAction.SWAP
 							: ChatDisplayAction.NORMAL;
 				} else if (getMsgHelper().hasPayedMessage(unformatted, formatted) > 0) {
-					if (GrieferGames.getSettings().isPayAchievement()) {
+					if (GrieferGames.getSettings().isPayAchievement()
+							&& System.currentTimeMillis() > nextPayAchievement) {
+						nextPayAchievement = System.currentTimeMillis() + 1000L;
 						String payerName = getMsgHelper().getPayerName(unformatted);
 						String displayName = getMsgHelper().getDisplayName(unformatted);
 						UUID playerUUID = UUIDFetcher.getUUID(payerName);
@@ -252,7 +310,7 @@ public class GrieferGamesServer extends Server {
 				} else if (getMsgHelper().mobRemoverDoneMessage(unformatted, formatted) > 0) {
 					return GrieferGames.getSettings().isMobRemoverChatRight() ? ChatDisplayAction.SWAP
 							: ChatDisplayAction.NORMAL;
-				} else if (getMsgHelper().isClearChatMessage(unformatted, formatted) > 0) {
+				} else if (getMsgHelper().isClearChatMessage(unformatted, formatted) > 0 && !getIsInTeam()) {
 					setDoClearChat(false);
 					return ChatDisplayAction.NORMAL;
 				} else if (getMsgHelper().isPlotChatMessage(unformatted, formatted) > 0) {
@@ -309,7 +367,49 @@ public class GrieferGamesServer extends Server {
 			String unformatted = msg.getUnformattedText();
 			String formatted = msg.getFormattedText();
 
-			System.out.println(formatted);
+			String oldMessage = msg.getFormattedText().replaceAll("\u00A7", "§");
+
+			if (oldMessage.indexOf("§k") != -1 && GrieferGames.getSettings().isAMPEnabled()) {
+				IChatComponent newMsg = new ChatComponentText("");
+				for (IChatComponent component : msg.getSiblings()) {
+					if (component.getChatStyle().getObfuscated()
+							&& component.getUnformattedText().matches("(([A-z\\-]+\\+?) \\| (\\w{1,16}))")) {
+						ChatStyle msgStyling = component.getChatStyle().createDeepCopy().setObfuscated(false);
+						String chatRepText = GrieferGames.getSettings().getAmpChatReplacement();
+
+						if (chatRepText.indexOf("%CLEAN%") == -1) {
+							chatRepText = GrieferGames.getSettings().getDefaultAMPChatReplacement();
+						}
+
+						chatRepText = chatRepText.replaceAll("%CLEAN%", component.getUnformattedText());
+						chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
+
+						if (chatRepText.indexOf("%MAGIC%") != -1) {
+							String[] chatRepTextArr = chatRepText.split("%MAGIC%");
+							System.out.println(chatRepTextArr);
+							for (int i = 0; i < chatRepTextArr.length; i++) {
+								if (chatRepTextArr[i] == "${REPSTART}" || chatRepTextArr[i] == "${REPEND}") {
+									newMsg.appendSibling(component);
+								} else {
+									newMsg.appendSibling(new ChatComponentText(
+											chatRepTextArr[i].replace("${REPSTART}", "").replace("${REPEND}", ""))
+													.setChatStyle(msgStyling));
+									if (i != (chatRepTextArr.length - 1))
+										newMsg.appendSibling(component);
+								}
+							}
+						} else {
+							newMsg.appendSibling(new ChatComponentText(
+									chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
+											.setChatStyle(msgStyling));
+						}
+					} else {
+						newMsg.appendSibling(component);
+					}
+				}
+				msg = newMsg;
+				o = msg;
+			}
 
 			if (GrieferGames.getSettings().isPayHover() || GrieferGames.getSettings().isPayMarker()) {
 				if (msgHelper.isValidPayMessage(unformatted, formatted) > 0) {
@@ -324,7 +424,8 @@ public class GrieferGamesServer extends Server {
 					}
 				}
 			}
-			if (msgHelper.isClearChatMessage(unformatted, formatted) > 0) {
+
+			if (msgHelper.isClearChatMessage(unformatted, formatted) > 0 && !getIsInTeam()) {
 				setDoClearChat(true);
 				IChatComponent newMsg = new ChatComponentText("\n");
 				for (int i = 0; i < 100; i++) {
@@ -333,6 +434,7 @@ public class GrieferGamesServer extends Server {
 				newMsg.appendSibling(msg);
 				return newMsg;
 			}
+
 			if (GrieferGames.getSettings().isBetterIgnoreList()
 					&& msgHelper.isIngnoreListChatMessage(unformatted, formatted) > 0) {
 				List<IChatComponent> ignoreList = msg.getSiblings();
@@ -351,6 +453,7 @@ public class GrieferGamesServer extends Server {
 					return newMsg;
 				}
 			}
+
 			if (GrieferGames.getSettings().isMobRemoverLastTimeHover()
 					&& msgHelper.mobRemoverDoneMessage(unformatted, formatted) > 0) {
 
@@ -396,6 +499,76 @@ public class GrieferGamesServer extends Server {
 								setSubServer(scoreName);
 							}
 							i = scoreList.size();
+						}
+					}
+				}
+			}
+
+			if (System.currentTimeMillis() > this.nextCheckFly) {
+				this.nextCheckFly = System.currentTimeMillis() + 500L;
+				if (getSubServer().equalsIgnoreCase("lobby")) {
+					GrieferGames.getGriefergames().setFlyActive(false);
+				} else {
+					GrieferGames.getGriefergames().setFlyActive(getMc().thePlayer.capabilities.allowFlying);
+				}
+			}
+		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.NORMAL)
+	public void onPreRender(RenderGameOverlayEvent event) {
+		if (getMc().gameSettings.keyBindPlayerList.isKeyDown() && !getMc().isIntegratedServerRunning()
+				&& GrieferGames.getSettings().isAMPEnabled()) {
+			ScoreObjective scoreobjective = getMc().theWorld.getScoreboard().getObjectiveInDisplaySlot(0);
+			NetHandlerPlayClient handler = getMc().thePlayer.sendQueue;
+			if (handler.getPlayerInfoMap().size() > 1 || scoreobjective != null) {
+				Collection<NetworkPlayerInfo> players = handler.getPlayerInfoMap();
+				for (NetworkPlayerInfo player : players) {
+					if (player.getDisplayName() != null) {
+						IChatComponent playerDisplayName = (IChatComponent) player.getDisplayName();
+						if (playerDisplayName.getUnformattedText().length() > 0) {
+							String oldMessage = playerDisplayName.getFormattedText().replaceAll("\u00A7", "§");
+							if (oldMessage.indexOf("§k") != -1) {
+								IChatComponent newPlayerDisplayName = new ChatComponentText("");
+								for (IChatComponent component : playerDisplayName.getSiblings()) {
+									if (component.getChatStyle().getObfuscated() && component.getUnformattedText()
+											.matches("(([A-z\\-]+\\+?) \\| (\\w{1,16}))")) {
+										ChatStyle playerDisplayNameStyling = component.getChatStyle().createDeepCopy()
+												.setObfuscated(false);
+										String chatRepText = GrieferGames.getSettings().getAMPTablistReplacement();
+
+										if (chatRepText.indexOf("%CLEAN%") == -1) {
+											chatRepText = GrieferGames.getSettings().getDefaultAMPTablistReplacement();
+										}
+
+										chatRepText = chatRepText.replaceAll("%CLEAN%", component.getUnformattedText());
+										chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
+
+										if (chatRepText.indexOf("%MAGIC%") != -1) {
+											String[] chatRepTextArr = chatRepText.split("%MAGIC%");
+											System.out.println(chatRepTextArr);
+											for (int i = 0; i < chatRepTextArr.length; i++) {
+												if (chatRepTextArr[i] == "${REPSTART}"
+														|| chatRepTextArr[i] == "${REPEND}") {
+													newPlayerDisplayName.appendSibling(component);
+												} else {
+													newPlayerDisplayName.appendSibling(new ChatComponentText(
+															chatRepTextArr[i].replace("${REPSTART}", "")
+																	.replace("${REPEND}", ""))
+																			.setChatStyle(playerDisplayNameStyling));
+													if (i != (chatRepTextArr.length - 1))
+														newPlayerDisplayName.appendSibling(component);
+												}
+											}
+										} else {
+											newPlayerDisplayName.appendSibling(new ChatComponentText(
+													chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
+															.setChatStyle(playerDisplayNameStyling));
+										}
+										player.setDisplayName(newPlayerDisplayName);
+									}
+								}
+							}
 						}
 					}
 				}

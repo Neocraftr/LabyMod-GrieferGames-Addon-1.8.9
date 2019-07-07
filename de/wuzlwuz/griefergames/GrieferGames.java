@@ -11,6 +11,9 @@ import net.minecraft.client.Minecraft;
 public class GrieferGames extends LabyModAddon {
 	private static GrieferGames griefergames;
 	private static ModSettings settings;
+	private boolean vanishActive = false;
+	private boolean godActive = false;
+	private boolean flyActive = false;
 
 	public static GrieferGames getGriefergames() {
 		return griefergames;
@@ -26,6 +29,30 @@ public class GrieferGames extends LabyModAddon {
 
 	public static void setSettings(ModSettings settings) {
 		GrieferGames.settings = settings;
+	}
+
+	public boolean isVanishActive() {
+		return vanishActive;
+	}
+
+	public void setVanishActive(boolean vanishActive) {
+		this.vanishActive = vanishActive;
+	}
+
+	public boolean isGodActive() {
+		return godActive;
+	}
+
+	public void setGodActive(boolean godActive) {
+		this.godActive = godActive;
+	}
+
+	public boolean isFlyActive() {
+		return flyActive;
+	}
+
+	public void setFlyActive(boolean flyActive) {
+		this.flyActive = flyActive;
 	}
 
 	@Override

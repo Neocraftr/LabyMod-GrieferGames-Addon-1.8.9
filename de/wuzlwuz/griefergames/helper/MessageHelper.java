@@ -1,5 +1,7 @@
 package de.wuzlwuz.griefergames.helper;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -7,6 +9,17 @@ public class MessageHelper {
 	public MessageHelper() {
 		// do nothing jet
 	}
+
+	private static Pattern bankMessageOtherRegexp = Pattern.compile("^\\[GrieferBank\\]");
+	private static Pattern displayNameRegex = Pattern.compile("(([A-z\\-]+\\+?) \\| (\\w{1,16}))");
+	private static Pattern moneyBankRegexp = Pattern.compile("(\\s(?:[1-9])(?:\\d+))");
+	private static Pattern getMoneyRegex = Pattern.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?)");
+	private static Pattern getMoneyValidRegex = Pattern.compile(
+			"^([A-z\\-]+\\+?) \\| (\\w{1,16}) hat dir \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
+	private static Pattern payMoneyRegex = Pattern.compile(
+			"^Du hast ([A-z\\-]+\\+?) \\| (\\w{1,16}) \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
+	private static Pattern playerNameRankRegex = Pattern.compile("([A-z\\-]+\\+?) \\| (\\w{1,16})");
+	private static Pattern plotMsgRegex = Pattern.compile("^\\[Plot Chat\\]");
 
 	public boolean isBlankMessage(String unformatted) {
 		if (unformatted.trim().length() <= 0)
@@ -26,12 +39,11 @@ public class MessageHelper {
 		if (unformatted.trim().length() <= 0)
 			return -1;
 
-		String uMsg = unformatted;
 		String fMsg = getProperTextFormat(formatted);
 
 		if (fMsg.indexOf("§r §r§ahat dir $") > 0) {
-			if (uMsg.matches(
-					"^([A-z\\-]+\\+?) \\| (\\w{1,16}) hat dir \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$")) {
+			Matcher matcher = getMoneyValidRegex.matcher(unformatted);
+			if (matcher.find()) {
 				return 1;
 			}
 		}
@@ -95,10 +107,8 @@ public class MessageHelper {
 		if (unformatted.trim().length() <= 0)
 			return -1;
 
-		String uMsg = unformatted;
-
-		if (uMsg.matches(
-				"^Du hast ([A-z\\-]+\\+?) \\| (\\w{1,16}) \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$")) {
+		Matcher matcher = payMoneyRegex.matcher(unformatted);
+		if (matcher.find()) {
 			return 1;
 		}
 
@@ -149,9 +159,7 @@ public class MessageHelper {
 			return -1;
 
 		String uMsg = unformatted;
-		String msgRegex = "^\\[GrieferBank\\]";
-		Pattern pattern = Pattern.compile(msgRegex);
-		Matcher matcher = pattern.matcher(uMsg);
+		Matcher matcher = bankMessageOtherRegexp.matcher(uMsg);
 		if (matcher.find()) {
 			return 1;
 		}
@@ -224,9 +232,7 @@ public class MessageHelper {
 
 	public String getDisplayName(String unformatted) {
 		String displayName = "";
-		String displayNameRegex = "(([A-z\\-]+\\+?) \\| (\\w{1,16}))";
-		Pattern pattern = Pattern.compile(displayNameRegex);
-		Matcher matcher = pattern.matcher(unformatted);
+		Matcher matcher = displayNameRegex.matcher(unformatted);
 		if (matcher.find()) {
 			displayName = matcher.group(1);
 		}
@@ -235,20 +241,75 @@ public class MessageHelper {
 
 	public String getPayerName(String unformatted) {
 		String playerName = "";
-		String playerNameRegex = "([A-z\\-]+\\+?) \\| (\\w{1,16})";
-		Pattern pattern = Pattern.compile(playerNameRegex);
-		Matcher matcher = pattern.matcher(unformatted);
+		Matcher matcher = playerNameRankRegex.matcher(unformatted);
 		if (matcher.find()) {
 			playerName = matcher.group(2);
 		}
 		return playerName;
 	}
 
+	public String getPayerRank(String unformatted) {
+		String playerRank = "";
+		Matcher matcher = playerNameRankRegex.matcher(unformatted);
+		if (matcher.find()) {
+			playerRank = matcher.group(1);
+		}
+		return playerRank;
+	}
+
+	public boolean isInTeam(String playerRank) {
+		List<String> teamRanks = Arrays.asList("Owner", "Admin", "Orga", "Developer", "Moderator", "Supporter",
+				"T-Supporter", "Content", "Designer");
+		return teamRanks.contains(playerRank);
+	}
+
+	public int isVanishMessage(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		String uMsg = unformatted.trim();
+
+		if (uMsg.matches("^Unsichtbar f\\u00FCr (\\w+\\+?) \\| (\\w{1,16}) : aktiviert$")) {
+			return 1;
+		} else if (uMsg.matches("^Unsichtbar f\\u00FCr (\\w+\\+?) \\| (\\w{1,16}) : deaktiviert$")) {
+			return 0;
+		}
+
+		return -1;
+	}
+
+	public boolean showVanishModule(String playerRank) {
+		// List<String> vanishRanks = Arrays.asList("Owner", "Admin", "Orga",
+		// "Developer", "Moderator", "Youtuber+");
+		List<String> vanishRanks = Arrays.asList("Developer", "Moderator", "Youtuber+");
+		return vanishRanks.contains(playerRank);
+	}
+
+	public int isGodmodeMessage(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		String uMsg = unformatted.trim();
+
+		if (uMsg.matches("^Unsterblichkeit aktiviert.$")) {
+			return 1;
+		} else if (uMsg.matches("^Unsterblichkeit deaktiviert.$")) {
+			return 0;
+		}
+
+		return -1;
+	}
+
+	public boolean showGodModule(String playerRank) {
+		// List<String> godRanks = Arrays.asList("Owner", "Admin", "Orga", "Developer",
+		// "Moderator");
+		List<String> godRanks = Arrays.asList("Developer", "Moderator");
+		return godRanks.contains(playerRank);
+	}
+
 	public double getMoneyPay(String unformatted) {
 		double money = 0.0;
-		String moneyRegex = "\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?)";
-		Pattern pattern = Pattern.compile(moneyRegex);
-		Matcher matcher = pattern.matcher(unformatted);
+		Matcher matcher = getMoneyRegex.matcher(unformatted);
 		if (matcher.find()) {
 			String moneyStr = matcher.group(1).trim();
 			if (moneyStr.length() > 0) {
@@ -266,9 +327,7 @@ public class MessageHelper {
 
 	public int getMoneyBank(String unformatted) {
 		int money = 0;
-		String moneyRegex = "(\\s(?:[1-9])(?:\\d+))";
-		Pattern pattern = Pattern.compile(moneyRegex);
-		Matcher matcher = pattern.matcher(unformatted);
+		Matcher matcher = moneyBankRegexp.matcher(unformatted);
 		if (matcher.find()) {
 			String moneyStr = matcher.group(1).trim();
 			if (moneyStr.length() > 0) {
@@ -299,9 +358,7 @@ public class MessageHelper {
 			return -1;
 
 		String uMsg = unformatted;
-		String msgRegex = "^\\[Plot Chat\\]";
-		Pattern pattern = Pattern.compile(msgRegex);
-		Matcher matcher = pattern.matcher(uMsg);
+		Matcher matcher = plotMsgRegex.matcher(uMsg);
 		if (matcher.find()) {
 			return 1;
 		}

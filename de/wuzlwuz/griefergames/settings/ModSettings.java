@@ -8,6 +8,7 @@ import net.labymod.settings.elements.ControlElement;
 import net.labymod.settings.elements.HeaderElement;
 import net.labymod.settings.elements.NumberElement;
 import net.labymod.settings.elements.SettingsElement;
+import net.labymod.settings.elements.StringElement;
 import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
 
@@ -26,7 +27,7 @@ public class ModSettings {
 	private boolean cleanSupremeBlanks = false;
 
 	private boolean payChatRight = true;
-	private boolean payAchievement = true;
+	private boolean payAchievement = false;
 	private boolean payMarker = false;
 	private boolean payHover = false;
 
@@ -40,7 +41,11 @@ public class ModSettings {
 
 	private boolean betterIgnoreList = true;
 
-	private boolean serverSwitchMsg = false;
+	private boolean ampEnabled = false;
+	private String ampChatReplacement = "";
+	private String defaultAMPChatReplacement = "%MAGIC% [AMP: %CLEAN%]";
+	private String ampTablistReplacement = "";
+	private String defaultAMPTablistReplacement = "[AMP] %CLEAN%";
 
 	public ModSettings() {
 		// constructor
@@ -183,12 +188,44 @@ public class ModSettings {
 		this.betterIgnoreList = betterIgnoreList;
 	}
 
-	public boolean isServerSwitchMsg() {
-		return this.serverSwitchMsg;
+	public boolean isAMPEnabled() {
+		return this.ampEnabled;
 	}
 
-	private void setServerSwitchMsg(boolean serverSwitchMsg) {
-		this.serverSwitchMsg = serverSwitchMsg;
+	private void setAMPEnabled(boolean ampEnabled) {
+		this.ampEnabled = ampEnabled;
+	}
+
+	public String getAmpChatReplacement() {
+		return ampChatReplacement;
+	}
+
+	public void setAMPChatReplacement(String ampChatReplacement) {
+		this.ampChatReplacement = ampChatReplacement;
+	}
+
+	public String getDefaultAMPChatReplacement() {
+		return defaultAMPChatReplacement;
+	}
+
+	public void setDefaultAMPChatReplacement(String defaultAMPChatReplacement) {
+		this.defaultAMPChatReplacement = defaultAMPChatReplacement;
+	}
+
+	public String getAMPTablistReplacement() {
+		return ampTablistReplacement;
+	}
+
+	public void setAMPTablistReplacement(String ampTablistReplacement) {
+		this.ampTablistReplacement = ampTablistReplacement;
+	}
+
+	public String getDefaultAMPTablistReplacement() {
+		return defaultAMPTablistReplacement;
+	}
+
+	public void setDefaultAMPTablistReplacement(String defaultAMPTablistReplacement) {
+		this.defaultAMPTablistReplacement = defaultAMPTablistReplacement;
 	}
 
 	public void loadConfig() {
@@ -240,8 +277,15 @@ public class ModSettings {
 		if (GrieferGames.getGriefergames().getConfig().has("betterIgnoreList"))
 			setBetterIgnoreList(GrieferGames.getGriefergames().getConfig().get("betterIgnoreList").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("betterIgnoreList"))
-			setServerSwitchMsg(GrieferGames.getGriefergames().getConfig().get("betterIgnoreList").getAsBoolean());
+		if (GrieferGames.getGriefergames().getConfig().has("ampEnabled"))
+			setAMPEnabled(GrieferGames.getGriefergames().getConfig().get("ampEnabled").getAsBoolean());
+
+		if (GrieferGames.getGriefergames().getConfig().has("chatReplacement"))
+			setAMPChatReplacement(GrieferGames.getGriefergames().getConfig().get("chatReplacement").getAsString());
+
+		if (GrieferGames.getGriefergames().getConfig().has("tablistReplacement"))
+			setAMPTablistReplacement(
+					GrieferGames.getGriefergames().getConfig().get("tablistReplacement").getAsString());
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -456,16 +500,40 @@ public class ModSettings {
 				}, isBetterIgnoreList());
 		settings.add(betterIgnoreListBtn);
 
-		settings.add(new HeaderElement("Server-Change"));
-		final BooleanElement serverSwitchMsgBtn = new BooleanElement("Nachricht bei Serverwechsel",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+		settings.add(new HeaderElement("AntiMagicPrefix"));
+		final BooleanElement ampEnabledBtn = new BooleanElement("Enabled", new ControlElement.IconData(Material.LEVER),
+				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean serverSwitchMsg) {
-						setServerSwitchMsg(serverSwitchMsg);
-						GrieferGames.getGriefergames().getConfig().addProperty("serverSwitchMsg", serverSwitchMsg);
+					public void accept(Boolean ampEnabled) {
+						setAMPEnabled(ampEnabled);
+						GrieferGames.getGriefergames().getConfig().addProperty("ampEnabled", ampEnabled);
 						GrieferGames.getGriefergames().saveConfig();
 					}
-				}, isServerSwitchMsg());
-		settings.add(serverSwitchMsgBtn);
+				}, isAMPEnabled());
+		settings.add(ampEnabledBtn);
+
+		StringElement chatReplacementInput = new StringElement("Chat Replacement",
+				new ControlElement.IconData(Material.BOOK_AND_QUILL), getDefaultAMPChatReplacement(),
+				new Consumer<String>() {
+					@Override
+					public void accept(String replacement) {
+						setAMPChatReplacement(replacement);
+						GrieferGames.getGriefergames().getConfig().addProperty("chatReplacement", replacement);
+						GrieferGames.getGriefergames().saveConfig();
+					}
+				});
+		settings.add(chatReplacementInput);
+
+		StringElement tablistReplacementInput = new StringElement("TabList Replacement",
+				new ControlElement.IconData(Material.BOOK_AND_QUILL), getDefaultAMPTablistReplacement(),
+				new Consumer<String>() {
+					@Override
+					public void accept(String replacement) {
+						setAMPTablistReplacement(replacement);
+						GrieferGames.getGriefergames().getConfig().addProperty("tablistReplacement", replacement);
+						GrieferGames.getGriefergames().saveConfig();
+					}
+				});
+		settings.add(tablistReplacementInput);
 	}
 }
