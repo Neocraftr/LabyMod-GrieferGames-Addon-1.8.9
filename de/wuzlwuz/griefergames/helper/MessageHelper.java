@@ -254,12 +254,12 @@ public class MessageHelper {
 		if (matcher.find()) {
 			playerRank = matcher.group(1);
 		}
-		return playerRank;
+		return playerRank.toLowerCase();
 	}
 
 	public boolean isInTeam(String playerRank) {
-		List<String> teamRanks = Arrays.asList("Owner", "Admin", "Orga", "Developer", "Moderator", "Supporter",
-				"T-Supporter", "Content", "Designer");
+		List<String> teamRanks = Arrays.asList("owner", "admin", "orga", "developer", "moderator", "supporter",
+				"t-supporter", "content", "designer");
 		return teamRanks.contains(playerRank);
 	}
 
@@ -279,9 +279,7 @@ public class MessageHelper {
 	}
 
 	public boolean showVanishModule(String playerRank) {
-		// List<String> vanishRanks = Arrays.asList("Owner", "Admin", "Orga",
-		// "Developer", "Moderator", "Youtuber+");
-		List<String> vanishRanks = Arrays.asList("Developer", "Moderator", "Youtuber+");
+		List<String> vanishRanks = Arrays.asList("developer", "moderator", "youtuber+");
 		return vanishRanks.contains(playerRank);
 	}
 
@@ -301,9 +299,7 @@ public class MessageHelper {
 	}
 
 	public boolean showGodModule(String playerRank) {
-		// List<String> godRanks = Arrays.asList("Owner", "Admin", "Orga", "Developer",
-		// "Moderator");
-		List<String> godRanks = Arrays.asList("Developer", "Moderator");
+		List<String> godRanks = Arrays.asList("developer", "moderator");
 		return godRanks.contains(playerRank);
 	}
 

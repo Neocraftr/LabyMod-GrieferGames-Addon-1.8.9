@@ -126,6 +126,7 @@ public class GrieferGamesServer extends Server {
 			public void onSubServerChanged(String subServerNameOld, String subServerName) {
 				GrieferGames.getGriefergames().setGodActive(false);
 				GrieferGames.getGriefergames().setVanishActive(false);
+
 				if (subServerName.equalsIgnoreCase("lobby")) {
 					String accountName = getMc().thePlayer.getName().trim();
 
@@ -136,6 +137,7 @@ public class GrieferGamesServer extends Server {
 						IChatComponent tabListName = player.getDisplayName();
 						if (accountName.length() > 0 && accountName.equalsIgnoreCase(
 								getMsgHelper().getPayerName(tabListName.getUnformattedText()).trim())) {
+
 							setPlayerRank(getMsgHelper().getPayerRank(tabListName.getUnformattedText().trim()));
 							setIsInTeam(getMsgHelper().isInTeam(getPlayerRank()));
 						}
@@ -492,7 +494,7 @@ public class GrieferGamesServer extends Server {
 							scorePlayerTeam = scoreboard.getPlayersTeam(scoreList.get(i + 1).getPlayerName());
 							scoreName = ScorePlayerTeam
 									.formatPlayerName(scorePlayerTeam, scoreList.get(i + 1).getPlayerName())
-									.replaceAll("§[0-9a-z]", "").trim();
+									.replaceAll("\u00A7[0-9a-z]", "").trim();
 							if (!getSubServer().matches(scoreName)) {
 								for (SubServerListener ssl : subServerListener)
 									ssl.onSubServerChanged(getSubServer(), scoreName);
