@@ -130,27 +130,31 @@ public class GrieferGamesServer extends Server {
 				if (subServerName.equalsIgnoreCase("lobby")) {
 					String accountName = getMc().thePlayer.getName().trim();
 
-					NetHandlerPlayClient nethandlerplayclient = getMc().thePlayer.sendQueue;
-					Collection<NetworkPlayerInfo> playerMap = nethandlerplayclient.getPlayerInfoMap();
+					try {
+						NetHandlerPlayClient nethandlerplayclient = getMc().thePlayer.sendQueue;
+						Collection<NetworkPlayerInfo> playerMap = nethandlerplayclient.getPlayerInfoMap();
 
-					for (NetworkPlayerInfo player : playerMap) {
-						IChatComponent tabListName = player.getDisplayName();
-						if (accountName.length() > 0 && accountName.equalsIgnoreCase(
-								getMsgHelper().getPayerName(tabListName.getUnformattedText()).trim())) {
+						for (NetworkPlayerInfo player : playerMap) {
+							IChatComponent tabListName = player.getDisplayName();
+							if (accountName.length() > 0 && accountName.equalsIgnoreCase(
+									getMsgHelper().getPayerName(tabListName.getUnformattedText()).trim())) {
 
-							setPlayerRank(getMsgHelper().getPayerRank(tabListName.getUnformattedText().trim()));
-							setIsInTeam(getMsgHelper().isInTeam(getPlayerRank()));
+								setPlayerRank(getMsgHelper().getPayerRank(tabListName.getUnformattedText().trim()));
+								setIsInTeam(getMsgHelper().isInTeam(getPlayerRank()));
+							}
 						}
-					}
-					if (!getModulesLoaded()) {
-						setModulesLoaded(true);
-						new FlyModule();
-						if (getMsgHelper().showGodModule(getPlayerRank())) {
-							new GodmodeModule();
+						if (!getModulesLoaded()) {
+							setModulesLoaded(true);
+							new FlyModule();
+							if (getMsgHelper().showGodModule(getPlayerRank())) {
+								new GodmodeModule();
+							}
+							if (getMsgHelper().showVanishModule(getPlayerRank())) {
+								new VanishModule();
+							}
 						}
-						if (getMsgHelper().showVanishModule(getPlayerRank())) {
-							new VanishModule();
-						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 			}
@@ -355,6 +359,7 @@ public class GrieferGamesServer extends Server {
 		this.getApi().registerForgeListener(this);
 	}
 
+	@SubscribeEvent(priority = EventPriority.HIGH)
 	public Object modifyChatMessage(Object o) {
 		if (!GrieferGames.getSettings().isModEnabled())
 			return o;
@@ -370,6 +375,8 @@ public class GrieferGamesServer extends Server {
 			String formatted = msg.getFormattedText();
 
 			String oldMessage = msg.getFormattedText().replaceAll("\u00A7", "§");
+
+			System.out.println(oldMessage);
 
 			if (oldMessage.indexOf("§k") != -1 && GrieferGames.getSettings().isAMPEnabled()) {
 				IChatComponent newMsg = new ChatComponentText("");
@@ -410,6 +417,8 @@ public class GrieferGamesServer extends Server {
 					}
 				}
 				msg = newMsg;
+				unformatted = msg.getUnformattedText();
+				formatted = msg.getFormattedText();
 				o = msg;
 			}
 
@@ -471,7 +480,7 @@ public class GrieferGamesServer extends Server {
 		return o;
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.NORMAL)
 	public void onTick(TickEvent.ClientTickEvent event) {
 		if (LabyModCore.getMinecraft().getWorld() != null && event.phase == TickEvent.Phase.START) {
 			if (System.currentTimeMillis() > this.nextLastMessageRequest) {
