@@ -196,7 +196,7 @@ public class ModSettings {
 		this.ampEnabled = ampEnabled;
 	}
 
-	public String getAmpChatReplacement() {
+	public String getAMPChatReplacement() {
 		return ampChatReplacement;
 	}
 
@@ -512,9 +512,10 @@ public class ModSettings {
 				}, isAMPEnabled());
 		settings.add(ampEnabledBtn);
 
+		String ampChatText = (getAMPChatReplacement().length() > 0) ? getAMPChatReplacement()
+				: getDefaultAMPChatReplacement();
 		StringElement chatReplacementInput = new StringElement("Chat Replacement",
-				new ControlElement.IconData(Material.BOOK_AND_QUILL), getDefaultAMPChatReplacement(),
-				new Consumer<String>() {
+				new ControlElement.IconData(Material.BOOK_AND_QUILL), ampChatText, new Consumer<String>() {
 					@Override
 					public void accept(String replacement) {
 						setAMPChatReplacement(replacement);
@@ -524,9 +525,10 @@ public class ModSettings {
 				});
 		settings.add(chatReplacementInput);
 
+		String ampTabListText = (getAMPTablistReplacement().length() > 0) ? getAMPTablistReplacement()
+				: getDefaultAMPTablistReplacement();
 		StringElement tablistReplacementInput = new StringElement("TabList Replacement",
-				new ControlElement.IconData(Material.BOOK_AND_QUILL), getDefaultAMPTablistReplacement(),
-				new Consumer<String>() {
+				new ControlElement.IconData(Material.BOOK_AND_QUILL), ampTabListText, new Consumer<String>() {
 					@Override
 					public void accept(String replacement) {
 						setAMPTablistReplacement(replacement);

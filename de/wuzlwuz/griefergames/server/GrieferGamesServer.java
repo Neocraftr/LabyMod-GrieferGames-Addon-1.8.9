@@ -383,7 +383,7 @@ public class GrieferGamesServer extends Server {
 					if (component.getChatStyle().getObfuscated()
 							&& component.getUnformattedText().matches("(([A-z\\-]+\\+?) \\| (\\w{1,16}))")) {
 						ChatStyle msgStyling = component.getChatStyle().createDeepCopy().setObfuscated(false);
-						String chatRepText = GrieferGames.getSettings().getAmpChatReplacement();
+						String chatRepText = GrieferGames.getSettings().getAMPChatReplacement();
 
 						if (chatRepText.indexOf("%CLEAN%") == -1) {
 							chatRepText = GrieferGames.getSettings().getDefaultAMPChatReplacement();
