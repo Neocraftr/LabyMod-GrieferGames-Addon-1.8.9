@@ -3,7 +3,7 @@
 	"name":"GrieferGames",
 	"mainClass":"de.wuzlwuz.griefergames.GrieferGames",
 	"description": "This add-on helps you to simplify the gameplay on GrieferGames.net",
-	"version": 1.5,
+	"version": 1.8,
 	"author": "wuzlwuz",
 	"category": 2
 }
