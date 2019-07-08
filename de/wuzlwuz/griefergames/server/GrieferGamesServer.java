@@ -359,7 +359,6 @@ public class GrieferGamesServer extends Server {
 		this.getApi().registerForgeListener(this);
 	}
 
-	@SubscribeEvent(priority = EventPriority.HIGH)
 	public Object modifyChatMessage(Object o) {
 		if (!GrieferGames.getSettings().isModEnabled())
 			return o;
