@@ -12,14 +12,22 @@ public class MessageHelper {
 
 	private static Pattern bankMessageOtherRegexp = Pattern.compile("^\\[GrieferBank\\]");
 	private static Pattern displayNameRegex = Pattern.compile("(([A-z\\-]+\\+?) \\| (\\w{1,16}))");
+	private static Pattern msgUserGlobalChatRegex = Pattern.compile("^([A-z\\-]+\\+?) \\| (\\w{1,16})\\s\\:");
+	private static Pattern privateMessageRegex = Pattern.compile("^\\[([A-z\\-]+\\+?) \\| (\\w{1,16}) -> mir\\](.*)$");
+	private static Pattern privateMessageSentRegex = Pattern
+			.compile("^\\[mir -> ([A-z\\-]+\\+?) \\| (\\w{1,16})\\](.*)$");
 	private static Pattern moneyBankRegexp = Pattern.compile("(\\s(?:[1-9])(?:\\d+))");
 	private static Pattern getMoneyRegex = Pattern.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?)");
 	private static Pattern getMoneyValidRegex = Pattern.compile(
 			"^([A-z\\-]+\\+?) \\| (\\w{1,16}) hat dir \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
-	private static Pattern payMoneyRegex = Pattern.compile(
+	private static Pattern payedMoneyRegex = Pattern.compile(
 			"^Du hast ([A-z\\-]+\\+?) \\| (\\w{1,16}) \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
+	private static Pattern earnedMoneyRegex = Pattern
+			.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) wurde zu deinem Konto hinzugef\\u00FCgt");
 	private static Pattern playerNameRankRegex = Pattern.compile("([A-z\\-]+\\+?) \\| (\\w{1,16})");
 	private static Pattern plotMsgRegex = Pattern.compile("^\\[Plot Chat\\]");
+	private static Pattern chatClearedRegex = Pattern
+			.compile("^Der Chat wurde von ([A-z\\-]+\\+?) \\| (\\w{1,16}) geleert.$");
 
 	public boolean isBlankMessage(String unformatted) {
 		if (unformatted.trim().length() <= 0)
@@ -55,9 +63,8 @@ public class MessageHelper {
 		if (unformatted.trim().length() <= 0)
 			return -1;
 
-		String uMsg = unformatted;
-
-		if (uMsg.matches("^Der Chat wurde von ([A-z\\-]+\\+?) \\| (\\w{1,16}) geleert.$")) {
+		Matcher matcher = chatClearedRegex.matcher(unformatted);
+		if (matcher.find()) {
 			return 1;
 		}
 
@@ -70,7 +77,7 @@ public class MessageHelper {
 
 		String fMsg = getProperTextFormat(formatted);
 
-		if (fMsg.matches("^§r§8\u00BB§r$")) {
+		if (fMsg.equals("§r§8\\u00BB§r")) {
 			return 1;
 		}
 
@@ -81,33 +88,61 @@ public class MessageHelper {
 		if (unformatted.trim().length() <= 0)
 			return -1;
 
-		String uMsg = unformatted;
-
-		if (uMsg.matches("^\\[([A-z\\-]+\\+?) \\| (\\w{1,16}) -> mir\\](.*)$")) {
+		Matcher matcher = privateMessageRegex.matcher(unformatted);
+		if (matcher.find()) {
 			return 1;
 		}
-
 		return 0;
+	}
+
+	public String getPrivateMessageName(String unformatted) {
+		String displayName = "";
+
+		Matcher matcher = privateMessageRegex.matcher(unformatted);
+		if (matcher.find()) {
+			displayName = matcher.group(2);
+		}
+		return displayName;
 	}
 
 	public int isValidSendPrivateMessage(String unformatted, String formatted) {
 		if (unformatted.trim().length() <= 0)
 			return -1;
 
-		String uMsg = unformatted;
-
-		if (uMsg.matches("^\\[mir -> ([A-z\\-]+\\+?) \\| (\\w{1,16})\\](.*)$")) {
+		Matcher matcher = privateMessageSentRegex.matcher(unformatted);
+		if (matcher.find()) {
 			return 1;
 		}
-
 		return 0;
+	}
+
+	public String getSentPrivateMessageName(String unformatted) {
+		String displayName = "";
+
+		Matcher matcher = privateMessageSentRegex.matcher(unformatted);
+		if (matcher.find()) {
+			displayName = matcher.group(2);
+		}
+		return displayName;
 	}
 
 	public int hasPayedMessage(String unformatted, String formatted) {
 		if (unformatted.trim().length() <= 0)
 			return -1;
 
-		Matcher matcher = payMoneyRegex.matcher(unformatted);
+		Matcher matcher = payedMoneyRegex.matcher(unformatted);
+		if (matcher.find()) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	public int hasEarnedMoneyMessage(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		Matcher matcher = earnedMoneyRegex.matcher(unformatted);
 		if (matcher.find()) {
 			return 1;
 		}
@@ -347,6 +382,26 @@ public class MessageHelper {
 			return 1;
 		}
 		return 0;
+	}
+
+	public int isGlobalUserChatMessage(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		Matcher matcher = msgUserGlobalChatRegex.matcher(unformatted);
+		if (matcher.find()) {
+			return 1;
+		}
+		return 0;
+	}
+
+	public String getUserFromGlobalMessage(String unformatted) {
+		String displayName = "";
+		Matcher matcher = msgUserGlobalChatRegex.matcher(unformatted);
+		if (matcher.find()) {
+			displayName = matcher.group(2);
+		}
+		return displayName;
 	}
 
 	public int isPlotChatMessage(String unformatted, String formatted) {

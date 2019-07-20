@@ -12,12 +12,16 @@ public class FlyModule extends SimpleModule {
 
 	@Override
 	public String getDisplayName() {
-		return "Fly";
+		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.FlyModule.DisplayName", "Fly");
 	}
 
 	@Override
 	public String getDisplayValue() {
-		return (GrieferGames.getGriefergames().isFlyActive()) ? "ON" : "OFF";
+		if (GrieferGames.getGriefergames().isFlyActive()) {
+			return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.FlyModule.active.true", "ON");
+		} else {
+			return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.FlyModule.active.false", "OFF");
+		}
 	}
 
 	/**
@@ -28,7 +32,7 @@ public class FlyModule extends SimpleModule {
 	 */
 	@Override
 	public String getDefaultValue() {
-		return "OFF";
+		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.FlyModule.active.false", "OFF");
 	}
 
 	@Override
@@ -43,12 +47,14 @@ public class FlyModule extends SimpleModule {
 
 	@Override
 	public String getSettingName() {
-		return "GG | Fly-Module";
+		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.FlyModule.SettingName",
+				"GG-Fly-Module");
 	}
 
 	@Override
 	public String getDescription() {
-		return "";
+		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.FlyModule.Description",
+				"show fly status on/off");
 	}
 
 	@Override

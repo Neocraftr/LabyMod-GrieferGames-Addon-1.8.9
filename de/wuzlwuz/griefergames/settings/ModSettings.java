@@ -18,8 +18,11 @@ public class ModSettings {
 	 */
 	private boolean modEnabled = true;
 
+	private boolean useMinecraftLang = false;
+
 	private boolean privateChatRight = true;
 	private boolean plotChatRight = true;
+	private boolean displayNameClick = false;
 	private boolean filterDuplicateMessages = false;
 	private Integer filterDuplicateMessagesTime = 5;
 
@@ -43,7 +46,7 @@ public class ModSettings {
 
 	private boolean ampEnabled = false;
 	private String ampChatReplacement = "";
-	private String defaultAMPChatReplacement = "%MAGIC% [AMP: %CLEAN%]";
+	private String defaultAMPChatReplacement = "[AMP] %CLEAN%";
 	private String ampTablistReplacement = "";
 	private String defaultAMPTablistReplacement = "[AMP] %CLEAN%";
 
@@ -57,6 +60,14 @@ public class ModSettings {
 
 	private void setModEnabled(boolean modEnabled) {
 		this.modEnabled = modEnabled;
+	}
+
+	public boolean isUseMinecraftLang() {
+		return this.useMinecraftLang;
+	}
+
+	private void setUseMinecraftLang(boolean useMinecraftLang) {
+		this.useMinecraftLang = useMinecraftLang;
 	}
 
 	public boolean isPrivateChatRight() {
@@ -74,6 +85,14 @@ public class ModSettings {
 	private void setPlotChatRight(boolean plotChatRight) {
 		this.plotChatRight = plotChatRight;
 
+	}
+
+	public boolean isDisplayNameClick() {
+		return this.displayNameClick;
+	}
+
+	private void setDisplayNameClick(boolean displayNameClick) {
+		this.displayNameClick = displayNameClick;
 	}
 
 	public boolean isFilterDuplicateMessages() {
@@ -200,7 +219,7 @@ public class ModSettings {
 		return ampChatReplacement;
 	}
 
-	public void setAMPChatReplacement(String ampChatReplacement) {
+	private void setAMPChatReplacement(String ampChatReplacement) {
 		this.ampChatReplacement = ampChatReplacement;
 	}
 
@@ -216,7 +235,7 @@ public class ModSettings {
 		return ampTablistReplacement;
 	}
 
-	public void setAMPTablistReplacement(String ampTablistReplacement) {
+	private void setAMPTablistReplacement(String ampTablistReplacement) {
 		this.ampTablistReplacement = ampTablistReplacement;
 	}
 
@@ -234,6 +253,8 @@ public class ModSettings {
 
 		if (GrieferGames.getGriefergames().getConfig().has("privateChatRight"))
 			setPrivateChatRight(GrieferGames.getGriefergames().getConfig().get("privateChatRight").getAsBoolean());
+		if (GrieferGames.getGriefergames().getConfig().has("displayNameClick"))
+			setDisplayNameClick(GrieferGames.getGriefergames().getConfig().get("displayNameClick").getAsBoolean());
 		if (GrieferGames.getGriefergames().getConfig().has("filterDuplicateMessages"))
 			setFilterDuplicateMessages(
 					GrieferGames.getGriefergames().getConfig().get("filterDuplicateMessages").getAsBoolean());
@@ -286,12 +307,15 @@ public class ModSettings {
 		if (GrieferGames.getGriefergames().getConfig().has("tablistReplacement"))
 			setAMPTablistReplacement(
 					GrieferGames.getGriefergames().getConfig().get("tablistReplacement").getAsString());
+
+		if (GrieferGames.getGriefergames().getConfig().has("useMinecraftLang"))
+			setUseMinecraftLang(GrieferGames.getGriefergames().getConfig().get("useMinecraftLang").getAsBoolean());
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
 		settings.add(new HeaderElement("Allgemein"));
 
-		final BooleanElement modEnabledBtn = new BooleanElement("Addon Aktiv",
+		final BooleanElement modEnabledBtn = new BooleanElement("Addon Enabled",
 				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean modEnabled) {
@@ -326,6 +350,17 @@ public class ModSettings {
 					}
 				}, isPlotChatRight());
 		settings.add(plotChatRightBtn);
+
+		final BooleanElement displayNameClickBtn = new BooleanElement("Rechtsklicken zum antworten",
+				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean displayNameClick) {
+						setDisplayNameClick(displayNameClick);
+						GrieferGames.getGriefergames().getConfig().addProperty("displayNameClick", displayNameClick);
+						GrieferGames.getGriefergames().saveConfig();
+					}
+				}, isDisplayNameClick());
+		settings.add(displayNameClickBtn);
 
 		final BooleanElement filterDuplicateMessagesBtn = new BooleanElement("Doppelte Nachrichten l\u00f6schen",
 				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {

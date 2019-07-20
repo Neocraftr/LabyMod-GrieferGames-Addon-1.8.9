@@ -12,12 +12,18 @@ public class GodmodeModule extends SimpleModule {
 
 	@Override
 	public String getDisplayName() {
-		return "God";
+		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.GodmodeModule.DisplayName", "Fly");
 	}
 
 	@Override
 	public String getDisplayValue() {
-		return (GrieferGames.getGriefergames().isGodActive()) ? "ON" : "OFF";
+		if (GrieferGames.getGriefergames().isGodActive()) {
+			return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.GodmodeModule.active.true",
+					"ON");
+		} else {
+			return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.GodmodeModule.active.false",
+					"OFF");
+		}
 	}
 
 	/**
@@ -28,12 +34,12 @@ public class GodmodeModule extends SimpleModule {
 	 */
 	@Override
 	public String getDefaultValue() {
-		return "OFF";
+		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.GodmodeModule.active.false", "OFF");
 	}
 
 	@Override
 	public ControlElement.IconData getIconData() {
-		return new ControlElement.IconData(Material.BEDROCK);
+		return new ControlElement.IconData(Material.FEATHER);
 	}
 
 	@Override
@@ -43,16 +49,18 @@ public class GodmodeModule extends SimpleModule {
 
 	@Override
 	public String getSettingName() {
-		return "GG | Godmode-Module";
+		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.GodmodeModule.SettingName",
+				"GG-Godmode-Module");
 	}
 
 	@Override
 	public String getDescription() {
-		return "";
+		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.GodmodeModule.Description",
+				"show god status on/off");
 	}
 
 	@Override
 	public int getSortingId() {
-		return 500;
+		return 501;
 	}
 }

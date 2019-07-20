@@ -12,12 +12,17 @@ public class VanishModule extends SimpleModule {
 
 	@Override
 	public String getDisplayName() {
-		return "Vanish";
+		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.VanishModule.DisplayName", "Fly");
 	}
 
 	@Override
 	public String getDisplayValue() {
-		return (GrieferGames.getGriefergames().isVanishActive()) ? "ON" : "OFF";
+		if (GrieferGames.getGriefergames().isVanishActive()) {
+			return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.VanishModule.active.true", "ON");
+		} else {
+			return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.VanishModule.active.false",
+					"OFF");
+		}
 	}
 
 	/**
@@ -28,12 +33,12 @@ public class VanishModule extends SimpleModule {
 	 */
 	@Override
 	public String getDefaultValue() {
-		return "OFF";
+		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.VanishModule.active.false", "OFF");
 	}
 
 	@Override
 	public ControlElement.IconData getIconData() {
-		return new ControlElement.IconData(Material.BARRIER);
+		return new ControlElement.IconData(Material.FEATHER);
 	}
 
 	@Override
@@ -43,16 +48,18 @@ public class VanishModule extends SimpleModule {
 
 	@Override
 	public String getSettingName() {
-		return "GG | Vanish-Module";
+		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.VanishModule.SettingName",
+				"GG-Vanish-Module");
 	}
 
 	@Override
 	public String getDescription() {
-		return "";
+		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.VanishModule.Description",
+				"show vanish status on/off");
 	}
 
 	@Override
 	public int getSortingId() {
-		return 502;
+		return 501;
 	}
 }
