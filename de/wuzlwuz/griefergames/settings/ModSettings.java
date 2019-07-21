@@ -18,7 +18,7 @@ public class ModSettings {
 	private boolean showChatTime = false;
 	private boolean privateChatRight = true;
 	private boolean plotChatRight = true;
-	private boolean msgDisplayNameClick = true;
+	private boolean msgDisplayNameClick = false;
 	private boolean filterDuplicateMessages = false;
 	private Integer filterDuplicateMessagesTime = 5;
 
