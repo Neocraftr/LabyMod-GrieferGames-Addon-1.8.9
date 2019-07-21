@@ -366,7 +366,7 @@ public class ModSettings {
 				}, isPlotChatRight());
 		settings.add(plotChatRightBtn);
 
-		final BooleanElement msgDisplayNameClickBtn = new BooleanElement("Rechtsklicken zum antworten",
+		final BooleanElement msgDisplayNameClickBtn = new BooleanElement("Klicken zum antworten",
 				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean msgDisplayNameClick) {
