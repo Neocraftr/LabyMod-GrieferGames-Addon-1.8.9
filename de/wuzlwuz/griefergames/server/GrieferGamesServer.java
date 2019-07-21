@@ -591,10 +591,13 @@ public class GrieferGamesServer extends Server {
 						.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GOLD));
 				IChatComponent timeMsg = new ChatComponentText(dateNowStr)
 						.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
-				IChatComponent aftTimeMsg = new ChatComponentText("] ")
+				IChatComponent aftTimeMsg = new ChatComponentText("]")
 						.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GOLD));
+				IChatComponent resetMsg = new ChatComponentText(" ")
+						.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RESET));
 
-				IChatComponent newMsg = befTimeMsg.appendSibling(timeMsg).appendSibling(aftTimeMsg).appendSibling(msg);
+				IChatComponent newMsg = befTimeMsg.appendSibling(timeMsg).appendSibling(aftTimeMsg)
+						.appendSibling(resetMsg).appendSibling(msg);
 				msg = newMsg;
 			}
 
