@@ -515,20 +515,47 @@ public class GrieferGamesServer extends Server {
 
 			if (GrieferGames.getSettings().isMsgDisplayNameClick()
 					&& msgHelper.isGlobalUserChatMessage(unformatted, formatted) > 0) {
-				msg.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
-						"/msg " + getMsgHelper().getUserFromGlobalMessage(unformatted) + " "));
+
+				if (msg.getSiblings().size() > 3) {
+					String username = "/msg " + getMsgHelper().getUserFromGlobalMessage(unformatted) + " ";
+					msg.getSiblings().get(0).getChatStyle()
+							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
+					if (msg.getSiblings().size() > 4 && getMsgHelper()
+							.getProperTextFormat(msg.getSiblings().get(3).getFormattedText()).equals("§8: §r")) {
+						msg.getSiblings().get(1).getChatStyle()
+								.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
+					}
+				}
 			}
 
 			if (GrieferGames.getSettings().isMsgDisplayNameClick()
 					&& msgHelper.isValidPrivateMessage(unformatted, formatted) > 0) {
-				msg.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
-						"/msg " + getMsgHelper().getPrivateMessageName(unformatted) + " "));
+
+				if (msg.getSiblings().size() > 5) {
+					String username = "/msg " + getMsgHelper().getPrivateMessageName(unformatted) + " ";
+					msg.getSiblings().get(1).getChatStyle()
+							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
+					if (getMsgHelper().getProperTextFormat(msg.getSiblings().get(5).getFormattedText())
+							.equals("§6] §r")) {
+						msg.getSiblings().get(2).getChatStyle()
+								.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
+					}
+				}
 			}
 
 			if (GrieferGames.getSettings().isMsgDisplayNameClick()
 					&& msgHelper.isValidSendPrivateMessage(unformatted, formatted) > 0) {
-				msg.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
-						"/msg " + getMsgHelper().getSentPrivateMessageName(unformatted) + " "));
+
+				if (msg.getSiblings().size() > 5) {
+					String username = "/msg " + getMsgHelper().getSentPrivateMessageName(unformatted) + " ";
+					msg.getSiblings().get(3).getChatStyle()
+							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
+					if (getMsgHelper().getProperTextFormat(msg.getSiblings().get(5).getFormattedText())
+							.equals("§6] §r")) {
+						msg.getSiblings().get(4).getChatStyle()
+								.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
+					}
+				}
 			}
 
 			if (oldMessage.indexOf("§k") != -1 && GrieferGames.getSettings().isAMPEnabled()) {
