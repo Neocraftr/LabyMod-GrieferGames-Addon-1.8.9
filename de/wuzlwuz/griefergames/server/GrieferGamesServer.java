@@ -431,9 +431,6 @@ public class GrieferGamesServer extends Server {
 			String unformatted = msg.getUnformattedText();
 			String formatted = msg.getFormattedText();
 
-			System.out.println(formatted);
-			System.out.println(msgHelper.isSupremeBlank(unformatted, formatted) > 0);
-
 			if (msgHelper.isBlankMessage(unformatted) || msgHelper.isSupremeBlank(unformatted, formatted) > 0)
 				return msg;
 
