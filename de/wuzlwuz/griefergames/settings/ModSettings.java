@@ -13,16 +13,12 @@ import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
 
 public class ModSettings {
-	/*
-	 * Ä, ä \u00c4, \u00e4 | Ö, ö \u00d6, \u00f6 | Ü, ü \u00dc, \u00fc | ß \u00df
-	 */
 	private boolean modEnabled = true;
 
-	private boolean useMinecraftLang = false;
-
+	private boolean showChatTime = false;
 	private boolean privateChatRight = true;
 	private boolean plotChatRight = true;
-	private boolean displayNameClick = false;
+	private boolean msgDisplayNameClick = true;
 	private boolean filterDuplicateMessages = false;
 	private Integer filterDuplicateMessagesTime = 5;
 
@@ -62,12 +58,12 @@ public class ModSettings {
 		this.modEnabled = modEnabled;
 	}
 
-	public boolean isUseMinecraftLang() {
-		return this.useMinecraftLang;
+	public boolean isShowChatTime() {
+		return this.showChatTime;
 	}
 
-	private void setUseMinecraftLang(boolean useMinecraftLang) {
-		this.useMinecraftLang = useMinecraftLang;
+	private void setShowChatTime(boolean showChatTime) {
+		this.showChatTime = showChatTime;
 	}
 
 	public boolean isPrivateChatRight() {
@@ -84,15 +80,14 @@ public class ModSettings {
 
 	private void setPlotChatRight(boolean plotChatRight) {
 		this.plotChatRight = plotChatRight;
-
 	}
 
-	public boolean isDisplayNameClick() {
-		return this.displayNameClick;
+	public boolean isMsgDisplayNameClick() {
+		return this.msgDisplayNameClick;
 	}
 
-	private void setDisplayNameClick(boolean displayNameClick) {
-		this.displayNameClick = displayNameClick;
+	private void setMsgDisplayNameClick(boolean msgDisplayNameClick) {
+		this.msgDisplayNameClick = msgDisplayNameClick;
 	}
 
 	public boolean isFilterDuplicateMessages() {
@@ -251,33 +246,45 @@ public class ModSettings {
 		if (GrieferGames.getGriefergames().getConfig().has("modEnabled"))
 			setModEnabled(GrieferGames.getGriefergames().getConfig().get("modEnabled").getAsBoolean());
 
+		if (GrieferGames.getGriefergames().getConfig().has("showChatTime"))
+			setShowChatTime(GrieferGames.getGriefergames().getConfig().get("showChatTime").getAsBoolean());
+
 		if (GrieferGames.getGriefergames().getConfig().has("privateChatRight"))
 			setPrivateChatRight(GrieferGames.getGriefergames().getConfig().get("privateChatRight").getAsBoolean());
-		if (GrieferGames.getGriefergames().getConfig().has("displayNameClick"))
-			setDisplayNameClick(GrieferGames.getGriefergames().getConfig().get("displayNameClick").getAsBoolean());
+
+		if (GrieferGames.getGriefergames().getConfig().has("msgDisplayNameClick"))
+			setMsgDisplayNameClick(
+					GrieferGames.getGriefergames().getConfig().get("msgDisplayNameClick").getAsBoolean());
+
 		if (GrieferGames.getGriefergames().getConfig().has("filterDuplicateMessages"))
 			setFilterDuplicateMessages(
 					GrieferGames.getGriefergames().getConfig().get("filterDuplicateMessages").getAsBoolean());
+
 		if (GrieferGames.getGriefergames().getConfig().has("filterDuplicateMessagesTime"))
 			setFilterDuplicateMessagesTime(
 					GrieferGames.getGriefergames().getConfig().get("filterDuplicateMessagesTime").getAsInt());
 
 		if (GrieferGames.getGriefergames().getConfig().has("cleanBlanks"))
 			setCleanBlanks(GrieferGames.getGriefergames().getConfig().get("cleanBlanks").getAsBoolean());
+
 		if (GrieferGames.getGriefergames().getConfig().has("cleanSupremeBlanks"))
 			setCleanSupremeBlanks(GrieferGames.getGriefergames().getConfig().get("cleanSupremeBlanks").getAsBoolean());
 
 		if (GrieferGames.getGriefergames().getConfig().has("payChatRight"))
 			setPayChatRight(GrieferGames.getGriefergames().getConfig().get("payChatRight").getAsBoolean());
+
 		if (GrieferGames.getGriefergames().getConfig().has("payAchievement"))
 			setPayAchievement(GrieferGames.getGriefergames().getConfig().get("payAchievement").getAsBoolean());
+
 		if (GrieferGames.getGriefergames().getConfig().has("payMarker"))
 			setPayMarker(GrieferGames.getGriefergames().getConfig().get("payMarker").getAsBoolean());
+
 		if (GrieferGames.getGriefergames().getConfig().has("payHover"))
 			setPayHover(GrieferGames.getGriefergames().getConfig().get("payHover").getAsBoolean());
 
 		if (GrieferGames.getGriefergames().getConfig().has("bankChatRight"))
 			setBankChatRight(GrieferGames.getGriefergames().getConfig().get("bankChatRight").getAsBoolean());
+
 		if (GrieferGames.getGriefergames().getConfig().has("bankAchievement"))
 			setBankAchievement(GrieferGames.getGriefergames().getConfig().get("bankAchievement").getAsBoolean());
 
@@ -307,9 +314,6 @@ public class ModSettings {
 		if (GrieferGames.getGriefergames().getConfig().has("tablistReplacement"))
 			setAMPTablistReplacement(
 					GrieferGames.getGriefergames().getConfig().get("tablistReplacement").getAsString());
-
-		if (GrieferGames.getGriefergames().getConfig().has("useMinecraftLang"))
-			setUseMinecraftLang(GrieferGames.getGriefergames().getConfig().get("useMinecraftLang").getAsBoolean());
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -327,6 +331,17 @@ public class ModSettings {
 		settings.add(modEnabledBtn);
 
 		settings.add(new HeaderElement("Nachrichten"));
+		final BooleanElement showChatTimeBtn = new BooleanElement("Chatzeit anzeigen",
+				new ControlElement.IconData("labymod/textures/settings/modules/date.png"), new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean showChatTime) {
+						setShowChatTime(showChatTime);
+						GrieferGames.getGriefergames().getConfig().addProperty("showChatTime", showChatTime);
+						GrieferGames.getGriefergames().saveConfig();
+					}
+				}, isShowChatTime());
+		settings.add(showChatTimeBtn);
+
 		final BooleanElement privateChatRightBtn = new BooleanElement("Private Nachrichten 2. Chat",
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
@@ -351,16 +366,17 @@ public class ModSettings {
 				}, isPlotChatRight());
 		settings.add(plotChatRightBtn);
 
-		final BooleanElement displayNameClickBtn = new BooleanElement("Rechtsklicken zum antworten",
+		final BooleanElement msgDisplayNameClickBtn = new BooleanElement("Rechtsklicken zum antworten",
 				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean displayNameClick) {
-						setDisplayNameClick(displayNameClick);
-						GrieferGames.getGriefergames().getConfig().addProperty("displayNameClick", displayNameClick);
+					public void accept(Boolean msgDisplayNameClick) {
+						setMsgDisplayNameClick(msgDisplayNameClick);
+						GrieferGames.getGriefergames().getConfig().addProperty("msgDisplayNameClick",
+								msgDisplayNameClick);
 						GrieferGames.getGriefergames().saveConfig();
 					}
-				}, isDisplayNameClick());
-		settings.add(displayNameClickBtn);
+				}, isMsgDisplayNameClick());
+		settings.add(msgDisplayNameClickBtn);
 
 		final BooleanElement filterDuplicateMessagesBtn = new BooleanElement("Doppelte Nachrichten l\u00f6schen",
 				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {

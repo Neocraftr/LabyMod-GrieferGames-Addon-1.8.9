@@ -64,6 +64,9 @@ public class GrieferGamesServer extends Server {
 	private String playerRank = "Spieler";
 	private boolean isInTeam = false;
 	private boolean modulesLoaded = false;
+	private String lastMsg = "";
+
+	private boolean listenerLoaded = false;
 
 	public Minecraft getMc() {
 		return mc;
@@ -78,7 +81,9 @@ public class GrieferGamesServer extends Server {
 	}
 
 	public void addSubServerListener(SubServerListener ssl) {
-		subServerListener.add(ssl);
+		if (!subServerListener.contains(ssl)) {
+			subServerListener.add(ssl);
+		}
 	}
 
 	private void setApi(LabyModAPI api) {
@@ -115,6 +120,14 @@ public class GrieferGamesServer extends Server {
 
 	public boolean getModulesLoaded() {
 		return this.modulesLoaded;
+	}
+
+	private void setListenerLoaded(boolean listenerLoaded) {
+		this.listenerLoaded = listenerLoaded;
+	}
+
+	public boolean getListenerLoaded() {
+		return this.listenerLoaded;
 	}
 
 	public GrieferGamesServer(Minecraft minecraft) {
@@ -192,6 +205,14 @@ public class GrieferGamesServer extends Server {
 
 	private void setChangedSubserver(boolean changedSubserver) {
 		this.changedSubserver = changedSubserver;
+	}
+
+	public String getLastMsg() {
+		return lastMsg;
+	}
+
+	public void setLastMsg(String lastMsg) {
+		this.lastMsg = lastMsg;
 	}
 
 	@Override
@@ -386,14 +407,17 @@ public class GrieferGamesServer extends Server {
 
 	@Override
 	public void onJoin(ServerData serverData) {
-		this.getApi().getEventManager().register(new MessageModifyChatEvent() {
-			@Override
-			@SubscribeEvent(priority = EventPriority.HIGH)
-			public Object onModifyChatMessage(Object o) {
-				return modifyChatMessage(o);
-			}
-		});
-		this.getApi().registerForgeListener(this);
+		if (!getListenerLoaded()) {
+			this.getApi().getEventManager().register(new MessageModifyChatEvent() {
+				@Override
+				@SubscribeEvent(priority = EventPriority.HIGH)
+				public Object onModifyChatMessage(Object o) {
+					return modifyChatMessage(o);
+				}
+			});
+			this.getApi().registerForgeListener(this);
+			setListenerLoaded(true);
+		}
 	}
 
 	public Object modifyChatMessage(Object o) {
@@ -403,16 +427,17 @@ public class GrieferGamesServer extends Server {
 		try {
 			IChatComponent msg = (IChatComponent) o;
 
-			if (msg.getUnformattedText().length() == 0)
-				return msg;
-
 			MessageHelper msgHelper = getMsgHelper();
 			String unformatted = msg.getUnformattedText();
 			String formatted = msg.getFormattedText();
 
-			String oldMessage = getMsgHelper().getProperTextFormat(formatted);
+			System.out.println(formatted);
+			System.out.println(msgHelper.isSupremeBlank(unformatted, formatted) > 0);
 
-			System.out.println(oldMessage);
+			if (msgHelper.isBlankMessage(unformatted) || msgHelper.isSupremeBlank(unformatted, formatted) > 0)
+				return msg;
+
+			String oldMessage = getMsgHelper().getProperTextFormat(formatted);
 
 			if (GrieferGames.getSettings().isPayHover() || GrieferGames.getSettings().isPayMarker()) {
 				if (msgHelper.isValidPayMessage(unformatted, formatted) > 0) {
@@ -427,7 +452,6 @@ public class GrieferGamesServer extends Server {
 								.getText("server.GrieferGamesServer.ValidPayment", "valid payment!");
 
 						IChatComponent hoverText = new ChatComponentText(ValidPayment);
-
 						msg.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 					}
 				}
@@ -459,7 +483,6 @@ public class GrieferGamesServer extends Server {
 					newMsg.appendSibling(new ChatComponentText("\n"));
 				}
 				newMsg.appendSibling(msg);
-				return newMsg;
 			}
 
 			if (GrieferGames.getSettings().isBetterIgnoreList()
@@ -476,8 +499,6 @@ public class GrieferGamesServer extends Server {
 						newMsg.appendSibling(new ChatComponentText(" - " + ignoName)
 								.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE)));
 					}
-
-					return newMsg;
 				}
 
 			}
@@ -492,19 +513,19 @@ public class GrieferGamesServer extends Server {
 				msg.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 			}
 
-			if (GrieferGames.getSettings().isDisplayNameClick()
+			if (GrieferGames.getSettings().isMsgDisplayNameClick()
 					&& msgHelper.isGlobalUserChatMessage(unformatted, formatted) > 0) {
 				msg.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
 						"/msg " + getMsgHelper().getUserFromGlobalMessage(unformatted) + " "));
 			}
 
-			if (GrieferGames.getSettings().isDisplayNameClick()
+			if (GrieferGames.getSettings().isMsgDisplayNameClick()
 					&& msgHelper.isValidPrivateMessage(unformatted, formatted) > 0) {
 				msg.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
 						"/msg " + getMsgHelper().getPrivateMessageName(unformatted) + " "));
 			}
 
-			if (GrieferGames.getSettings().isDisplayNameClick()
+			if (GrieferGames.getSettings().isMsgDisplayNameClick()
 					&& msgHelper.isValidSendPrivateMessage(unformatted, formatted) > 0) {
 				msg.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
 						"/msg " + getMsgHelper().getSentPrivateMessageName(unformatted) + " "));
@@ -533,10 +554,26 @@ public class GrieferGamesServer extends Server {
 					}
 				}
 				msg = newMsg;
-				unformatted = msg.getUnformattedText();
-				formatted = msg.getFormattedText();
-				o = msg;
 			}
+
+			if (GrieferGames.getSettings().isShowChatTime()) {
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+				String dateNowStr = LocalDateTime.now().format(formatter);
+
+				IChatComponent befTimeMsg = new ChatComponentText("[")
+						.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GOLD));
+				IChatComponent timeMsg = new ChatComponentText(dateNowStr)
+						.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
+				IChatComponent aftTimeMsg = new ChatComponentText("] ")
+						.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GOLD));
+
+				IChatComponent newMsg = befTimeMsg.appendSibling(timeMsg).appendSibling(aftTimeMsg).appendSibling(msg);
+				msg = newMsg;
+			}
+
+			setLastMessage(msg.getFormattedText());
+
+			return msg;
 		} catch (
 
 		Exception e) {

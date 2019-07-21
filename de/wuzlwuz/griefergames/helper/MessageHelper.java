@@ -28,11 +28,30 @@ public class MessageHelper {
 	private static Pattern plotMsgRegex = Pattern.compile("^\\[Plot Chat\\]");
 	private static Pattern chatClearedRegex = Pattern
 			.compile("^Der Chat wurde von ([A-z\\-]+\\+?) \\| (\\w{1,16}) geleert.$");
+	private static Pattern chatTimeRegex = Pattern.compile("^(\\[[0-9]+\\:[0-9]+\\:[0-9]+\\]\\s)");
+	private static Pattern mobRemoverMessageRegex = Pattern
+			.compile("^\\[MobRemover\\] Achtung, in ([0-9]+) Minuten werden alle Tiere gel\u00f6scht.$");
+	private static Pattern mobRemoverDoneMessageRegex = Pattern
+			.compile("^\\[MobRemover\\] Es wurden ([0-9]+) Tiere entfernt.$");
+	private static Pattern clearLagRegex = Pattern
+			.compile("^\\[GrieferGames\\] Warnung: Items auf dem Boden werden in ([0-9]+) Sekunden entfernt!$");
 
 	public boolean isBlankMessage(String unformatted) {
 		if (unformatted.trim().length() <= 0)
 			return true;
 		return false;
+	}
+
+	public int hasTimestamp(String unformatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		Matcher matcher = chatTimeRegex.matcher(unformatted);
+		if (matcher.find()) {
+			return 1;
+		}
+
+		return 0;
 	}
 
 	public String getProperTextFormat(String formatted) {
@@ -77,7 +96,7 @@ public class MessageHelper {
 
 		String fMsg = getProperTextFormat(formatted);
 
-		if (fMsg.equals("§r§8\\u00BB§r")) {
+		if (fMsg.equals("§r§8\u00BB§r")) {
 			return 1;
 		}
 
@@ -206,9 +225,8 @@ public class MessageHelper {
 		if (unformatted.trim().length() <= 0)
 			return -1;
 
-		String uMsg = unformatted;
-
-		if (uMsg.matches("^\\[GrieferGames\\] Warnung: Items auf dem Boden werden in ([0-9]+) Sekunden entfernt!$")) {
+		Matcher matcher = clearLagRegex.matcher(unformatted);
+		if (matcher.find()) {
 			return 1;
 		}
 
@@ -219,9 +237,8 @@ public class MessageHelper {
 		if (unformatted.trim().length() <= 0)
 			return -1;
 
-		String uMsg = unformatted;
-
-		if (uMsg.matches("^\\[MobRemover\\] Achtung, in ([0-9]+) Minuten werden alle Tiere gel\u00f6scht.$")) {
+		Matcher matcher = mobRemoverMessageRegex.matcher(unformatted);
+		if (matcher.find()) {
 			return 1;
 		}
 
@@ -232,9 +249,8 @@ public class MessageHelper {
 		if (unformatted.trim().length() <= 0)
 			return -1;
 
-		String uMsg = unformatted;
-
-		if (uMsg.matches("^\\[MobRemover\\] Es wurden ([0-9]+) Tiere entfernt.$")) {
+		Matcher matcher = mobRemoverDoneMessageRegex.matcher(unformatted);
+		if (matcher.find()) {
 			return 1;
 		}
 

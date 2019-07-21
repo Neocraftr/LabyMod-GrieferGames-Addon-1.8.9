@@ -8,7 +8,7 @@ public class WordingHelper {
 	Properties props = new Properties();
 
 	public WordingHelper() throws IOException {
-		InputStream is = WordingHelper.class.getResourceAsStream("wordings.properties");
+		InputStream is = WordingHelper.class.getResourceAsStream("/wordings.properties");
 		props.load(is);
 	}
 
