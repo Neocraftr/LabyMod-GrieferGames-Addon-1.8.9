@@ -18,7 +18,6 @@ import net.labymod.ingamegui.Module;
 import net.labymod.ingamegui.ModuleCategory;
 import net.labymod.main.DefaultValues;
 import net.labymod.main.LabyMod;
-import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ColorPickerCheckBoxBulkElement;
 import net.labymod.settings.elements.ControlElement;
 import net.labymod.settings.elements.SettingsElement;
@@ -242,15 +241,15 @@ public class BoosterModule extends Module {
 		return "gg_booster";
 	}
 
+	public String getDescription() {
+		return "";
+	}
+
 	public int getSortingId() {
 		return 10;
 	}
 
 	public ModuleCategory getCategory() {
 		return GrieferGames.getGriefergames().getModuleCategory();
-	}
-
-	public String getDescription() {
-		return LanguageManager.translateOrReturnKey("module_gg_booster_description", new Object[0]);
 	}
 }

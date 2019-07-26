@@ -643,4 +643,5 @@ public class MessageHelper {
 
 		return 0;
 	}
+
 }
