@@ -1,9 +1,11 @@
 package de.wuzlwuz.griefergames.modules;
 
 import de.wuzlwuz.griefergames.GrieferGames;
+import net.labymod.ingamegui.ModuleCategory;
 import net.labymod.ingamegui.moduletypes.SimpleModule;
+import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement;
-import net.labymod.utils.Material;
+import net.minecraft.util.ResourceLocation;
 
 public class GodmodeModule extends SimpleModule {
 	public GodmodeModule() {
@@ -12,34 +14,26 @@ public class GodmodeModule extends SimpleModule {
 
 	@Override
 	public String getDisplayName() {
-		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.GodmodeModule.DisplayName", "Fly");
+		return LanguageManager.translateOrReturnKey("module_gg_godmode_displayName", new Object[0]);
 	}
 
 	@Override
 	public String getDisplayValue() {
 		if (GrieferGames.getGriefergames().isGodActive()) {
-			return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.GodmodeModule.active.true",
-					"ON");
+			return LanguageManager.translateOrReturnKey("gg_on", new Object[0]);
 		} else {
-			return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.GodmodeModule.active.false",
-					"OFF");
+			return LanguageManager.translateOrReturnKey("gg_off", new Object[0]);
 		}
 	}
 
-	/**
-	 * The value that will be shown if TestSimpleModule#isShown() returns
-	 * <code>false</code>
-	 * 
-	 * @return the default value
-	 */
 	@Override
 	public String getDefaultValue() {
-		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.GodmodeModule.active.false", "OFF");
+		return LanguageManager.translateOrReturnKey("gg_off", new Object[0]);
 	}
 
 	@Override
 	public ControlElement.IconData getIconData() {
-		return new ControlElement.IconData(Material.FEATHER);
+		return new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/module_god.png"));
 	}
 
 	@Override
@@ -49,18 +43,26 @@ public class GodmodeModule extends SimpleModule {
 
 	@Override
 	public String getSettingName() {
-		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.GodmodeModule.SettingName",
-				"GG-Godmode-Module");
+		return "gg_godmode";
 	}
 
 	@Override
 	public String getDescription() {
-		return GrieferGames.getGriefergames().getLanguageHelper().getText("modules.GodmodeModule.Description",
-				"show god status on/off");
+		return LanguageManager.translateOrReturnKey("module_gg_godmode_description", new Object[0]);
+	}
+
+	@Override
+	public boolean isShown() {
+		return GrieferGames.getGriefergames().isShowModules();
+	}
+
+	@Override
+	public ModuleCategory getCategory() {
+		return GrieferGames.getGriefergames().getModuleCategory();
 	}
 
 	@Override
 	public int getSortingId() {
-		return 501;
+		return 20;
 	}
 }

@@ -1,9 +1,18 @@
 package de.wuzlwuz.griefergames.helper;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import de.wuzlwuz.griefergames.GrieferGames;
+import de.wuzlwuz.griefergames.booster.Booster;
+import de.wuzlwuz.griefergames.booster.BreakBooster;
+import de.wuzlwuz.griefergames.booster.DropBooster;
+import de.wuzlwuz.griefergames.booster.ExperienceBooster;
+import de.wuzlwuz.griefergames.booster.FlyBooster;
+import de.wuzlwuz.griefergames.booster.MobBooster;
 
 public class MessageHelper {
 	public MessageHelper() {
@@ -35,6 +44,13 @@ public class MessageHelper {
 			.compile("^\\[MobRemover\\] Es wurden ([0-9]+) Tiere entfernt.$");
 	private static Pattern clearLagRegex = Pattern
 			.compile("^\\[GrieferGames\\] Warnung: Items auf dem Boden werden in ([0-9]+) Sekunden entfernt!$");
+	private static Pattern getBoosterValidRegexp = Pattern.compile(
+			"^([A-z\\-]+\\+? \\| \\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster|Erfahrungsbooster) f\\u00FCr ([0-9]+) Minuten aktiviert!$");
+
+	private static Pattern getBoosterDoneValidRegexp = Pattern
+			.compile("^([A-z]+\\-Booster|Erfahrungsbooster) ist jetzt wieder deaktiviert!$");
+	private static Pattern getCurrentBoosters = Pattern
+			.compile("^([A-z]+\\-Booster|Erfahrungsbooster) Multiplikator: ([0-9])x$");
 
 	public boolean isBlankMessage(String unformatted) {
 		if (unformatted.trim().length() <= 0)
@@ -68,10 +84,101 @@ public class MessageHelper {
 
 		String fMsg = getProperTextFormat(formatted);
 
-		if (fMsg.indexOf("§r §r§ahat dir $") > 0) {
+		if (fMsg.indexOf("§r §r§ahat dir $") >= 0) {
 			Matcher matcher = getMoneyValidRegex.matcher(unformatted);
 			if (matcher.find()) {
 				return 1;
+			}
+		}
+
+		return 0;
+	}
+
+	public int isValidBoosterDoneMessage(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		String fMsg = getProperTextFormat(formatted);
+
+		if (fMsg.indexOf("§r§cist jetzt wieder deaktiviert!§r") >= 0) {
+			Matcher matcher = getBoosterDoneValidRegexp.matcher(unformatted.trim());
+			if (matcher.find()) {
+				String boosterName = matcher.group(1);
+
+				boolean validBooster = false;
+				boosterName = boosterName.toLowerCase();
+				if (boosterName.equalsIgnoreCase("fly-booster")) {
+					GrieferGames.getGriefergames().boosterDone("fly");
+					validBooster = true;
+				} else if (boosterName.equalsIgnoreCase("drop-booster")) {
+					GrieferGames.getGriefergames().boosterDone("drop");
+					validBooster = true;
+				} else if (boosterName.equalsIgnoreCase("break-booster")) {
+					GrieferGames.getGriefergames().boosterDone("break");
+					validBooster = true;
+				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
+					GrieferGames.getGriefergames().boosterDone("mob");
+					validBooster = true;
+				} else if (boosterName.equalsIgnoreCase("erfahrungsbooster")) {
+					GrieferGames.getGriefergames().boosterDone("xp");
+					validBooster = true;
+				}
+
+				if (validBooster) {
+					return 1;
+				}
+				return 0;
+			}
+		}
+
+		return 0;
+	}
+
+	public int isValidBoosterMessage(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		String fMsg = getProperTextFormat(formatted);
+
+		if (fMsg.indexOf("§r§ahat f\u00FCr die GrieferGames Community den §r§b§l") >= 0) {
+			Matcher matcher = getBoosterValidRegexp.matcher(unformatted);
+			if (matcher.find()) {
+				String boosterName = matcher.group(2);
+				Integer minutes = 0;
+				try {
+					matcher = getBoosterValidRegexp.matcher(unformatted);
+					if (matcher.find()) {
+						minutes = Integer.parseInt(matcher.group(3));
+					}
+				} catch (NumberFormatException e) {
+					// do nothing ;)
+				}
+
+				boolean validBooster = false;
+				Booster booster = null;
+				boosterName = boosterName.toLowerCase();
+				if (boosterName.equalsIgnoreCase("fly-booster")) {
+					booster = new FlyBooster(-1, LocalDateTime.now().plusMinutes(minutes));
+					validBooster = true;
+				} else if (boosterName.equalsIgnoreCase("drop-booster")) {
+					booster = new DropBooster(-1, LocalDateTime.now().plusMinutes(minutes));
+					validBooster = true;
+				} else if (boosterName.equalsIgnoreCase("break-booster")) {
+					booster = new BreakBooster(-1, LocalDateTime.now().plusMinutes(minutes));
+					validBooster = true;
+				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
+					booster = new MobBooster(-1, LocalDateTime.now().plusMinutes(minutes));
+					validBooster = true;
+				} else if (boosterName.equalsIgnoreCase("erfahrungsbooster")) {
+					booster = new ExperienceBooster(-1, LocalDateTime.now().plusMinutes(minutes));
+					validBooster = true;
+				}
+
+				if (validBooster) {
+					GrieferGames.getGriefergames().addBooster(booster);
+					return 1;
+				}
+				return 0;
 			}
 		}
 
@@ -320,9 +427,9 @@ public class MessageHelper {
 
 		String uMsg = unformatted.trim();
 
-		if (uMsg.matches("^Unsichtbar f\\u00FCr (\\w+\\+?) \\| (\\w{1,16}) : aktiviert$")) {
+		if (uMsg.matches("^Unsichtbar f\\u00FCr ([A-z\\-]+\\+?) \\| (\\w{1,16}) : aktiviert$")) {
 			return 1;
-		} else if (uMsg.matches("^Unsichtbar f\\u00FCr (\\w+\\+?) \\| (\\w{1,16}) : deaktiviert$")) {
+		} else if (uMsg.matches("^Unsichtbar f\\u00FCr ([A-z\\-]+\\+?) \\| (\\w{1,16}) : deaktiviert$")) {
 			return 0;
 		}
 
@@ -330,8 +437,65 @@ public class MessageHelper {
 	}
 
 	public boolean showVanishModule(String playerRank) {
-		List<String> vanishRanks = Arrays.asList("developer", "moderator", "youtuber+");
+		List<String> vanishRanks = Arrays.asList("owner", "admin", "orga", "developer", "moderator", "youtuber+");
 		return vanishRanks.contains(playerRank);
+	}
+
+	public boolean vanishDefaultState(String playerRank) {
+		List<String> vanishRanks = Arrays.asList("owner", "admin", "orga");
+		return vanishRanks.contains(playerRank);
+	}
+
+	public int isVoteMsg(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		String uMsg = unformatted.trim();
+
+		if (uMsg.matches("^(\\w{1,16}) hat gevotet und erh\\00E4lt ein tolles Geschenk! /vote$")) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	public int isSwitcherDoneMsg(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		String uMsg = unformatted.trim();
+
+		if (uMsg.matches("^\\[Switcher\\] Daten heruntergeladen!$")) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	public int isTPAHERE(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		String uMsg = unformatted.trim();
+
+		if (uMsg.matches("^([A-z\\-]+\\+?) \\| (\\w{1,16}) fragt, ob du dich zu ihm teleportierst.$")) {
+			return 1;
+		}
+
+		return 0;
+	}
+
+	public int isTPA(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		String uMsg = unformatted.trim();
+
+		if (uMsg.matches("^([A-z\\-]+\\+?) \\| (\\w{1,16}) fragt, ob er sich zu dir teleportieren darf.$")) {
+			return 1;
+		}
+
+		return 0;
 	}
 
 	public int isGodmodeMessage(String unformatted, String formatted) {
@@ -428,6 +592,53 @@ public class MessageHelper {
 		Matcher matcher = plotMsgRegex.matcher(uMsg);
 		if (matcher.find()) {
 			return 1;
+		}
+
+		return 0;
+	}
+
+	public int checkCurrentBoosters(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		Matcher matcher = getCurrentBoosters.matcher(unformatted);
+		if (matcher.find()) {
+			String boosterName = matcher.group(1);
+
+			Integer multi = 0;
+			try {
+				matcher = getCurrentBoosters.matcher(unformatted);
+				if (matcher.find()) {
+					multi = Integer.parseInt(matcher.group(2));
+				}
+			} catch (NumberFormatException e) {
+				// do nothing ;)
+			}
+
+			boolean validBooster = false;
+			Booster booster = null;
+			boosterName = boosterName.toLowerCase();
+			if (boosterName.equalsIgnoreCase("fly-booster")) {
+				booster = new FlyBooster(multi);
+				validBooster = true;
+			} else if (boosterName.equalsIgnoreCase("drop-booster")) {
+				booster = new DropBooster(multi);
+				validBooster = true;
+			} else if (boosterName.equalsIgnoreCase("break-booster")) {
+				booster = new BreakBooster(multi);
+				validBooster = true;
+			} else if (boosterName.equalsIgnoreCase("mob-booster")) {
+				booster = new MobBooster(multi);
+				validBooster = true;
+			} else if (boosterName.equalsIgnoreCase("erfahrungsbooster")) {
+				booster = new ExperienceBooster(multi);
+				validBooster = true;
+			}
+
+			if (validBooster) {
+				GrieferGames.getGriefergames().addBooster(booster);
+				return 1;
+			}
 		}
 
 		return 0;

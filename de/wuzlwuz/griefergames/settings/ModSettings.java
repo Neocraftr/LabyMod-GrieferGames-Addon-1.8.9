@@ -46,6 +46,10 @@ public class ModSettings {
 	private String ampTablistReplacement = "";
 	private String defaultAMPTablistReplacement = "[AMP] %CLEAN%";
 
+	private boolean markTPAMsg = false;
+
+	private boolean cleanVoteMsg = false;
+
 	public ModSettings() {
 		// constructor
 	}
@@ -242,6 +246,22 @@ public class ModSettings {
 		this.defaultAMPTablistReplacement = defaultAMPTablistReplacement;
 	}
 
+	public boolean isMarkTPAMsg() {
+		return markTPAMsg;
+	}
+
+	public void setMarkTPAMsg(boolean markTPAMsg) {
+		this.markTPAMsg = markTPAMsg;
+	}
+
+	public boolean isCleanVoteMsg() {
+		return cleanVoteMsg;
+	}
+
+	public void setCleanVoteMsg(boolean cleanVoteMsg) {
+		this.cleanVoteMsg = cleanVoteMsg;
+	}
+
 	public void loadConfig() {
 		if (GrieferGames.getGriefergames().getConfig().has("modEnabled"))
 			setModEnabled(GrieferGames.getGriefergames().getConfig().get("modEnabled").getAsBoolean());
@@ -314,6 +334,12 @@ public class ModSettings {
 		if (GrieferGames.getGriefergames().getConfig().has("tablistReplacement"))
 			setAMPTablistReplacement(
 					GrieferGames.getGriefergames().getConfig().get("tablistReplacement").getAsString());
+
+		if (GrieferGames.getGriefergames().getConfig().has("markTPAMsg"))
+			setMarkTPAMsg(GrieferGames.getGriefergames().getConfig().get("markTPAMsg").getAsBoolean());
+
+		if (GrieferGames.getGriefergames().getConfig().has("cleanVoteMsg"))
+			setCleanVoteMsg(GrieferGames.getGriefergames().getConfig().get("cleanVoteMsg").getAsBoolean());
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -405,6 +431,30 @@ public class ModSettings {
 			}
 		});
 		settings.add(filterDuplicateMessagesTimeNumber);
+
+		final BooleanElement markTPAMsgBtn = new BooleanElement("TPA Nachrichten markieren",
+				new ControlElement.IconData("labymod/textures/settings/settings/autotext.png"),
+				new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean markTPAMsg) {
+						setMarkTPAMsg(markTPAMsg);
+						GrieferGames.getGriefergames().getConfig().addProperty("markTPAMsg", markTPAMsg);
+						GrieferGames.getGriefergames().saveConfig();
+					}
+				}, isMarkTPAMsg());
+		settings.add(markTPAMsgBtn);
+
+		final BooleanElement cleanVoteMsgBtn = new BooleanElement("Vote Nachrichten l\u00f6schen",
+				new ControlElement.IconData("labymod/textures/settings/settings/autotext.png"),
+				new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean cleanVoteMsg) {
+						setCleanVoteMsg(cleanVoteMsg);
+						GrieferGames.getGriefergames().getConfig().addProperty("cleanVoteMsg", cleanVoteMsg);
+						GrieferGames.getGriefergames().saveConfig();
+					}
+				}, isCleanVoteMsg());
+		settings.add(cleanVoteMsgBtn);
 
 		settings.add(new HeaderElement("Leerzeilen"));
 		final BooleanElement cleanBlanksBtn = new BooleanElement("Leerzeilen l\u00f6schen",
@@ -527,6 +577,7 @@ public class ModSettings {
 				}, isMobRemoverChatRight());
 		settings.add(mobRemoverChatRightBtn);
 
+		settings.add(new HeaderElement("MobRemover"));
 		final BooleanElement mobRemoverLastTimeHoverBtn = new BooleanElement("Mobremover Zeitstempel hover",
 				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
 					@Override
