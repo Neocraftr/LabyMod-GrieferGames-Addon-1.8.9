@@ -50,6 +50,8 @@ public class ModSettings {
 
 	private boolean cleanVoteMsg = false;
 
+	private boolean updateBoosterState = false;
+
 	public ModSettings() {
 		// constructor
 	}
@@ -262,6 +264,14 @@ public class ModSettings {
 		this.cleanVoteMsg = cleanVoteMsg;
 	}
 
+	public boolean isUpdateBoosterState() {
+		return updateBoosterState;
+	}
+
+	public void setUpdateBoosterState(boolean updateBoosterState) {
+		this.updateBoosterState = updateBoosterState;
+	}
+
 	public void loadConfig() {
 		if (GrieferGames.getGriefergames().getConfig().has("modEnabled"))
 			setModEnabled(GrieferGames.getGriefergames().getConfig().get("modEnabled").getAsBoolean());
@@ -340,6 +350,9 @@ public class ModSettings {
 
 		if (GrieferGames.getGriefergames().getConfig().has("cleanVoteMsg"))
 			setCleanVoteMsg(GrieferGames.getGriefergames().getConfig().get("cleanVoteMsg").getAsBoolean());
+
+		if (GrieferGames.getGriefergames().getConfig().has("updateBoosterState"))
+			setUpdateBoosterState(GrieferGames.getGriefergames().getConfig().get("updateBoosterState").getAsBoolean());
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -601,6 +614,19 @@ public class ModSettings {
 					}
 				}, isBetterIgnoreList());
 		settings.add(betterIgnoreListBtn);
+
+		settings.add(new HeaderElement("Auto Update Booster Status"));
+		final BooleanElement updateBoosterStateBtn = new BooleanElement("Enabled",
+				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean updateBoosterState) {
+						setUpdateBoosterState(updateBoosterState);
+						GrieferGames.getGriefergames().getConfig().addProperty("updateBoosterState",
+								updateBoosterState);
+						GrieferGames.getGriefergames().saveConfig();
+					}
+				}, isUpdateBoosterState());
+		settings.add(updateBoosterStateBtn);
 
 		settings.add(new HeaderElement("AntiMagicPrefix"));
 		final BooleanElement ampEnabledBtn = new BooleanElement("Enabled", new ControlElement.IconData(Material.LEVER),

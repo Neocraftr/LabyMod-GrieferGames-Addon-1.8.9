@@ -243,7 +243,8 @@ public class GrieferGamesServer extends Server {
 				getMsgHelper().isValidBoosterDoneMessage(unformatted, formatted);
 				getMsgHelper().checkCurrentBoosters(unformatted, formatted);
 
-				if (getMsgHelper().isSwitcherDoneMsg(unformatted, formatted) > 0) {
+				if (GrieferGames.getSettings().isUpdateBoosterState()
+						&& getMsgHelper().isSwitcherDoneMsg(unformatted, formatted) > 0) {
 					getMc().thePlayer.sendChatMessage("/booster");
 				}
 
