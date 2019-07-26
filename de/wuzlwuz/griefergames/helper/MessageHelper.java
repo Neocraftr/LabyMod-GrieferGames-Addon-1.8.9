@@ -452,7 +452,7 @@ public class MessageHelper {
 
 		String uMsg = unformatted.trim();
 
-		if (uMsg.matches("^(\\w{1,16}) hat gevotet und erh\\00E4lt ein tolles Geschenk! /vote$")) {
+		if (uMsg.matches("^(\\w{1,16}) hat gevotet und erh\\u00E4lt ein tolles Geschenk! /vote$")) {
 			return 1;
 		}
 
