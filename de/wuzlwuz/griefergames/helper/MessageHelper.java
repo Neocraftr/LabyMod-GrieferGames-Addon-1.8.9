@@ -446,6 +446,12 @@ public class MessageHelper {
 		return vanishRanks.contains(playerRank);
 	}
 
+	public boolean doResetBoosterBySubserver(String subServer) {
+		List<String> subServers = Arrays.asList("lobby", "portal", "skyblock", "cb0", "kreativ", "hardcore",
+				"gestrandet");
+		return subServers.contains(subServer.toLowerCase());
+	}
+
 	public int isVoteMsg(String unformatted, String formatted) {
 		if (unformatted.trim().length() <= 0)
 			return -1;
