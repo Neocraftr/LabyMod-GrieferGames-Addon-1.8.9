@@ -490,6 +490,7 @@ public class GrieferGamesServer extends Server {
 					newMsg.appendSibling(new ChatComponentText("\n"));
 				}
 				newMsg.appendSibling(msg);
+				msg = newMsg;
 			}
 
 			if (GrieferGames.getSettings().isBetterIgnoreList()
@@ -506,8 +507,8 @@ public class GrieferGamesServer extends Server {
 						newMsg.appendSibling(new ChatComponentText(" - " + ignoName)
 								.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE)));
 					}
+					msg = newMsg;
 				}
-
 			}
 
 			if (GrieferGames.getSettings().isMobRemoverLastTimeHover()
