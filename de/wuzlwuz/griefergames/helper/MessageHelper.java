@@ -21,7 +21,8 @@ public class MessageHelper {
 
 	private static Pattern bankMessageOtherRegexp = Pattern.compile("^\\[GrieferBank\\]");
 	private static Pattern displayNameRegex = Pattern.compile("(([A-z\\-]+\\+?) \\| (\\w{1,16}))");
-	private static Pattern msgUserGlobalChatRegex = Pattern.compile("^([A-z\\-]+\\+?) \\| (\\w{1,16})\\s\\:");
+	private static Pattern msgUserGlobalChatRegex = Pattern
+			.compile("^([A-z\\-]+\\+?) \\| (\\w{1,16})\\s(\\[[^\\]]+\\]\\s)?\\:");
 	private static Pattern privateMessageRegex = Pattern.compile("^\\[([A-z\\-]+\\+?) \\| (\\w{1,16}) -> mir\\](.*)$");
 	private static Pattern privateMessageSentRegex = Pattern
 			.compile("^\\[mir -> ([A-z\\-]+\\+?) \\| (\\w{1,16})\\](.*)$");
