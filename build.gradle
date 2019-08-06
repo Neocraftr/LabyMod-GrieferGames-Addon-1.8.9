@@ -1,4 +1,3 @@
-
 // For those who want the bleeding edge
 buildscript {
     repositories {
@@ -21,9 +20,9 @@ plugins {
 }
 */
 
-version = "1.3"
-group= "de.wuzlwuz.antimagicprefixaddon" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "AntiMagicPrefixAddon-LabyMod1.8.9"
+version = "4.9.5"
+group= "de.wuzlwuz.griefergames" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "GrieferGames-addon-by-wuzlwuz_1.8.9"
 
 sourceCompatibility = targetCompatibility = '1.6' // Need this here so eclipse task generates correctly.
 compileJava {
