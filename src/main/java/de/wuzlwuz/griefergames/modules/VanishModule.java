@@ -8,8 +8,12 @@ import net.labymod.settings.elements.ControlElement;
 import net.minecraft.util.ResourceLocation;
 
 public class VanishModule extends SimpleModule {
+	protected GrieferGames getGG() {
+		return GrieferGames.getGriefergames();
+	}
+
 	public VanishModule() {
-		GrieferGames.getGriefergames().getApi().registerModule(this);
+		getGG().getApi().registerModule(this);
 	}
 
 	@Override
@@ -19,7 +23,7 @@ public class VanishModule extends SimpleModule {
 
 	@Override
 	public String getDisplayValue() {
-		if (GrieferGames.getGriefergames().isVanishActive()) {
+		if (getGG().isVanishActive()) {
 			return LanguageManager.translateOrReturnKey("gg_on", new Object[0]);
 		} else {
 			return LanguageManager.translateOrReturnKey("gg_off", new Object[0]);
@@ -53,12 +57,12 @@ public class VanishModule extends SimpleModule {
 
 	@Override
 	public boolean isShown() {
-		return GrieferGames.getGriefergames().isShowModules();
+		return getGG().isShowModules();
 	}
 
 	@Override
 	public ModuleCategory getCategory() {
-		return GrieferGames.getGriefergames().getModuleCategory();
+		return getGG().getModuleCategory();
 	}
 
 	@Override

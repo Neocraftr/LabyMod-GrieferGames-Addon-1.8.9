@@ -2,9 +2,15 @@ package de.wuzlwuz.griefergames.settings;
 
 import java.util.List;
 
+import com.google.gson.JsonObject;
+
 import de.wuzlwuz.griefergames.GrieferGames;
+import de.wuzlwuz.griefergames.enums.EnumRealnameShown;
+import de.wuzlwuz.griefergames.enums.EnumSounds;
+import net.labymod.gui.elements.DropDownMenu;
 import net.labymod.settings.elements.BooleanElement;
 import net.labymod.settings.elements.ControlElement;
+import net.labymod.settings.elements.DropDownElement;
 import net.labymod.settings.elements.HeaderElement;
 import net.labymod.settings.elements.NumberElement;
 import net.labymod.settings.elements.SettingsElement;
@@ -18,7 +24,11 @@ public class ModSettings {
 	private boolean showChatTime = false;
 	private boolean privateChatRight = true;
 	private boolean plotChatRight = true;
+	private EnumSounds privateChatSound = EnumSounds.NONE;
+	private EnumRealnameShown realname = EnumRealnameShown.DEFAULT;
+	// private boolean realnameClick = false;
 	private boolean msgDisplayNameClick = false;
+	private boolean clanTagClick = false;
 	private boolean filterDuplicateMessages = false;
 	private Integer filterDuplicateMessagesTime = 5;
 
@@ -31,26 +41,45 @@ public class ModSettings {
 	private boolean payHover = false;
 
 	private boolean bankChatRight = true;
-	private boolean bankAchievement = true;
+	private boolean bankAchievement = false;
 
-	private boolean clearlagChatRight = true;
+	private boolean clearLagChatRight = true;
 
 	private boolean mobRemoverChatRight = true;
-	private boolean mobRemoverLastTimeHover = true;
+	private boolean mobRemoverLastTimeHover = false;
 
 	private boolean betterIgnoreList = true;
 
 	private boolean ampEnabled = false;
+	private boolean ampClanEnabled = false;
 	private String ampChatReplacement = "";
 	private String defaultAMPChatReplacement = "[AMP] %CLEAN%";
 	private String ampTablistReplacement = "";
 	private String defaultAMPTablistReplacement = "[AMP] %CLEAN%";
 
-	private boolean markTPAMsg = false;
+	private boolean markTPAMsg = true;
 
 	private boolean cleanVoteMsg = false;
 
 	private boolean updateBoosterState = false;
+
+	private boolean clearMapCache = false;
+
+	private boolean vanishHelper = false;
+
+	private boolean checkPlotHelper = false;
+
+	protected GrieferGames getGG() {
+		return GrieferGames.getGriefergames();
+	}
+
+	protected JsonObject getConfig() {
+		return getGG().getConfig();
+	}
+
+	protected void saveConfig() {
+		getGG().saveConfig();
+	}
 
 	public ModSettings() {
 		// constructor
@@ -88,12 +117,76 @@ public class ModSettings {
 		this.plotChatRight = plotChatRight;
 	}
 
+	public EnumSounds getPrivateChatSound() {
+		return this.privateChatSound;
+	}
+
+	private void setPrivateChatSound(EnumSounds privateChatSound) {
+		this.privateChatSound = privateChatSound;
+	}
+
+	public boolean isPrivateChatSound() {
+		return (getPrivateChatSoundPath().length() > 0);
+	}
+
+	public String getPrivateChatSoundPath() {
+		switch (this.privateChatSound) {
+		case BASS:
+			return "note.bass";
+		case BASSATTACK:
+			return "note.bassattack";
+		case BD:
+			return "note.bd";
+		case HARP:
+			return "note.harp";
+		case HAT:
+			return "note.hat";
+		case PLING:
+			return "note.pling";
+		case SNARE:
+			return "note.snare";
+		default:
+			return "";
+		}
+	}
+
+	public EnumRealnameShown getRealname() {
+		return this.realname;
+	}
+
+	public boolean isRealnameRight() {
+		return (this.realname.equals(EnumRealnameShown.SECONDCHAT) || this.realname.equals(EnumRealnameShown.BOTH));
+	}
+
+	public boolean isRealnameBoth() {
+		return this.realname.equals(EnumRealnameShown.BOTH);
+	}
+
+	/*
+	 * private void setRealnameClick(boolean realnameClick) { this.realnameClick =
+	 * realnameClick; }
+	 * 
+	 * public boolean isRealnameClick() { return this.realnameClick; }
+	 */
+
+	private void setRealname(EnumRealnameShown realname) {
+		this.realname = realname;
+	}
+
 	public boolean isMsgDisplayNameClick() {
 		return this.msgDisplayNameClick;
 	}
 
 	private void setMsgDisplayNameClick(boolean msgDisplayNameClick) {
 		this.msgDisplayNameClick = msgDisplayNameClick;
+	}
+
+	public boolean isClanTagClick() {
+		return this.clanTagClick;
+	}
+
+	private void setClanTagClick(boolean clanTagClick) {
+		this.clanTagClick = clanTagClick;
 	}
 
 	public boolean isFilterDuplicateMessages() {
@@ -176,12 +269,12 @@ public class ModSettings {
 		this.bankAchievement = bankAchievement;
 	}
 
-	public boolean isClearlagChatRight() {
-		return this.clearlagChatRight;
+	public boolean isClearLagChatRight() {
+		return this.clearLagChatRight;
 	}
 
-	private void setClearlagChatRight(boolean clearlagChatRight) {
-		this.clearlagChatRight = clearlagChatRight;
+	private void setClearLagChatRight(boolean clearLagChatRight) {
+		this.clearLagChatRight = clearLagChatRight;
 	}
 
 	public boolean isMobRemoverChatRight() {
@@ -214,6 +307,14 @@ public class ModSettings {
 
 	private void setAMPEnabled(boolean ampEnabled) {
 		this.ampEnabled = ampEnabled;
+	}
+
+	public boolean isAMPClanEnabled() {
+		return this.ampClanEnabled;
+	}
+
+	private void setAMPClanEnabled(boolean ampClanEnabled) {
+		this.ampClanEnabled = ampClanEnabled;
 	}
 
 	public String getAMPChatReplacement() {
@@ -272,87 +373,167 @@ public class ModSettings {
 		this.updateBoosterState = updateBoosterState;
 	}
 
+	public boolean isClearMapCache() {
+		return clearMapCache;
+	}
+
+	public void setClearMapCache(boolean clearMapCache) {
+		this.clearMapCache = clearMapCache;
+	}
+
+	public boolean isVanishHelper() {
+		return vanishHelper;
+	}
+
+	public void setVanishHelper(boolean vanishHelper) {
+		this.vanishHelper = vanishHelper;
+	}
+
+	public void deactivateVanishHelper() {
+		setVanishHelper(false);
+		getConfig().addProperty("vanishHelper", false);
+		saveConfig();
+	}
+
+	public void activateVanishHelper() {
+		setVanishHelper(true);
+		getConfig().addProperty("vanishHelper", true);
+		saveConfig();
+	}
+
+	public boolean isCheckPlotHelper() {
+		return checkPlotHelper;
+	}
+
+	public void setCheckPlotHelper(boolean checkPlotHelper) {
+		this.checkPlotHelper = checkPlotHelper;
+	}
+
+	public void deactivateCheckPlotHelper() {
+		setCheckPlotHelper(false);
+		getConfig().addProperty("checkPlotHelper", false);
+		saveConfig();
+	}
+
+	public void activateCheckPlotHelper() {
+		setCheckPlotHelper(true);
+		getConfig().addProperty("checkPlotHelper", true);
+		saveConfig();
+	}
+
 	public void loadConfig() {
-		if (GrieferGames.getGriefergames().getConfig().has("modEnabled"))
-			setModEnabled(GrieferGames.getGriefergames().getConfig().get("modEnabled").getAsBoolean());
+		if (getConfig().has("modEnabled"))
+			setModEnabled(getConfig().get("modEnabled").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("showChatTime"))
-			setShowChatTime(GrieferGames.getGriefergames().getConfig().get("showChatTime").getAsBoolean());
+		if (getConfig().has("showChatTime"))
+			setShowChatTime(getConfig().get("showChatTime").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("privateChatRight"))
-			setPrivateChatRight(GrieferGames.getGriefergames().getConfig().get("privateChatRight").getAsBoolean());
+		if (getConfig().has("privateChatRight"))
+			setPrivateChatRight(getConfig().get("privateChatRight").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("msgDisplayNameClick"))
-			setMsgDisplayNameClick(
-					GrieferGames.getGriefergames().getConfig().get("msgDisplayNameClick").getAsBoolean());
+		if (getConfig().has("privateChatSound")) {
+			setPrivateChatSound(EnumSounds.NONE);
+			for (EnumSounds sound : EnumSounds.values()) {
+				if (sound.name().equalsIgnoreCase(getConfig().get("privateChatSound").getAsString())) {
+					setPrivateChatSound(sound);
+				}
+			}
+		}
 
-		if (GrieferGames.getGriefergames().getConfig().has("filterDuplicateMessages"))
-			setFilterDuplicateMessages(
-					GrieferGames.getGriefergames().getConfig().get("filterDuplicateMessages").getAsBoolean());
+		if (getConfig().has("msgDisplayNameClick"))
+			setMsgDisplayNameClick(getConfig().get("msgDisplayNameClick").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("filterDuplicateMessagesTime"))
-			setFilterDuplicateMessagesTime(
-					GrieferGames.getGriefergames().getConfig().get("filterDuplicateMessagesTime").getAsInt());
+		if (getConfig().has("clanTagClick"))
+			setClanTagClick(getConfig().get("clanTagClick").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("cleanBlanks"))
-			setCleanBlanks(GrieferGames.getGriefergames().getConfig().get("cleanBlanks").getAsBoolean());
+		if (getConfig().has("filterDuplicateMessages"))
+			setFilterDuplicateMessages(getConfig().get("filterDuplicateMessages").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("cleanSupremeBlanks"))
-			setCleanSupremeBlanks(GrieferGames.getGriefergames().getConfig().get("cleanSupremeBlanks").getAsBoolean());
+		if (getConfig().has("filterDuplicateMessagesTime"))
+			setFilterDuplicateMessagesTime(getConfig().get("filterDuplicateMessagesTime").getAsInt());
 
-		if (GrieferGames.getGriefergames().getConfig().has("payChatRight"))
-			setPayChatRight(GrieferGames.getGriefergames().getConfig().get("payChatRight").getAsBoolean());
+		if (getConfig().has("cleanBlanks"))
+			setCleanBlanks(getConfig().get("cleanBlanks").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("payAchievement"))
-			setPayAchievement(GrieferGames.getGriefergames().getConfig().get("payAchievement").getAsBoolean());
+		if (getConfig().has("cleanSupremeBlanks"))
+			setCleanSupremeBlanks(getConfig().get("cleanSupremeBlanks").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("payMarker"))
-			setPayMarker(GrieferGames.getGriefergames().getConfig().get("payMarker").getAsBoolean());
+		if (getConfig().has("payChatRight"))
+			setPayChatRight(getConfig().get("payChatRight").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("payHover"))
-			setPayHover(GrieferGames.getGriefergames().getConfig().get("payHover").getAsBoolean());
+		if (getConfig().has("payAchievement"))
+			setPayAchievement(getConfig().get("payAchievement").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("bankChatRight"))
-			setBankChatRight(GrieferGames.getGriefergames().getConfig().get("bankChatRight").getAsBoolean());
+		if (getConfig().has("payMarker"))
+			setPayMarker(getConfig().get("payMarker").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("bankAchievement"))
-			setBankAchievement(GrieferGames.getGriefergames().getConfig().get("bankAchievement").getAsBoolean());
+		if (getConfig().has("payHover"))
+			setPayHover(getConfig().get("payHover").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("plotChatRight"))
-			setPlotChatRight(GrieferGames.getGriefergames().getConfig().get("plotChatRight").getAsBoolean());
+		if (getConfig().has("bankChatRight"))
+			setBankChatRight(getConfig().get("bankChatRight").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("clearlagChatRight"))
-			setClearlagChatRight(GrieferGames.getGriefergames().getConfig().get("clearlagChatRight").getAsBoolean());
+		if (getConfig().has("bankAchievement"))
+			setBankAchievement(getConfig().get("bankAchievement").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("mobRemoverChatRight"))
-			setMobRemoverChatRight(
-					GrieferGames.getGriefergames().getConfig().get("mobRemoverChatRight").getAsBoolean());
+		if (getConfig().has("plotChatRight"))
+			setPlotChatRight(getConfig().get("plotChatRight").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("mobRemoverLastTimeHover"))
-			setMobRemoverLastTimeHover(
-					GrieferGames.getGriefergames().getConfig().get("mobRemoverLastTimeHover").getAsBoolean());
+		if (getConfig().has("realname")) {
+			setRealname(EnumRealnameShown.DEFAULT);
+			for (EnumRealnameShown enumRealname : EnumRealnameShown.values()) {
+				if (enumRealname.name().equalsIgnoreCase(getConfig().get("realname").getAsString())) {
+					setRealname(enumRealname);
+				}
+			}
+		}
 
-		if (GrieferGames.getGriefergames().getConfig().has("betterIgnoreList"))
-			setBetterIgnoreList(GrieferGames.getGriefergames().getConfig().get("betterIgnoreList").getAsBoolean());
+		/*
+		 * if (getConfig().has("realnameClick"))
+		 * setRealnameClick(getConfig().get("realnameClick").getAsBoolean());
+		 */
 
-		if (GrieferGames.getGriefergames().getConfig().has("ampEnabled"))
-			setAMPEnabled(GrieferGames.getGriefergames().getConfig().get("ampEnabled").getAsBoolean());
+		if (getConfig().has("clearLagChatRight"))
+			setClearLagChatRight(getConfig().get("clearLagChatRight").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("chatReplacement"))
-			setAMPChatReplacement(GrieferGames.getGriefergames().getConfig().get("chatReplacement").getAsString());
+		if (getConfig().has("mobRemoverChatRight"))
+			setMobRemoverChatRight(getConfig().get("mobRemoverChatRight").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("tablistReplacement"))
-			setAMPTablistReplacement(
-					GrieferGames.getGriefergames().getConfig().get("tablistReplacement").getAsString());
+		if (getConfig().has("mobRemoverLastTimeHover"))
+			setMobRemoverLastTimeHover(getConfig().get("mobRemoverLastTimeHover").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("markTPAMsg"))
-			setMarkTPAMsg(GrieferGames.getGriefergames().getConfig().get("markTPAMsg").getAsBoolean());
+		if (getConfig().has("betterIgnoreList"))
+			setBetterIgnoreList(getConfig().get("betterIgnoreList").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("cleanVoteMsg"))
-			setCleanVoteMsg(GrieferGames.getGriefergames().getConfig().get("cleanVoteMsg").getAsBoolean());
+		if (getConfig().has("ampEnabled"))
+			setAMPEnabled(getConfig().get("ampEnabled").getAsBoolean());
 
-		if (GrieferGames.getGriefergames().getConfig().has("updateBoosterState"))
-			setUpdateBoosterState(GrieferGames.getGriefergames().getConfig().get("updateBoosterState").getAsBoolean());
+		if (getConfig().has("ampClanEnabled"))
+			setAMPClanEnabled(getConfig().get("ampClanEnabled").getAsBoolean());
+
+		if (getConfig().has("chatReplacement"))
+			setAMPChatReplacement(getConfig().get("chatReplacement").getAsString());
+
+		if (getConfig().has("tablistReplacement"))
+			setAMPTablistReplacement(getConfig().get("tablistReplacement").getAsString());
+
+		if (getConfig().has("markTPAMsg"))
+			setMarkTPAMsg(getConfig().get("markTPAMsg").getAsBoolean());
+
+		if (getConfig().has("cleanVoteMsg"))
+			setCleanVoteMsg(getConfig().get("cleanVoteMsg").getAsBoolean());
+
+		if (getConfig().has("updateBoosterState"))
+			setUpdateBoosterState(getConfig().get("updateBoosterState").getAsBoolean());
+
+		if (getConfig().has("clearMapCache"))
+			setClearMapCache(getConfig().get("clearMapCache").getAsBoolean());
+
+		if (getConfig().has("vanishHelper"))
+			setVanishHelper(getConfig().get("vanishHelper").getAsBoolean());
+
+		if (getConfig().has("checkPlotHelper"))
+			setCheckPlotHelper(getConfig().get("checkPlotHelper").getAsBoolean());
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -363,8 +544,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean modEnabled) {
 						setModEnabled(modEnabled);
-						GrieferGames.getGriefergames().getConfig().addProperty("modEnabled", modEnabled);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("modEnabled", modEnabled);
+						saveConfig();
 					}
 				}, isModEnabled());
 		settings.add(modEnabledBtn);
@@ -375,8 +556,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean showChatTime) {
 						setShowChatTime(showChatTime);
-						GrieferGames.getGriefergames().getConfig().addProperty("showChatTime", showChatTime);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("showChatTime", showChatTime);
+						saveConfig();
 					}
 				}, isShowChatTime());
 		settings.add(showChatTimeBtn);
@@ -387,11 +568,31 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean privateChatRight) {
 						setPrivateChatRight(privateChatRight);
-						GrieferGames.getGriefergames().getConfig().addProperty("privateChatRight", privateChatRight);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("privateChatRight", privateChatRight);
+						saveConfig();
 					}
 				}, isPrivateChatRight());
 		settings.add(privateChatRightBtn);
+
+		final DropDownMenu<EnumSounds> privateChatSoundDropDownMenu = new DropDownMenu<EnumSounds>(
+				"Private Nachricht Sound" /* Display name */, 0, 0, 0, 0).fill(EnumSounds.values());
+
+		DropDownElement<EnumSounds> privateChatSoundDropDown = new DropDownElement<EnumSounds>(
+				"Private Nachricht Sound", privateChatSoundDropDownMenu);
+
+		// Set selected entry
+		privateChatSoundDropDownMenu.setSelected(getPrivateChatSound());
+
+		// Listen on changes
+		privateChatSoundDropDown.setChangeListener(new Consumer<EnumSounds>() {
+			@Override
+			public void accept(EnumSounds privateChatSound) {
+				setPrivateChatSound(privateChatSound);
+				getConfig().addProperty("privateChatSound", privateChatSound.name());
+				saveConfig();
+			}
+		});
+		settings.add(privateChatSoundDropDown);
 
 		final BooleanElement plotChatRightBtn = new BooleanElement("Plot Chat 2. Chat",
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
@@ -399,8 +600,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean plotChatRight) {
 						setPlotChatRight(plotChatRight);
-						GrieferGames.getGriefergames().getConfig().addProperty("plotChatRight", plotChatRight);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("plotChatRight", plotChatRight);
+						saveConfig();
 					}
 				}, isPlotChatRight());
 		settings.add(plotChatRightBtn);
@@ -410,21 +611,30 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean msgDisplayNameClick) {
 						setMsgDisplayNameClick(msgDisplayNameClick);
-						GrieferGames.getGriefergames().getConfig().addProperty("msgDisplayNameClick",
-								msgDisplayNameClick);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("msgDisplayNameClick", msgDisplayNameClick);
+						saveConfig();
 					}
 				}, isMsgDisplayNameClick());
 		settings.add(msgDisplayNameClickBtn);
+
+		final BooleanElement clanTagClickBtn = new BooleanElement("Clan-Tag klicken f\u00fcr Info",
+				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean clanTagClick) {
+						setClanTagClick(clanTagClick);
+						getConfig().addProperty("clanTagClick", clanTagClick);
+						saveConfig();
+					}
+				}, isClanTagClick());
+		settings.add(clanTagClickBtn);
 
 		final BooleanElement filterDuplicateMessagesBtn = new BooleanElement("Doppelte Nachrichten l\u00f6schen",
 				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean filterDuplicateMessages) {
 						setFilterDuplicateMessages(filterDuplicateMessages);
-						GrieferGames.getGriefergames().getConfig().addProperty("filterDuplicateMessages",
-								filterDuplicateMessages);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("filterDuplicateMessages", filterDuplicateMessages);
+						saveConfig();
 					}
 				}, isFilterDuplicateMessages());
 		settings.add(filterDuplicateMessagesBtn);
@@ -438,9 +648,8 @@ public class ModSettings {
 			@Override
 			public void accept(Integer filterDuplicateMessagesTime) {
 				setFilterDuplicateMessagesTime(filterDuplicateMessagesTime);
-				GrieferGames.getGriefergames().getConfig().addProperty("filterDuplicateMessagesTime",
-						filterDuplicateMessagesTime);
-				GrieferGames.getGriefergames().saveConfig();
+				getConfig().addProperty("filterDuplicateMessagesTime", filterDuplicateMessagesTime);
+				saveConfig();
 			}
 		});
 		settings.add(filterDuplicateMessagesTimeNumber);
@@ -451,8 +660,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean markTPAMsg) {
 						setMarkTPAMsg(markTPAMsg);
-						GrieferGames.getGriefergames().getConfig().addProperty("markTPAMsg", markTPAMsg);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("markTPAMsg", markTPAMsg);
+						saveConfig();
 					}
 				}, isMarkTPAMsg());
 		settings.add(markTPAMsgBtn);
@@ -463,11 +672,32 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean cleanVoteMsg) {
 						setCleanVoteMsg(cleanVoteMsg);
-						GrieferGames.getGriefergames().getConfig().addProperty("cleanVoteMsg", cleanVoteMsg);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("cleanVoteMsg", cleanVoteMsg);
+						saveConfig();
 					}
 				}, isCleanVoteMsg());
 		settings.add(cleanVoteMsgBtn);
+
+		settings.add(new HeaderElement("Realname"));
+		final DropDownMenu<EnumRealnameShown> realnameDropDownMenu = new DropDownMenu<EnumRealnameShown>(
+				"Realname anzeigen" /* Display name */, 0, 0, 0, 0).fill(EnumRealnameShown.values());
+
+		DropDownElement<EnumRealnameShown> realnameDropDown = new DropDownElement<EnumRealnameShown>(
+				"Realname anzeigen", realnameDropDownMenu);
+
+		// Set selected entry
+		realnameDropDownMenu.setSelected(getRealname());
+
+		// Listen on changes
+		realnameDropDown.setChangeListener(new Consumer<EnumRealnameShown>() {
+			@Override
+			public void accept(EnumRealnameShown realname) {
+				setRealname(realname);
+				getConfig().addProperty("realname", realname.name());
+				saveConfig();
+			}
+		});
+		settings.add(realnameDropDown);
 
 		settings.add(new HeaderElement("Leerzeilen"));
 		final BooleanElement cleanBlanksBtn = new BooleanElement("Leerzeilen l\u00f6schen",
@@ -475,8 +705,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean cleanBlanks) {
 						setCleanBlanks(cleanBlanks);
-						GrieferGames.getGriefergames().getConfig().addProperty("cleanBlanks", cleanBlanks);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("cleanBlanks", cleanBlanks);
+						saveConfig();
 					}
 				}, isCleanBlanks());
 		settings.add(cleanBlanksBtn);
@@ -486,9 +716,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean cleanSupremeBlanks) {
 						setCleanSupremeBlanks(cleanSupremeBlanks);
-						GrieferGames.getGriefergames().getConfig().addProperty("cleanSupremeBlanks",
-								cleanSupremeBlanks);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("cleanSupremeBlanks", cleanSupremeBlanks);
+						saveConfig();
 					}
 				}, isCleanSupremeBlanks());
 		settings.add(cleanSupremeBlanksBtn);
@@ -500,8 +729,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean payChatRight) {
 						setPayChatRight(payChatRight);
-						GrieferGames.getGriefergames().getConfig().addProperty("payChatRight", payChatRight);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("payChatRight", payChatRight);
+						saveConfig();
 					}
 				}, isPayChatRight());
 		settings.add(payChatRightBtn);
@@ -511,8 +740,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean payAchievement) {
 						setPayAchievement(payAchievement);
-						GrieferGames.getGriefergames().getConfig().addProperty("payAchievement", payAchievement);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("payAchievement", payAchievement);
+						saveConfig();
 					}
 				}, isPayAchievement());
 		settings.add(payAchievementBtn);
@@ -522,8 +751,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean payMarker) {
 						setPayMarker(payMarker);
-						GrieferGames.getGriefergames().getConfig().addProperty("payMarker", payMarker);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("payMarker", payMarker);
+						saveConfig();
 					}
 				}, isPayMarker());
 		settings.add(payMarkerBtn);
@@ -533,8 +762,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean payHover) {
 						setPayHover(payHover);
-						GrieferGames.getGriefergames().getConfig().addProperty("payHover", payHover);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("payHover", payHover);
+						saveConfig();
 					}
 				}, isPayHover());
 		settings.add(payHoverBtn);
@@ -546,8 +775,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean bankChatRight) {
 						setBankChatRight(bankChatRight);
-						GrieferGames.getGriefergames().getConfig().addProperty("bankChatRight", bankChatRight);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("bankChatRight", bankChatRight);
+						saveConfig();
 					}
 				}, isBankChatRight());
 		settings.add(bankChatRightBtn);
@@ -557,24 +786,24 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean bankAchievement) {
 						setBankAchievement(bankAchievement);
-						GrieferGames.getGriefergames().getConfig().addProperty("bankAchievement", bankAchievement);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("bankAchievement", bankAchievement);
+						saveConfig();
 					}
 				}, isBankAchievement());
 		settings.add(bankAchievementBtn);
 
 		settings.add(new HeaderElement("ClearLag"));
-		final BooleanElement clearlagChatRightBtn = new BooleanElement("ClearLag 2. Chat",
+		final BooleanElement clearLagChatRightBtn = new BooleanElement("ClearLag 2. Chat",
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean clearlagChatRight) {
-						setClearlagChatRight(clearlagChatRight);
-						GrieferGames.getGriefergames().getConfig().addProperty("clearlagChatRight", clearlagChatRight);
-						GrieferGames.getGriefergames().saveConfig();
+					public void accept(Boolean clearLagChatRight) {
+						setClearLagChatRight(clearLagChatRight);
+						getConfig().addProperty("clearLagChatRight", clearLagChatRight);
+						saveConfig();
 					}
-				}, isClearlagChatRight());
-		settings.add(clearlagChatRightBtn);
+				}, isClearLagChatRight());
+		settings.add(clearLagChatRightBtn);
 
 		settings.add(new HeaderElement("MobRemover"));
 		final BooleanElement mobRemoverChatRightBtn = new BooleanElement("Mobremover 2. Chat",
@@ -583,22 +812,19 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean mobRemoverChatRight) {
 						setMobRemoverChatRight(mobRemoverChatRight);
-						GrieferGames.getGriefergames().getConfig().addProperty("mobRemoverChatRight",
-								mobRemoverChatRight);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("mobRemoverChatRight", mobRemoverChatRight);
+						saveConfig();
 					}
 				}, isMobRemoverChatRight());
 		settings.add(mobRemoverChatRightBtn);
 
-		settings.add(new HeaderElement("MobRemover"));
 		final BooleanElement mobRemoverLastTimeHoverBtn = new BooleanElement("Mobremover Zeitstempel hover",
 				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean mobRemoverLastTimeHover) {
 						setMobRemoverLastTimeHover(mobRemoverLastTimeHover);
-						GrieferGames.getGriefergames().getConfig().addProperty("mobRemoverLastTimeHover",
-								mobRemoverLastTimeHover);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("mobRemoverLastTimeHover", mobRemoverLastTimeHover);
+						saveConfig();
 					}
 				}, isMobRemoverLastTimeHover());
 		settings.add(mobRemoverLastTimeHoverBtn);
@@ -609,11 +835,24 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean betterIgnoreList) {
 						setBetterIgnoreList(betterIgnoreList);
-						GrieferGames.getGriefergames().getConfig().addProperty("betterIgnoreList", betterIgnoreList);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("betterIgnoreList", betterIgnoreList);
+						saveConfig();
 					}
 				}, isBetterIgnoreList());
 		settings.add(betterIgnoreListBtn);
+
+		settings.add(new HeaderElement("Karten"));
+		final BooleanElement clearMapCacheBtn = new BooleanElement("Cache automatisch leeren",
+				new ControlElement.IconData("labymod/textures/settings/settings/directconnectinfo.png"),
+				new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean clearMapCache) {
+						setClearMapCache(clearMapCache);
+						getConfig().addProperty("clearMapCache", clearMapCache);
+						saveConfig();
+					}
+				}, isClearMapCache());
+		settings.add(clearMapCacheBtn);
 
 		settings.add(new HeaderElement("Auto Update Booster Status"));
 		final BooleanElement updateBoosterStateBtn = new BooleanElement("Enabled",
@@ -621,9 +860,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean updateBoosterState) {
 						setUpdateBoosterState(updateBoosterState);
-						GrieferGames.getGriefergames().getConfig().addProperty("updateBoosterState",
-								updateBoosterState);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("updateBoosterState", updateBoosterState);
+						saveConfig();
 					}
 				}, isUpdateBoosterState());
 		settings.add(updateBoosterStateBtn);
@@ -634,8 +872,8 @@ public class ModSettings {
 					@Override
 					public void accept(Boolean ampEnabled) {
 						setAMPEnabled(ampEnabled);
-						GrieferGames.getGriefergames().getConfig().addProperty("ampEnabled", ampEnabled);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("ampEnabled", ampEnabled);
+						saveConfig();
 					}
 				}, isAMPEnabled());
 		settings.add(ampEnabledBtn);
@@ -647,8 +885,8 @@ public class ModSettings {
 					@Override
 					public void accept(String replacement) {
 						setAMPChatReplacement(replacement);
-						GrieferGames.getGriefergames().getConfig().addProperty("chatReplacement", replacement);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("chatReplacement", replacement);
+						saveConfig();
 					}
 				});
 		settings.add(chatReplacementInput);
@@ -660,10 +898,22 @@ public class ModSettings {
 					@Override
 					public void accept(String replacement) {
 						setAMPTablistReplacement(replacement);
-						GrieferGames.getGriefergames().getConfig().addProperty("tablistReplacement", replacement);
-						GrieferGames.getGriefergames().saveConfig();
+						getConfig().addProperty("tablistReplacement", replacement);
+						saveConfig();
 					}
 				});
 		settings.add(tablistReplacementInput);
+
+		settings.add(new HeaderElement("AntiMagicClanTag"));
+		final BooleanElement ampClanEnabledBtn = new BooleanElement("Enabled",
+				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean ampClanEnabled) {
+						setAMPClanEnabled(ampClanEnabled);
+						getConfig().addProperty("ampClanEnabled", ampClanEnabled);
+						saveConfig();
+					}
+				}, isAMPClanEnabled());
+		settings.add(ampClanEnabledBtn);
 	}
 }

@@ -10,9 +10,35 @@ import java.util.List;
 import java.util.Properties;
 
 import de.wuzlwuz.griefergames.booster.Booster;
+import de.wuzlwuz.griefergames.chat.AntiMagicClanTag;
+import de.wuzlwuz.griefergames.chat.AntiMagicPrefix;
+import de.wuzlwuz.griefergames.chat.Bank;
+import de.wuzlwuz.griefergames.chat.Blanks;
+import de.wuzlwuz.griefergames.chat.Chat;
+import de.wuzlwuz.griefergames.chat.ChatTime;
+import de.wuzlwuz.griefergames.chat.CheckPlot;
+import de.wuzlwuz.griefergames.chat.ClanTag;
+import de.wuzlwuz.griefergames.chat.ClearChat;
+import de.wuzlwuz.griefergames.chat.ClearLag;
+import de.wuzlwuz.griefergames.chat.GlobalMessage;
+import de.wuzlwuz.griefergames.chat.IgnoreList;
+import de.wuzlwuz.griefergames.chat.LobbyHub;
+import de.wuzlwuz.griefergames.chat.MobRemover;
+import de.wuzlwuz.griefergames.chat.Nickname;
+import de.wuzlwuz.griefergames.chat.Payment;
+import de.wuzlwuz.griefergames.chat.PlotChat;
+import de.wuzlwuz.griefergames.chat.PrivateMessage;
+import de.wuzlwuz.griefergames.chat.Realname;
+import de.wuzlwuz.griefergames.chat.SupremeBlanks;
+import de.wuzlwuz.griefergames.chat.Teleport;
+import de.wuzlwuz.griefergames.chat.VanishHelper;
+import de.wuzlwuz.griefergames.chat.Vote;
+import de.wuzlwuz.griefergames.chatMenu.TeamMenu;
+import de.wuzlwuz.griefergames.helper.Helper;
 import de.wuzlwuz.griefergames.server.GrieferGamesServer;
 import de.wuzlwuz.griefergames.settings.ModSettings;
 import net.labymod.api.LabyModAddon;
+import net.labymod.core.LabyModCore;
 import net.labymod.ingamegui.ModuleCategory;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement;
@@ -29,10 +55,16 @@ public class GrieferGames extends LabyModAddon {
 	private boolean showModules = false;
 	private boolean showBoosterDummy = false;
 	private boolean vanishActive = false;
+	private boolean auraActive = false;
 	private boolean godActive = false;
 	private boolean flyActive = false;
 	private ModuleCategory moduleCategory;
 	private List<Booster> boosters = new ArrayList<Booster>();
+	private Helper helper;
+	private List<Chat> chatModules = new ArrayList<Chat>();
+	private boolean isInTeam = false;
+	private String nickname = "";
+	private String playerRank = "Spieler";
 
 	public static GrieferGames getGriefergames() {
 		return griefergames;
@@ -80,6 +112,14 @@ public class GrieferGames extends LabyModAddon {
 
 	public void setVanishActive(boolean vanishActive) {
 		this.vanishActive = vanishActive;
+	}
+
+	public boolean isAuraActive() {
+		return auraActive;
+	}
+
+	public void setAuraActive(boolean auraActive) {
+		this.auraActive = auraActive;
 	}
 
 	public boolean isGodActive() {
@@ -154,6 +194,63 @@ public class GrieferGames extends LabyModAddon {
 		}
 	}
 
+	public Helper getHelper() {
+		return helper;
+	}
+
+	private void setHelper(Helper helper) {
+		this.helper = helper;
+	}
+
+	public List<Chat> getChatModules() {
+		return chatModules;
+	}
+
+	public void addChatModule(Chat chatModule) {
+		boolean found = false;
+		for (Chat chatList : chatModules) {
+			if (chatList.getName().equalsIgnoreCase(chatModule.getName())) {
+				found = true;
+			}
+		}
+		if (!found) {
+			this.chatModules.add(chatModule);
+		}
+	}
+
+	public boolean getIsInTeam() {
+		return isInTeam;
+	}
+
+	public void setIsInTeam(boolean isInTeam) {
+		TeamMenu.printMenu();
+		this.isInTeam = isInTeam;
+	}
+
+	public boolean isNicknameActive() {
+		return (!LabyModCore.getMinecraft().getPlayer().getName().trim().equalsIgnoreCase(getNickname()));
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		if (nickname.trim().length() <= 0) {
+			this.nickname = LabyModCore.getMinecraft().getPlayer().getName().trim();
+		} else {
+			this.nickname = nickname;
+		}
+	}
+
+	public String getPlayerRank() {
+		return playerRank;
+	}
+
+	public void setPlayerRank(String playerRank) {
+		this.playerRank = playerRank;
+	}
+
 	@Override
 	public void onEnable() {
 		System.out.println("[GrieferGames] enabled.");
@@ -163,11 +260,38 @@ public class GrieferGames extends LabyModAddon {
 		// save instance
 		setGriefergames(this);
 
+		// setup helper
+		setHelper(new Helper());
+
 		// load settings
 		setSettings(new ModSettings());
 
 		// extend translations
 		loadTranslations();
+
+		// add Chat Modules
+		addChatModule(new ClearChat());
+		addChatModule(new Blanks());
+		addChatModule(new SupremeBlanks());
+		addChatModule(new PrivateMessage());
+		addChatModule(new Payment());
+		addChatModule(new Bank());
+		addChatModule(new ClearLag());
+		addChatModule(new MobRemover());
+		addChatModule(new PlotChat());
+		addChatModule(new Teleport());
+		addChatModule(new Vote());
+		addChatModule(new GlobalMessage());
+		addChatModule(new LobbyHub());
+		addChatModule(new Realname());
+		addChatModule(new IgnoreList());
+		addChatModule(new ClanTag());
+		addChatModule(new AntiMagicClanTag());
+		addChatModule(new AntiMagicPrefix());
+		addChatModule(new Nickname());
+		addChatModule(new CheckPlot());
+		addChatModule(new VanishHelper());
+		addChatModule(new ChatTime());
 
 		// set module category
 		setModuleCategory(new ModuleCategory(LanguageManager.translateOrReturnKey("modules_category_gg", new Object[0]),

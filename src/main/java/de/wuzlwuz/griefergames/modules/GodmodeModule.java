@@ -8,8 +8,12 @@ import net.labymod.settings.elements.ControlElement;
 import net.minecraft.util.ResourceLocation;
 
 public class GodmodeModule extends SimpleModule {
+	protected GrieferGames getGG() {
+		return GrieferGames.getGriefergames();
+	}
+
 	public GodmodeModule() {
-		GrieferGames.getGriefergames().getApi().registerModule(this);
+		getGG().getApi().registerModule(this);
 	}
 
 	@Override
@@ -19,7 +23,7 @@ public class GodmodeModule extends SimpleModule {
 
 	@Override
 	public String getDisplayValue() {
-		if (GrieferGames.getGriefergames().isGodActive()) {
+		if (getGG().isGodActive()) {
 			return LanguageManager.translateOrReturnKey("gg_on", new Object[0]);
 		} else {
 			return LanguageManager.translateOrReturnKey("gg_off", new Object[0]);
@@ -53,12 +57,12 @@ public class GodmodeModule extends SimpleModule {
 
 	@Override
 	public boolean isShown() {
-		return GrieferGames.getGriefergames().isShowModules();
+		return getGG().isShowModules();
 	}
 
 	@Override
 	public ModuleCategory getCategory() {
-		return GrieferGames.getGriefergames().getModuleCategory();
+		return getGG().getModuleCategory();
 	}
 
 	@Override
