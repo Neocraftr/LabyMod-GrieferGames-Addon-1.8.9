@@ -2,7 +2,6 @@ package de.wuzlwuz.griefergames.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import de.wuzlwuz.griefergames.GrieferGames;
@@ -10,6 +9,8 @@ import de.wuzlwuz.griefergames.booster.Booster;
 import de.wuzlwuz.griefergames.chat.Chat;
 import de.wuzlwuz.griefergames.gui.vanishHelperGui;
 import de.wuzlwuz.griefergames.helper.Helper;
+import de.wuzlwuz.griefergames.listener.OnTickListener;
+import de.wuzlwuz.griefergames.listener.PreRenderListener;
 import de.wuzlwuz.griefergames.listener.SubServerListener;
 import de.wuzlwuz.griefergames.modules.AuraModule;
 import de.wuzlwuz.griefergames.modules.BoosterModule;
@@ -33,17 +34,9 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.scoreboard.Score;
-import net.minecraft.scoreboard.ScoreObjective;
-import net.minecraft.scoreboard.ScorePlayerTeam;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class GrieferGamesServer extends Server {
 	private List<SubServerListener> subServerListener = new ArrayList<SubServerListener>();
@@ -56,7 +49,6 @@ public class GrieferGamesServer extends Server {
 	private String lastMessage = "";
 	private String playerRank = "Spieler";
 	private boolean modulesLoaded = false;
-
 	private boolean listenerLoaded = false;
 
 	protected GrieferGames getGG() {
@@ -87,6 +79,10 @@ public class GrieferGamesServer extends Server {
 		if (!subServerListener.contains(ssl)) {
 			subServerListener.add(ssl);
 		}
+	}
+
+	public List<SubServerListener> getSubServerListener() {
+		return subServerListener;
 	}
 
 	private void setApi(LabyModAPI api) {
@@ -152,7 +148,7 @@ public class GrieferGamesServer extends Server {
 		return subServer;
 	}
 
-	private void setSubServer(String subServer) {
+	public void setSubServer(String subServer) {
 		this.subServer = subServer.trim();
 	}
 
@@ -160,8 +156,32 @@ public class GrieferGamesServer extends Server {
 		return lastMessage;
 	}
 
-	private void setLastMessage(String lastMessage) {
+	public void setLastMessage(String lastMessage) {
 		this.lastMessage = lastMessage;
+	}
+
+	public void setNextLastMessageRequest(long nextLastMessageRequest) {
+		this.nextLastMessageRequest = nextLastMessageRequest;
+	}
+
+	public long getNextLastMessageRequest() {
+		return this.nextLastMessageRequest;
+	}
+
+	public void setNextScoreboardRequest(long nextScoreboardRequest) {
+		this.nextScoreboardRequest = nextScoreboardRequest;
+	}
+
+	public long getNextScoreboardRequest() {
+		return this.nextScoreboardRequest;
+	}
+
+	public void setNextCheckFly(long nextCheckFly) {
+		this.nextCheckFly = nextCheckFly;
+	}
+
+	public long getNextCheckFly() {
+		return this.nextCheckFly;
 	}
 
 	private boolean loadPlayerRank() {
@@ -297,7 +317,9 @@ public class GrieferGamesServer extends Server {
 				}
 
 			});
-			this.getApi().registerForgeListener(this);
+
+			this.getApi().registerForgeListener(new PreRenderListener(this));
+			this.getApi().registerForgeListener(new OnTickListener(this));
 
 			getApi().getEventManager().register(new MessageSendEvent() {
 				public boolean onSend(String message) {
@@ -356,97 +378,5 @@ public class GrieferGamesServer extends Server {
 			e.printStackTrace();
 		}
 		return o;
-	}
-
-	@SubscribeEvent(priority = EventPriority.NORMAL)
-	public void onTick(TickEvent.ClientTickEvent event) {
-		if (LabyModCore.getMinecraft().getWorld() != null && event.phase == TickEvent.Phase.START) {
-			if (System.currentTimeMillis() > this.nextLastMessageRequest) {
-				this.nextLastMessageRequest = System.currentTimeMillis()
-						+ getSettings().getFilterDuplicateMessagesTime() * 1000L;
-				setLastMessage("");
-			}
-			if (System.currentTimeMillis() > this.nextScoreboardRequest) {
-				this.nextScoreboardRequest = System.currentTimeMillis() + 500L;
-				Scoreboard scoreboard = LabyModCore.getMinecraft().getWorld().getScoreboard();
-				ScoreObjective scoreobjective = scoreboard.getObjectiveInDisplaySlot(1);
-				if (scoreobjective != null) {
-					List<Score> scoreList = (List<Score>) scoreboard.getSortedScores(scoreobjective);
-					Collections.reverse(scoreList);
-					for (int i = 0; i < scoreList.size(); i++) {
-						ScorePlayerTeam scorePlayerTeam = scoreboard.getPlayersTeam(scoreList.get(i).getPlayerName());
-						String scoreName = ScorePlayerTeam.formatPlayerName(scorePlayerTeam,
-								scoreList.get(i).getPlayerName());
-
-						if (getHelper().isScoreBoardSubServer(scoreName)) {
-							scorePlayerTeam = scoreboard.getPlayersTeam(scoreList.get(i + 1).getPlayerName());
-							scoreName = ScorePlayerTeam
-									.formatPlayerName(scorePlayerTeam, scoreList.get(i + 1).getPlayerName())
-									.replaceAll("\u00A7[0-9a-f]", "").trim();
-
-							if (!getSubServer().matches(scoreName)) {
-								for (SubServerListener ssl : subServerListener)
-									ssl.onSubServerChanged(getSubServer(), scoreName);
-								setSubServer(scoreName);
-							}
-							i = scoreList.size();
-						}
-					}
-				}
-			}
-
-			if (System.currentTimeMillis() > this.nextCheckFly) {
-				this.nextCheckFly = System.currentTimeMillis() + 500L;
-				getGG().setFlyActive(LabyModCore.getMinecraft().getPlayer().capabilities.allowFlying);
-			}
-		}
-	}
-
-	@SubscribeEvent(priority = EventPriority.NORMAL)
-	public void onPreRender(RenderGameOverlayEvent event) {
-		if (getMc().gameSettings.keyBindPlayerList.isKeyDown() && !getMc().isIntegratedServerRunning()
-				&& getSettings().isAMPEnabled()) {
-
-			ScoreObjective scoreobjective = LabyModCore.getMinecraft().getWorld().getScoreboard()
-					.getObjectiveInDisplaySlot(0);
-			NetHandlerPlayClient handler = LabyModCore.getMinecraft().getPlayer().sendQueue;
-			if (handler.getPlayerInfoMap().size() > 1 || scoreobjective != null) {
-				Collection<NetworkPlayerInfo> players = handler.getPlayerInfoMap();
-				for (NetworkPlayerInfo player : players) {
-					if (player.getDisplayName() != null) {
-						IChatComponent playerDisplayName = (IChatComponent) player.getDisplayName();
-
-						if (playerDisplayName.getUnformattedText().length() > 0 && getSettings().isAMPEnabled()) {
-							String oldPlayerDisplayName = getHelper()
-									.getProperTextFormat(playerDisplayName.getFormattedText());
-							if (oldPlayerDisplayName.indexOf("§k") != -1) {
-								IChatComponent newPlayerDisplayName = new ChatComponentText("");
-								for (IChatComponent displayName : playerDisplayName.getSiblings()) {
-									if (displayName.getChatStyle().getObfuscated() && displayName.getUnformattedText()
-											.matches("(([A-Za-z\\-]+\\+?) \\| (\\w{1,16}))")) {
-										ChatStyle playerDisplayNameStyling = displayName.getChatStyle().createDeepCopy()
-												.setObfuscated(false);
-										String chatRepText = getSettings().getAMPTablistReplacement();
-
-										if (chatRepText.indexOf("%CLEAN%") == -1) {
-											chatRepText = getSettings().getDefaultAMPTablistReplacement();
-										}
-
-										chatRepText = chatRepText.replaceAll("%CLEAN%",
-												displayName.getUnformattedText());
-										chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
-
-										newPlayerDisplayName.appendSibling(new ChatComponentText(
-												chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
-														.setChatStyle(playerDisplayNameStyling));
-										player.setDisplayName(newPlayerDisplayName);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
 	}
 }
