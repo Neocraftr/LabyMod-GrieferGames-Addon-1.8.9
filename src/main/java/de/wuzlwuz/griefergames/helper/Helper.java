@@ -47,8 +47,10 @@ public class Helper {
 			"^\\[Booster\\] ([A-Za-z\\-]+\\+? \\| (\\u007E)?\\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster|Erfahrungsbooster) f\\u00FCr ([0-9]+) Minuten aktiviert!$");
 	private static Pattern getBoosterDoneValidRegexp = Pattern
 			.compile("^\\[Booster\\] ([A-z]+\\-Booster|Erfahrungsbooster) ist jetzt wieder deaktiviert!$");
+	private static Pattern getBoosterMultiDoneValidRegexp = Pattern.compile(
+			"^\\[Booster\\] Der ([A-z]+\\-Booster|Erfahrungsbooster) \\(Stufe [1-6]\\) von ([A-Za-z\\-]+\\+? \\| (\\u007E)?\\w{1,16}) ist abgelaufen.$");
 	private static Pattern getCurrentBoosters = Pattern.compile(
-			"^([A-z]+\\-Booster|Erfahrungsbooster) Multiplikator: ([0-9])x \\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\)");
+			"^([A-z]+\\-Booster|Erfahrungsbooster) Multiplikator: ([0-9])x ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
 
 	private static Pattern switcherRegexp = Pattern.compile("^\\[Switcher\\] Daten heruntergeladen!$");
 
@@ -81,7 +83,51 @@ public class Helper {
 		String fMsg = getProperTextFormat(formatted);
 
 		if (fMsg.indexOf("§r§cist jetzt wieder deaktiviert!§r") >= 0) {
+			System.out.print("DONE:");
+			System.out.println(fMsg);
+
 			Matcher matcher = getBoosterDoneValidRegexp.matcher(unformatted.trim());
+			if (matcher.find()) {
+				String boosterName = matcher.group(1);
+
+				boolean validBooster = false;
+				boosterName = boosterName.toLowerCase();
+				if (boosterName.equalsIgnoreCase("fly-booster")) {
+					GrieferGames.getGriefergames().boosterDone("fly");
+					validBooster = true;
+				} else if (boosterName.equalsIgnoreCase("drop-booster")) {
+					GrieferGames.getGriefergames().boosterDone("drop");
+					validBooster = true;
+				} else if (boosterName.equalsIgnoreCase("break-booster")) {
+					GrieferGames.getGriefergames().boosterDone("break");
+					validBooster = true;
+				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
+					GrieferGames.getGriefergames().boosterDone("mob");
+					validBooster = true;
+				} else if (boosterName.equalsIgnoreCase("erfahrungsbooster")) {
+					GrieferGames.getGriefergames().boosterDone("xp");
+					validBooster = true;
+				}
+
+				if (validBooster) {
+					return 1;
+				}
+				return 0;
+			}
+		}
+
+		return 0;
+	}
+
+	public int isValidBoosterMultiDoneMessage(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0)
+			return -1;
+
+		String fMsg = getProperTextFormat(formatted);
+
+		if (fMsg.indexOf("§r§fDer §r§b") >= 0 && fMsg.indexOf("§r§7(Stufe") >= 0
+				&& fMsg.indexOf("§r§fist abgelaufen.§r") >= 0) {
+			Matcher matcher = getBoosterMultiDoneValidRegexp.matcher(unformatted.trim());
 			if (matcher.find()) {
 				String boosterName = matcher.group(1);
 
@@ -123,12 +169,12 @@ public class Helper {
 		if (fMsg.indexOf("§r§ahat f\u00FCr die GrieferGames Community den §r§b§l") >= 0) {
 			Matcher matcher = getBoosterValidRegexp.matcher(unformatted);
 			if (matcher.find()) {
-				String boosterName = matcher.group(2);
+				String boosterName = matcher.group(3);
 				Integer minutes = 0;
 				try {
 					matcher = getBoosterValidRegexp.matcher(unformatted);
 					if (matcher.find()) {
-						minutes = Integer.parseInt(matcher.group(3));
+						minutes = Integer.parseInt(matcher.group(4));
 					}
 				} catch (NumberFormatException e) {
 					// do nothing ;)
@@ -327,6 +373,7 @@ public class Helper {
 
 		Matcher matcher = getCurrentBoosters.matcher(unformatted.trim());
 		if (matcher.find()) {
+			System.out.println(unformatted);
 			String boosterName = matcher.group(1);
 
 			Integer multi = 0;
@@ -339,58 +386,87 @@ public class Helper {
 				// do nothing ;)
 			}
 
-			Integer time = 0;
+			List<Integer> boosterTimes = new ArrayList<Integer>();
 			try {
 				matcher = getCurrentBoosters.matcher(unformatted.trim());
 				if (matcher.find()) {
-					String timestr[] = matcher.group(3).split(":");
-					if (timestr.length == 3) {
-						time += Integer.parseInt(timestr[0]) * 60 * 60;
-						time += Integer.parseInt(timestr[1]) * 60;
-						time += Integer.parseInt(timestr[2]);
-					} else {
-						time += Integer.parseInt(timestr[0]) * 60;
-						time += Integer.parseInt(timestr[1]);
+					String times[] = matcher.group(3).split(" ");
+					for (String time : times) {
+						System.out.println(time);
+						Integer curTime = 0;
+						String[] timeSplitted = time.replaceAll("(\\(|\\))", "").trim().split(":");
+						for (String timeSplit : timeSplitted) {
+							System.out.println(timeSplit);
+						}
+
+						if (timeSplitted.length == 3) {
+							curTime += Integer.parseInt(timeSplitted[0]) * 60 * 60;
+							curTime += Integer.parseInt(timeSplitted[1]) * 60;
+							curTime += Integer.parseInt(timeSplitted[2]);
+						} else {
+							curTime += Integer.parseInt(timeSplitted[0]) * 60;
+							curTime += Integer.parseInt(timeSplitted[1]);
+						}
+						boosterTimes.add(curTime);
 					}
 				}
 			} catch (NumberFormatException e) {
-				// do nothing ;)
+				e.printStackTrace();
 			}
 
 			boolean validBooster = false;
 			Booster booster = null;
 			boosterName = boosterName.toLowerCase();
 			if (boosterName.equalsIgnoreCase("fly-booster")) {
-				if (time > 0) {
-					booster = new FlyBooster(multi, LocalDateTime.now().plusSeconds(time));
+				if (boosterTimes.size() > 0) {
+					booster = new FlyBooster(multi);
+					for (Integer boosterTime : boosterTimes) {
+						System.out.println(boosterTime);
+						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
+					}
 				} else {
 					booster = new FlyBooster(multi);
 				}
 				validBooster = true;
 			} else if (boosterName.equalsIgnoreCase("drop-booster")) {
-				if (time > 0) {
-					booster = new DropBooster(multi, LocalDateTime.now().plusSeconds(time));
+				if (boosterTimes.size() > 0) {
+					booster = new DropBooster(multi);
+					for (Integer boosterTime : boosterTimes) {
+						System.out.println(boosterTime);
+						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
+					}
 				} else {
 					booster = new DropBooster(multi);
 				}
 				validBooster = true;
 			} else if (boosterName.equalsIgnoreCase("break-booster")) {
-				if (time > 0) {
-					booster = new BreakBooster(multi, LocalDateTime.now().plusSeconds(time));
+				if (boosterTimes.size() > 0) {
+					booster = new BreakBooster(multi);
+					for (Integer boosterTime : boosterTimes) {
+						System.out.println(boosterTime);
+						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
+					}
 				} else {
 					booster = new BreakBooster(multi);
 				}
 				validBooster = true;
 			} else if (boosterName.equalsIgnoreCase("mob-booster")) {
-				if (time > 0) {
-					booster = new MobBooster(multi, LocalDateTime.now().plusSeconds(time));
+				if (boosterTimes.size() > 0) {
+					booster = new MobBooster(multi);
+					for (Integer boosterTime : boosterTimes) {
+						System.out.println(boosterTime);
+						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
+					}
 				} else {
 					booster = new MobBooster(multi);
 				}
 				validBooster = true;
 			} else if (boosterName.equalsIgnoreCase("erfahrungsbooster")) {
-				if (time > 0) {
-					booster = new ExperienceBooster(multi, LocalDateTime.now().plusSeconds(time));
+				if (boosterTimes.size() > 0) {
+					booster = new ExperienceBooster(multi);
+					for (Integer boosterTime : boosterTimes) {
+						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
+					}
 				} else {
 					booster = new ExperienceBooster(multi);
 				}

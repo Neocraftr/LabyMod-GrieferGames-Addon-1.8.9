@@ -2,6 +2,8 @@ package de.wuzlwuz.griefergames.booster;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement.IconData;
@@ -10,7 +12,7 @@ import net.labymod.utils.Material;
 public class Booster {
 	private String name;
 	private int count = 0;
-	private LocalDateTime endDate = null;
+	private List<LocalDateTime> endDates = new ArrayList<LocalDateTime>();
 	private String username;
 	private String type;
 	private IconData icon = new IconData(Material.BARRIER);
@@ -22,7 +24,7 @@ public class Booster {
 		setName(name);
 		setType(type);
 		setCount(count);
-		setEndDate(endDate);
+		addEndDates(endDate);
 		setIcon(icon);
 		setIconIndex(iconIndex);
 		setShowCount(showCount);
@@ -32,7 +34,7 @@ public class Booster {
 		setName(name);
 		setType(type);
 		setCount(count);
-		setEndDate(endDate);
+		addEndDates(endDate);
 		setShowCount(showCount);
 	}
 
@@ -72,7 +74,7 @@ public class Booster {
 		setName(name);
 		setType(type);
 		setCount(count);
-		setEndDate(endDate);
+		addEndDates(endDate);
 		setIcon(icon);
 		setIconIndex(iconIndex);
 	}
@@ -81,7 +83,7 @@ public class Booster {
 		setName(name);
 		setType(type);
 		setCount(count);
-		setEndDate(endDate);
+		addEndDates(endDate);
 	}
 
 	Booster(String name, String type, int count, IconData icon, int iconIndex) {
@@ -132,12 +134,34 @@ public class Booster {
 		this.count++;
 	}
 
-	public LocalDateTime getEndDate() {
-		return endDate;
+	public void decreaseCount() {
+		this.count--;
 	}
 
-	public void setEndDate(LocalDateTime endDate) {
-		this.endDate = endDate;
+	public void decreaseEndDates() {
+		if (endDates.size() > 0) {
+			endDates.remove(0);
+		}
+	}
+
+	public List<LocalDateTime> getEndDates() {
+		return endDates;
+	}
+
+	public LocalDateTime getEndDate(int index) {
+		return (endDates.size() > index) ? endDates.get(index) : null;
+	}
+
+	public LocalDateTime getEndDate() {
+		return (endDates.size() > 0) ? endDates.get(0) : null;
+	}
+
+	public void setEndDates(List<LocalDateTime> endDate) {
+		this.endDates = endDate;
+	}
+
+	public void addEndDates(LocalDateTime endDate) {
+		this.endDates.add(endDate);
 	}
 
 	public String getUsername() {
@@ -183,13 +207,15 @@ public class Booster {
 	public String getDurationString() {
 		LocalDateTime curDateTime = LocalDateTime.now();
 		String ret = LanguageManager.translateOrReturnKey("gg_on", new Object[0]);
-		if (getEndDate() != null) {
+		LocalDateTime endDate = getEndDate(0);
+
+		if (endDate != null) {
 			boolean additionTime = false;
 			Duration duration = Duration.between(curDateTime, curDateTime);
-			if (getEndDate().isAfter(curDateTime)) {
-				duration = Duration.between(curDateTime, getEndDate());
+			if (endDate.isAfter(curDateTime)) {
+				duration = Duration.between(curDateTime, endDate);
 			} else {
-				duration = Duration.between(getEndDate(), curDateTime);
+				duration = Duration.between(endDate, curDateTime);
 				additionTime = true;
 			}
 

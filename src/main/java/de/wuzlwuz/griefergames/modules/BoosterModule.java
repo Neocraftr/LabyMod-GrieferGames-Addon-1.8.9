@@ -67,9 +67,6 @@ public class BoosterModule extends Module {
 			Integer count = booster.getCount();
 			boolean showCount = booster.getShowCount();
 
-			// todo: temporarily deactivated
-			showCount = false;
-
 			if (count > 0) {
 				if (rightX == -1) {
 					int stringWidth = LabyModCore.getMinecraft().getFontRenderer().getStringWidth(name + " ");

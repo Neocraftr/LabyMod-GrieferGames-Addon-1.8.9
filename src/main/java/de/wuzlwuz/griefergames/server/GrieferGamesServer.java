@@ -183,7 +183,22 @@ public class GrieferGamesServer extends Server {
 					getGG().setBoosters(new ArrayList<Booster>());
 				} else {
 					if (getSettings().isVanishHelper() && getHelper().showVanishModule(getPlayerRank())) {
-						mc.displayGuiScreen(new vanishHelperGui());
+						vanishHelperGui vanishHelper = new vanishHelperGui();
+						mc.displayGuiScreen(vanishHelper);
+						Thread thread = new Thread() {
+							public void run() {
+								try {
+									Thread.sleep(3000);
+									if (mc.currentScreen.equals(vanishHelper)) {
+										mc.displayGuiScreen(null);
+									}
+								} catch (Exception e) {
+									System.err.println(e);
+								}
+							}
+						};
+
+						thread.start();
 					}
 				}
 				if (subServerName.equalsIgnoreCase("lobby")) {
@@ -196,11 +211,20 @@ public class GrieferGamesServer extends Server {
 									Thread.sleep(500);
 									boolean loadRank2nd = loadPlayerRank();
 									if (!loadRank2nd) {
-										getApi().displayMessageInChat(ModColor.DARK_GRAY + "[" + ModColor.GOLD
-												+ "FEHLER" + ModColor.DARK_GRAY + "] " + ModColor.RED
-												+ "Ihr Rang konnte " + ModColor.UNDERLINE + "nicht" + ModColor.RESET
-												+ ModColor.RED + " geladen werden, bitte Verbinden Sie sich erneut!");
+										try {
+											Thread.sleep(500);
+											boolean loadRank3rd = loadPlayerRank();
+											if (!loadRank3rd) {
+												getApi().displayMessageInChat(ModColor.DARK_GRAY + "[" + ModColor.GOLD
+														+ "FEHLER" + ModColor.DARK_GRAY + "] " + ModColor.RED
+														+ "Ihr Rang konnte " + ModColor.UNDERLINE + "nicht"
+														+ ModColor.RESET + ModColor.RED
+														+ " geladen werden, bitte Verbinden Sie sich erneut!");
 
+											}
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
 									}
 								} catch (Exception e) {
 									e.printStackTrace();
@@ -326,8 +350,10 @@ public class GrieferGamesServer extends Server {
 					}
 				}
 
+				System.out.println(formatted);
 				getHelper().isValidBoosterMessage(unformatted, formatted);
 				getHelper().isValidBoosterDoneMessage(unformatted, formatted);
+				getHelper().isValidBoosterMultiDoneMessage(unformatted, formatted);
 				getHelper().checkCurrentBoosters(unformatted, formatted);
 
 				if (getSettings().isUpdateBoosterState() && getHelper().isSwitcherDoneMsg(unformatted, formatted) > 0) {

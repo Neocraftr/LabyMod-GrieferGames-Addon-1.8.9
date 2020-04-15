@@ -2,26 +2,23 @@ package de.wuzlwuz.griefergames.gui;
 
 import net.labymod.utils.ModColor;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class vanishHelperGui extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		GlStateManager.pushMatrix();
 
-		this.drawCenteredString(this.fontRendererObj, ModColor.RED + "Achtung, du bist im Vanish!", this.width / 2,
-				this.height / 2, 16777215);
+		float overlaySize = 2F;
+		int overlayWidth = (int) ((float) this.width / 2F / overlaySize);
+		int overlayHeight = (int) ((float) this.height / 2F / overlaySize);
 
-		Thread thread = new Thread() {
-			public void run() {
-				try {
-					Thread.sleep(3000);
-					mc.displayGuiScreen(null);
-				} catch (Exception e) {
-					System.err.println(e);
-				}
-			}
-		};
+		GlStateManager.scale(2F, 2F, 2F);
 
-		thread.start();
+		this.drawCenteredString(this.fontRendererObj, ModColor.RED + "Achtung, du bist im Vanish!", overlayWidth,
+				overlayHeight, 16777215);
+
+		GlStateManager.popMatrix();
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}

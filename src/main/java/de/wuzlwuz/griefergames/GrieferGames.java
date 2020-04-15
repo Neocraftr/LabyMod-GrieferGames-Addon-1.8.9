@@ -143,17 +143,17 @@ public class GrieferGames extends LabyModAddon {
 
 	public void addBooster(Booster booster) {
 		boolean found = false;
-		if (boosters.size() > 0) {
-			for (Booster boosterList : boosters) {
-				if (boosterList.getType().equalsIgnoreCase(booster.getType())) {
+		if (getBoosters().size() > 0) {
+			for (Booster curBooster : getBoosters()) {
+				if (curBooster.getType().equalsIgnoreCase(booster.getType())) {
 					found = true;
 					if (booster.getCount() == -1) {
-						boosterList.incrementCount();
-						boosterList.setEndDate(booster.getEndDate());
+						curBooster.incrementCount();
+						curBooster.addEndDates(booster.getEndDate());
 					} else {
-						boosterList.setCount(booster.getCount());
+						curBooster.setCount(booster.getCount());
 						if (booster.getEndDate() != null) {
-							boosterList.setEndDate(booster.getEndDate());
+							curBooster.addEndDates(booster.getEndDate());
 						}
 					}
 				}
@@ -175,7 +175,10 @@ public class GrieferGames extends LabyModAddon {
 		if (boosters.size() > 0) {
 			for (Booster booster : boosters) {
 				if (booster.getType().equalsIgnoreCase(type)) {
-					booster.setCount(0);
+					if (booster.getCount() > 0) {
+						booster.decreaseEndDates();
+						booster.decreaseCount();
+					}
 				}
 			}
 		}
