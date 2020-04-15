@@ -83,8 +83,6 @@ public class Helper {
 		String fMsg = getProperTextFormat(formatted);
 
 		if (fMsg.indexOf("§r§cist jetzt wieder deaktiviert!§r") >= 0) {
-			System.out.print("DONE:");
-			System.out.println(fMsg);
 
 			Matcher matcher = getBoosterDoneValidRegexp.matcher(unformatted.trim());
 			if (matcher.find()) {
@@ -373,7 +371,6 @@ public class Helper {
 
 		Matcher matcher = getCurrentBoosters.matcher(unformatted.trim());
 		if (matcher.find()) {
-			System.out.println(unformatted);
 			String boosterName = matcher.group(1);
 
 			Integer multi = 0;
@@ -392,12 +389,8 @@ public class Helper {
 				if (matcher.find()) {
 					String times[] = matcher.group(3).split(" ");
 					for (String time : times) {
-						System.out.println(time);
 						Integer curTime = 0;
 						String[] timeSplitted = time.replaceAll("(\\(|\\))", "").trim().split(":");
-						for (String timeSplit : timeSplitted) {
-							System.out.println(timeSplit);
-						}
 
 						if (timeSplitted.length == 3) {
 							curTime += Integer.parseInt(timeSplitted[0]) * 60 * 60;
@@ -421,7 +414,6 @@ public class Helper {
 				if (boosterTimes.size() > 0) {
 					booster = new FlyBooster(multi);
 					for (Integer boosterTime : boosterTimes) {
-						System.out.println(boosterTime);
 						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
 					}
 				} else {
@@ -432,7 +424,6 @@ public class Helper {
 				if (boosterTimes.size() > 0) {
 					booster = new DropBooster(multi);
 					for (Integer boosterTime : boosterTimes) {
-						System.out.println(boosterTime);
 						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
 					}
 				} else {
@@ -443,7 +434,6 @@ public class Helper {
 				if (boosterTimes.size() > 0) {
 					booster = new BreakBooster(multi);
 					for (Integer boosterTime : boosterTimes) {
-						System.out.println(boosterTime);
 						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
 					}
 				} else {
@@ -454,7 +444,6 @@ public class Helper {
 				if (boosterTimes.size() > 0) {
 					booster = new MobBooster(multi);
 					for (Integer boosterTime : boosterTimes) {
-						System.out.println(boosterTime);
 						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
 					}
 				} else {

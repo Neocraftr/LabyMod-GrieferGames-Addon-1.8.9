@@ -183,7 +183,7 @@ public class GrieferGamesServer extends Server {
 					getGG().setBoosters(new ArrayList<Booster>());
 				} else {
 					if (getSettings().isVanishHelper() && getHelper().showVanishModule(getPlayerRank())) {
-						vanishHelperGui vanishHelper = new vanishHelperGui();
+						final vanishHelperGui vanishHelper = new vanishHelperGui();
 						mc.displayGuiScreen(vanishHelper);
 						Thread thread = new Thread() {
 							public void run() {
@@ -350,7 +350,6 @@ public class GrieferGamesServer extends Server {
 					}
 				}
 
-				System.out.println(formatted);
 				getHelper().isValidBoosterMessage(unformatted, formatted);
 				getHelper().isValidBoosterDoneMessage(unformatted, formatted);
 				getHelper().isValidBoosterMultiDoneMessage(unformatted, formatted);
