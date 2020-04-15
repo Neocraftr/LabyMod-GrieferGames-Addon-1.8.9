@@ -43,7 +43,8 @@ public class ModSettings {
 	private boolean bankChatRight = true;
 	private boolean bankAchievement = false;
 
-	private boolean clearLagChatRight = true;
+	private boolean itemRemoverChatRight = true;
+	private boolean itemRemoverLastTimeHover = false;
 
 	private boolean mobRemoverChatRight = true;
 	private boolean mobRemoverLastTimeHover = false;
@@ -269,12 +270,20 @@ public class ModSettings {
 		this.bankAchievement = bankAchievement;
 	}
 
-	public boolean isClearLagChatRight() {
-		return this.clearLagChatRight;
+	public boolean isItemRemoverChatRight() {
+		return this.itemRemoverChatRight;
 	}
 
-	private void setClearLagChatRight(boolean clearLagChatRight) {
-		this.clearLagChatRight = clearLagChatRight;
+	private void setItemRemoverChatRight(boolean itemRemoverChatRight) {
+		this.itemRemoverChatRight = itemRemoverChatRight;
+	}
+
+	public boolean isItemRemoverLastTimeHover() {
+		return this.itemRemoverLastTimeHover;
+	}
+
+	private void setItemRemoverLastTimeHover(boolean itemRemoverLastTimeHover) {
+		this.itemRemoverLastTimeHover = itemRemoverLastTimeHover;
 	}
 
 	public boolean isMobRemoverChatRight() {
@@ -493,8 +502,11 @@ public class ModSettings {
 		 * setRealnameClick(getConfig().get("realnameClick").getAsBoolean());
 		 */
 
-		if (getConfig().has("clearLagChatRight"))
-			setClearLagChatRight(getConfig().get("clearLagChatRight").getAsBoolean());
+		if (getConfig().has("itemRemoverChatRight"))
+			setItemRemoverChatRight(getConfig().get("itemRemoverChatRight").getAsBoolean());
+
+		if (getConfig().has("itemRemoverLastTimeHover"))
+			setItemRemoverLastTimeHover(getConfig().get("itemRemoverLastTimeHover").getAsBoolean());
 
 		if (getConfig().has("mobRemoverChatRight"))
 			setMobRemoverChatRight(getConfig().get("mobRemoverChatRight").getAsBoolean());
@@ -792,18 +804,29 @@ public class ModSettings {
 				}, isBankAchievement());
 		settings.add(bankAchievementBtn);
 
-		settings.add(new HeaderElement("ClearLag"));
-		final BooleanElement clearLagChatRightBtn = new BooleanElement("ClearLag 2. Chat",
+		settings.add(new HeaderElement("ItemRemover"));
+		final BooleanElement itemRemoverChatRightBtn = new BooleanElement("ItemRemover 2. Chat",
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean clearLagChatRight) {
-						setClearLagChatRight(clearLagChatRight);
-						getConfig().addProperty("clearLagChatRight", clearLagChatRight);
+					public void accept(Boolean itemRemoverChatRight) {
+						setItemRemoverChatRight(itemRemoverChatRight);
+						getConfig().addProperty("itemRemoverChatRight", itemRemoverChatRight);
 						saveConfig();
 					}
-				}, isClearLagChatRight());
-		settings.add(clearLagChatRightBtn);
+				}, isItemRemoverChatRight());
+		settings.add(itemRemoverChatRightBtn);
+
+		final BooleanElement itemRemoverLastTimeHoverBtn = new BooleanElement("Itemremover Zeitstempel hover",
+				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean itemRemoverLastTimeHover) {
+						setItemRemoverLastTimeHover(itemRemoverLastTimeHover);
+						getConfig().addProperty("itemRemoverLastTimeHover", itemRemoverLastTimeHover);
+						saveConfig();
+					}
+				}, isItemRemoverLastTimeHover());
+		settings.add(itemRemoverLastTimeHoverBtn);
 
 		settings.add(new HeaderElement("MobRemover"));
 		final BooleanElement mobRemoverChatRightBtn = new BooleanElement("Mobremover 2. Chat",

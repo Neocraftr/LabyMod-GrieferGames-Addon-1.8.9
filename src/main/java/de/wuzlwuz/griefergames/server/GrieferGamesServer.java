@@ -15,7 +15,7 @@ import de.wuzlwuz.griefergames.chat.ChatTime;
 import de.wuzlwuz.griefergames.chat.CheckPlot;
 import de.wuzlwuz.griefergames.chat.ClanTag;
 import de.wuzlwuz.griefergames.chat.ClearChat;
-import de.wuzlwuz.griefergames.chat.ClearLag;
+import de.wuzlwuz.griefergames.chat.ItemRemover;
 import de.wuzlwuz.griefergames.chat.GlobalMessage;
 import de.wuzlwuz.griefergames.chat.IgnoreList;
 import de.wuzlwuz.griefergames.chat.LobbyHub;
@@ -157,7 +157,7 @@ public class GrieferGamesServer extends Server {
 		getGG().addChatModule(new PrivateMessage());
 		getGG().addChatModule(new Payment());
 		getGG().addChatModule(new Bank());
-		getGG().addChatModule(new ClearLag());
+		getGG().addChatModule(new ItemRemover());
 		getGG().addChatModule(new MobRemover());
 		getGG().addChatModule(new PlotChat());
 		getGG().addChatModule(new Teleport());
