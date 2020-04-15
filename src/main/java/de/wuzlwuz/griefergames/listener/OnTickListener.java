@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import de.wuzlwuz.griefergames.GrieferGames;
-import de.wuzlwuz.griefergames.server.GrieferGamesServer;
 import net.labymod.core.LabyModCore;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
@@ -14,30 +13,17 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class OnTickListener {
-	private GrieferGamesServer server;
-
-	public GrieferGamesServer getServer() {
-		return server;
-	}
-
-	public void setServer(GrieferGamesServer server) {
-		this.server = server;
-	}
-
-	public OnTickListener(GrieferGamesServer server) {
-		this.setServer(server);
-	}
-
 	@SubscribeEvent
 	public void onTick(TickEvent.ClientTickEvent event) {
-		if (LabyModCore.getMinecraft().getWorld() != null && event.phase == TickEvent.Phase.START) {
-			if (System.currentTimeMillis() > getServer().getNextLastMessageRequest()) {
-				getServer().setNextLastMessageRequest(System.currentTimeMillis()
+		if (LabyModCore.getMinecraft().getWorld() != null && event.phase == TickEvent.Phase.END) {
+			if (System.currentTimeMillis() > GrieferGames.getGriefergames().getGGServer().getNextLastMessageRequest()) {
+				GrieferGames.getGriefergames().getGGServer().setNextLastMessageRequest(System.currentTimeMillis()
 						+ GrieferGames.getSettings().getFilterDuplicateMessagesTime() * 1000L);
-				getServer().setLastMessage("");
+				GrieferGames.getGriefergames().getGGServer().setLastMessage("");
 			}
-			if (System.currentTimeMillis() > getServer().getNextScoreboardRequest()) {
-				getServer().setNextScoreboardRequest(System.currentTimeMillis() + 500L);
+			if (System.currentTimeMillis() > GrieferGames.getGriefergames().getGGServer().getNextScoreboardRequest()) {
+				GrieferGames.getGriefergames().getGGServer()
+						.setNextScoreboardRequest(System.currentTimeMillis() + 500L);
 				Scoreboard scoreboard = LabyModCore.getMinecraft().getWorld().getScoreboard();
 				ScoreObjective scoreobjective = scoreboard.getObjectiveInDisplaySlot(1);
 				if (scoreobjective != null) {
@@ -54,10 +40,12 @@ public class OnTickListener {
 									.formatPlayerName(scorePlayerTeam, scoreList.get(i + 1).getPlayerName())
 									.replaceAll("\u00A7[0-9a-f]", "").trim();
 
-							if (!getServer().getSubServer().matches(scoreName)) {
-								for (SubServerListener ssl : getServer().getSubServerListener()) {
-									ssl.onSubServerChanged(getServer().getSubServer(), scoreName);
-									getServer().setSubServer(scoreName);
+							if (!GrieferGames.getGriefergames().getGGServer().getSubServer().matches(scoreName)) {
+								for (SubServerListener ssl : GrieferGames.getGriefergames().getGGServer()
+										.getSubServerListener()) {
+									ssl.onSubServerChanged(GrieferGames.getGriefergames().getGGServer().getSubServer(),
+											scoreName);
+									GrieferGames.getGriefergames().getGGServer().setSubServer(scoreName);
 								}
 							}
 							i = scoreList.size();
@@ -66,8 +54,8 @@ public class OnTickListener {
 				}
 			}
 
-			if (System.currentTimeMillis() > getServer().getNextCheckFly()) {
-				getServer().setNextCheckFly(System.currentTimeMillis() + 500L);
+			if (System.currentTimeMillis() > GrieferGames.getGriefergames().getGGServer().getNextCheckFly()) {
+				GrieferGames.getGriefergames().getGGServer().setNextCheckFly(System.currentTimeMillis() + 500L);
 				GrieferGames.getGriefergames()
 						.setFlyActive(LabyModCore.getMinecraft().getPlayer().capabilities.allowFlying);
 			}

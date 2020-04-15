@@ -3,7 +3,6 @@ package de.wuzlwuz.griefergames.listener;
 import java.util.Collection;
 
 import de.wuzlwuz.griefergames.GrieferGames;
-import de.wuzlwuz.griefergames.server.GrieferGamesServer;
 import net.labymod.core.LabyModCore;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -15,24 +14,11 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class PreRenderListener {
-	private GrieferGamesServer server;
-
-	public GrieferGamesServer getServer() {
-		return server;
-	}
-
-	public void setServer(GrieferGamesServer server) {
-		this.server = server;
-	}
-
-	public PreRenderListener(GrieferGamesServer server) {
-		this.setServer(server);
-	}
-
 	@SubscribeEvent
 	public void onPreRender(RenderGameOverlayEvent event) {
-		if (getServer().getMc().gameSettings.keyBindPlayerList.isKeyDown()
-				&& !getServer().getMc().isIntegratedServerRunning() && GrieferGames.getSettings().isAMPEnabled()) {
+		if (GrieferGames.getGriefergames().getGGServer().getMc().gameSettings.keyBindPlayerList.isKeyDown()
+				&& !GrieferGames.getGriefergames().getGGServer().getMc().isIntegratedServerRunning()
+				&& GrieferGames.getSettings().isAMPEnabled()) {
 
 			ScoreObjective scoreobjective = LabyModCore.getMinecraft().getWorld().getScoreboard()
 					.getObjectiveInDisplaySlot(0);

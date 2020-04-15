@@ -56,7 +56,7 @@ public class Teleport extends Chat {
 
 			if (tpahereMesssage.find()) {
 				IChatComponent beforeTpaMsg = new ChatComponentText("[TPAHERE] ")
-						.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED).setBold(true));
+						.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED).setBold(true));
 				IChatComponent newMsg = new ChatComponentText("").appendSibling(beforeTpaMsg).appendSibling(msg);
 				return newMsg;
 			}

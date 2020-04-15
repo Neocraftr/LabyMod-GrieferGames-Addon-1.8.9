@@ -10,29 +10,7 @@ import java.util.List;
 import java.util.Properties;
 
 import de.wuzlwuz.griefergames.booster.Booster;
-import de.wuzlwuz.griefergames.chat.AntiMagicClanTag;
-import de.wuzlwuz.griefergames.chat.AntiMagicPrefix;
-import de.wuzlwuz.griefergames.chat.Bank;
-import de.wuzlwuz.griefergames.chat.Blanks;
 import de.wuzlwuz.griefergames.chat.Chat;
-import de.wuzlwuz.griefergames.chat.ChatTime;
-import de.wuzlwuz.griefergames.chat.CheckPlot;
-import de.wuzlwuz.griefergames.chat.ClanTag;
-import de.wuzlwuz.griefergames.chat.ClearChat;
-import de.wuzlwuz.griefergames.chat.ClearLag;
-import de.wuzlwuz.griefergames.chat.GlobalMessage;
-import de.wuzlwuz.griefergames.chat.IgnoreList;
-import de.wuzlwuz.griefergames.chat.LobbyHub;
-import de.wuzlwuz.griefergames.chat.MobRemover;
-import de.wuzlwuz.griefergames.chat.Nickname;
-import de.wuzlwuz.griefergames.chat.Payment;
-import de.wuzlwuz.griefergames.chat.PlotChat;
-import de.wuzlwuz.griefergames.chat.PrivateMessage;
-import de.wuzlwuz.griefergames.chat.Realname;
-import de.wuzlwuz.griefergames.chat.SupremeBlanks;
-import de.wuzlwuz.griefergames.chat.Teleport;
-import de.wuzlwuz.griefergames.chat.VanishHelper;
-import de.wuzlwuz.griefergames.chat.Vote;
 import de.wuzlwuz.griefergames.chatMenu.TeamMenu;
 import de.wuzlwuz.griefergames.helper.Helper;
 import de.wuzlwuz.griefergames.server.GrieferGamesServer;
@@ -52,6 +30,7 @@ public class GrieferGames extends LabyModAddon {
 	private static GrieferGames griefergames;
 	private static ModSettings settings;
 	private String serverIp = "";
+	private String secondServerIp = "";
 	private boolean showModules = false;
 	private boolean showBoosterDummy = false;
 	private boolean vanishActive = false;
@@ -88,6 +67,14 @@ public class GrieferGames extends LabyModAddon {
 
 	private void setServerIp(String serverIp) {
 		this.serverIp = serverIp;
+	}
+
+	public String getSecondServerIp() {
+		return secondServerIp;
+	}
+
+	private void setSecondServerIp(String secondServerIp) {
+		this.secondServerIp = secondServerIp;
 	}
 
 	public boolean isShowModules() {
@@ -251,11 +238,22 @@ public class GrieferGames extends LabyModAddon {
 		this.playerRank = playerRank;
 	}
 
+	private GrieferGamesServer ggserver;
+
+	public GrieferGamesServer getGGServer() {
+		return ggserver;
+	}
+
+	public void setGGServer(GrieferGamesServer ggserver) {
+		this.ggserver = ggserver;
+	}
+
 	@Override
 	public void onEnable() {
 		System.out.println("[GrieferGames] enabled.");
 		// set ip
 		setServerIp("griefergames.net");
+		setSecondServerIp("griefergames.de");
 
 		// save instance
 		setGriefergames(this);
@@ -269,42 +267,22 @@ public class GrieferGames extends LabyModAddon {
 		// extend translations
 		loadTranslations();
 
-		// add Chat Modules
-		addChatModule(new ClearChat());
-		addChatModule(new Blanks());
-		addChatModule(new SupremeBlanks());
-		addChatModule(new PrivateMessage());
-		addChatModule(new Payment());
-		addChatModule(new Bank());
-		addChatModule(new ClearLag());
-		addChatModule(new MobRemover());
-		addChatModule(new PlotChat());
-		addChatModule(new Teleport());
-		addChatModule(new Vote());
-		addChatModule(new GlobalMessage());
-		addChatModule(new LobbyHub());
-		addChatModule(new Realname());
-		addChatModule(new IgnoreList());
-		addChatModule(new ClanTag());
-		addChatModule(new AntiMagicClanTag());
-		addChatModule(new AntiMagicPrefix());
-		addChatModule(new Nickname());
-		addChatModule(new CheckPlot());
-		addChatModule(new VanishHelper());
-		addChatModule(new ChatTime());
-
 		// set module category
 		setModuleCategory(new ModuleCategory(LanguageManager.translateOrReturnKey("modules_category_gg", new Object[0]),
 				true, new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/icon.png"))));
 
+		setGGServer(new GrieferGamesServer(Minecraft.getMinecraft()));
+
 		// set server support
-		getApi().registerServerSupport(this, new GrieferGamesServer(Minecraft.getMinecraft()));
+		getApi().registerServerSupport(this, getGGServer());
 
 		// show / hide gg modules
 		getApi().getEventManager().registerOnJoin(new Consumer<ServerData>() {
 			@Override
 			public void accept(ServerData serverData) {
-				setShowModules(serverData.getIp().toLowerCase().indexOf(getServerIp()) >= 0);
+				boolean showModules = (serverData.getIp().toLowerCase().indexOf(getServerIp()) >= 0
+						|| serverData.getIp().toLowerCase().indexOf(getSecondServerIp()) >= 0);
+				setShowModules(showModules);
 			}
 		});
 	}

@@ -171,7 +171,7 @@ public class CheckPlot extends Chat {
 			} else if (propFormatted.indexOf("§cDer Antrag wurde nicht gefunden.§r") >= 0) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§6Das Grundst\u00FCck wird gepr\u00FCft!") >= 0) {
+			} else if (propFormatted.indexOf("§6Das Grundst\u00FCck wird gepr\u00FCft") >= 0) {
 				setSecondChat(true);
 				return true;
 			}

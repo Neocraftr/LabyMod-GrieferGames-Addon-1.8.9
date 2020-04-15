@@ -6,7 +6,29 @@ import java.util.List;
 
 import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.booster.Booster;
+import de.wuzlwuz.griefergames.chat.AntiMagicClanTag;
+import de.wuzlwuz.griefergames.chat.AntiMagicPrefix;
+import de.wuzlwuz.griefergames.chat.Bank;
+import de.wuzlwuz.griefergames.chat.Blanks;
 import de.wuzlwuz.griefergames.chat.Chat;
+import de.wuzlwuz.griefergames.chat.ChatTime;
+import de.wuzlwuz.griefergames.chat.CheckPlot;
+import de.wuzlwuz.griefergames.chat.ClanTag;
+import de.wuzlwuz.griefergames.chat.ClearChat;
+import de.wuzlwuz.griefergames.chat.ClearLag;
+import de.wuzlwuz.griefergames.chat.GlobalMessage;
+import de.wuzlwuz.griefergames.chat.IgnoreList;
+import de.wuzlwuz.griefergames.chat.LobbyHub;
+import de.wuzlwuz.griefergames.chat.MobRemover;
+import de.wuzlwuz.griefergames.chat.Nickname;
+import de.wuzlwuz.griefergames.chat.Payment;
+import de.wuzlwuz.griefergames.chat.PlotChat;
+import de.wuzlwuz.griefergames.chat.PrivateMessage;
+import de.wuzlwuz.griefergames.chat.Realname;
+import de.wuzlwuz.griefergames.chat.SupremeBlanks;
+import de.wuzlwuz.griefergames.chat.Teleport;
+import de.wuzlwuz.griefergames.chat.VanishHelper;
+import de.wuzlwuz.griefergames.chat.Vote;
 import de.wuzlwuz.griefergames.gui.vanishHelperGui;
 import de.wuzlwuz.griefergames.helper.Helper;
 import de.wuzlwuz.griefergames.listener.OnTickListener;
@@ -29,6 +51,7 @@ import net.labymod.ingamegui.ModuleCategoryRegistry;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.labymod.servermanager.Server;
 import net.labymod.settings.elements.SettingsElement;
+import net.labymod.utils.ModColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -115,9 +138,42 @@ public class GrieferGamesServer extends Server {
 	}
 
 	public GrieferGamesServer(Minecraft minecraft) {
-		super("GrieferGames", GrieferGames.getGriefergames().getServerIp());
+		super("GrieferGames", GrieferGames.getGriefergames().getServerIp(),
+				GrieferGames.getGriefergames().getSecondServerIp());
+
 		setMc(minecraft);
 		setApi(getGG().getApi());
+
+		ModuleCategoryRegistry.loadCategory(getGG().getModuleCategory());
+
+		new BoosterModule();
+		new FlyModule();
+		new NicknameModule();
+
+		// add Chat Modules
+		getGG().addChatModule(new ClearChat());
+		getGG().addChatModule(new Blanks());
+		getGG().addChatModule(new SupremeBlanks());
+		getGG().addChatModule(new PrivateMessage());
+		getGG().addChatModule(new Payment());
+		getGG().addChatModule(new Bank());
+		getGG().addChatModule(new ClearLag());
+		getGG().addChatModule(new MobRemover());
+		getGG().addChatModule(new PlotChat());
+		getGG().addChatModule(new Teleport());
+		getGG().addChatModule(new Vote());
+		getGG().addChatModule(new GlobalMessage());
+		getGG().addChatModule(new LobbyHub());
+		getGG().addChatModule(new Realname());
+		getGG().addChatModule(new IgnoreList());
+		getGG().addChatModule(new ClanTag());
+		getGG().addChatModule(new AntiMagicClanTag());
+		getGG().addChatModule(new AntiMagicPrefix());
+		getGG().addChatModule(new Nickname());
+		getGG().addChatModule(new CheckPlot());
+		getGG().addChatModule(new VanishHelper());
+		getGG().addChatModule(new ChatTime());
+
 		addSubServerListener(new SubServerListener() {
 			@Override
 			public void onSubServerChanged(String subServerNameOld, String subServerName) {
@@ -132,7 +188,27 @@ public class GrieferGamesServer extends Server {
 				}
 				if (subServerName.equalsIgnoreCase("lobby")) {
 					getGG().setShowBoosterDummy(true);
-					loadPlayerRank();
+					boolean loadRank = loadPlayerRank();
+					if (!loadRank) {
+						Thread thread = new Thread() {
+							public void run() {
+								try {
+									Thread.sleep(500);
+									boolean loadRank2nd = loadPlayerRank();
+									if (!loadRank2nd) {
+										getApi().displayMessageInChat(ModColor.DARK_GRAY + "[" + ModColor.GOLD
+												+ "FEHLER" + ModColor.DARK_GRAY + "] " + ModColor.RED
+												+ "Ihr Rang konnte " + ModColor.UNDERLINE + "nicht" + ModColor.RESET
+												+ ModColor.RED + " geladen werden, bitte Verbinden Sie sich erneut!");
+
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						};
+						thread.start();
+					}
 				} else {
 					// Minecraft.getMinecraft().entityRenderer.getMapItemRenderer().clearLoadedMaps();
 					getGG().setShowBoosterDummy(false);
@@ -212,11 +288,6 @@ public class GrieferGamesServer extends Server {
 			if (!getModulesLoaded()) {
 				setModulesLoaded(true);
 
-				ModuleCategoryRegistry.loadCategory(getGG().getModuleCategory());
-
-				new BoosterModule();
-				new FlyModule();
-				new NicknameModule();
 				if (getHelper().showGodModule(getPlayerRank())) {
 					new GodmodeModule();
 				}
@@ -230,6 +301,7 @@ public class GrieferGamesServer extends Server {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+
 			return false;
 		}
 	}
@@ -318,8 +390,8 @@ public class GrieferGamesServer extends Server {
 
 			});
 
-			this.getApi().registerForgeListener(new PreRenderListener(this));
-			this.getApi().registerForgeListener(new OnTickListener(this));
+			getApi().registerForgeListener(new PreRenderListener());
+			getApi().registerForgeListener(new OnTickListener());
 
 			getApi().getEventManager().register(new MessageSendEvent() {
 				public boolean onSend(String message) {
