@@ -189,7 +189,7 @@ public class GrieferGamesServer extends Server {
 							public void run() {
 								try {
 									Thread.sleep(3000);
-									if (mc.currentScreen.equals(vanishHelper)) {
+									if (mc.currentScreen != null && mc.currentScreen.equals(vanishHelper)) {
 										mc.displayGuiScreen(null);
 									}
 								} catch (Exception e) {

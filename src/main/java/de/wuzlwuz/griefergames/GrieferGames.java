@@ -153,7 +153,11 @@ public class GrieferGames extends LabyModAddon {
 					} else {
 						curBooster.setCount(booster.getCount());
 						if (booster.getEndDate() != null) {
-							curBooster.addEndDates(booster.getEndDate());
+							if (booster.getResetEndDates()) {
+								curBooster.setEndDates(booster.getEndDates());
+							} else {
+								curBooster.addEndDates(booster.getEndDate());
+							}
 						}
 					}
 				}

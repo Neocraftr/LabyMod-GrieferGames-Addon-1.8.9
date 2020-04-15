@@ -18,6 +18,7 @@ public class Booster {
 	private IconData icon = new IconData(Material.BARRIER);
 	private int iconIndex = 0;
 	private boolean showCount = true;
+	private boolean resetEndDates = false;
 
 	Booster(String name, String type, int count, LocalDateTime endDate, IconData icon, int iconIndex,
 			boolean showCount) {
@@ -202,6 +203,14 @@ public class Booster {
 
 	public void setShowCount(boolean showCount) {
 		this.showCount = showCount;
+	}
+
+	public boolean getResetEndDates() {
+		return resetEndDates;
+	}
+
+	public void setResetEndDates(boolean resetEndDates) {
+		this.resetEndDates = resetEndDates;
 	}
 
 	public String getDurationString() {

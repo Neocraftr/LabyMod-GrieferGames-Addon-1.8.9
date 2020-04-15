@@ -48,7 +48,7 @@ public class Helper {
 	private static Pattern getBoosterDoneValidRegexp = Pattern
 			.compile("^\\[Booster\\] ([A-z]+\\-Booster|Erfahrungsbooster) ist jetzt wieder deaktiviert!$");
 	private static Pattern getBoosterMultiDoneValidRegexp = Pattern.compile(
-			"^\\[Booster\\] Der ([A-z]+\\-Booster|Erfahrungsbooster) \\(Stufe [1-6]\\) von ([A-Za-z\\-]+\\+? \\| (\\u007E)?\\w{1,16}) ist abgelaufen.$");
+			"^\\[Booster\\] Der ([A-z]+\\-Booster|Erfahrungsbooster) \\(Stufe [2-6]\\) von ([A-Za-z\\-]+\\+? \\| (\\u007E)?\\w{1,16}) ist abgelaufen.$");
 	private static Pattern getCurrentBoosters = Pattern.compile(
 			"^([A-z]+\\-Booster|Erfahrungsbooster) Multiplikator: ([0-9])x ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
 
@@ -387,7 +387,7 @@ public class Helper {
 			try {
 				matcher = getCurrentBoosters.matcher(unformatted.trim());
 				if (matcher.find()) {
-					String times[] = matcher.group(3).split(" ");
+					String times[] = matcher.group(3).trim().split(" ");
 					for (String time : times) {
 						Integer curTime = 0;
 						String[] timeSplitted = time.replaceAll("(\\(|\\))", "").trim().split(":");
@@ -411,58 +411,30 @@ public class Helper {
 			Booster booster = null;
 			boosterName = boosterName.toLowerCase();
 			if (boosterName.equalsIgnoreCase("fly-booster")) {
-				if (boosterTimes.size() > 0) {
-					booster = new FlyBooster(multi);
-					for (Integer boosterTime : boosterTimes) {
-						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
-					}
-				} else {
-					booster = new FlyBooster(multi);
-				}
+				booster = new FlyBooster(multi);
 				validBooster = true;
 			} else if (boosterName.equalsIgnoreCase("drop-booster")) {
-				if (boosterTimes.size() > 0) {
-					booster = new DropBooster(multi);
-					for (Integer boosterTime : boosterTimes) {
-						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
-					}
-				} else {
-					booster = new DropBooster(multi);
-				}
+				booster = new DropBooster(multi);
 				validBooster = true;
 			} else if (boosterName.equalsIgnoreCase("break-booster")) {
-				if (boosterTimes.size() > 0) {
-					booster = new BreakBooster(multi);
-					for (Integer boosterTime : boosterTimes) {
-						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
-					}
-				} else {
-					booster = new BreakBooster(multi);
-				}
+				booster = new BreakBooster(multi);
 				validBooster = true;
 			} else if (boosterName.equalsIgnoreCase("mob-booster")) {
-				if (boosterTimes.size() > 0) {
-					booster = new MobBooster(multi);
-					for (Integer boosterTime : boosterTimes) {
-						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
-					}
-				} else {
-					booster = new MobBooster(multi);
-				}
+				booster = new MobBooster(multi);
 				validBooster = true;
 			} else if (boosterName.equalsIgnoreCase("erfahrungsbooster")) {
-				if (boosterTimes.size() > 0) {
-					booster = new ExperienceBooster(multi);
-					for (Integer boosterTime : boosterTimes) {
-						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
-					}
-				} else {
-					booster = new ExperienceBooster(multi);
-				}
+				booster = new ExperienceBooster(multi);
 				validBooster = true;
 			}
 
 			if (validBooster) {
+				if (boosterTimes.size() > 0) {
+					booster.setResetEndDates(true);
+					for (Integer boosterTime : boosterTimes) {
+						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
+					}
+				}
+
 				GrieferGames.getGriefergames().addBooster(booster);
 				return 1;
 			}
