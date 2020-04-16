@@ -8,7 +8,7 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
 
 public class AntiMagicPrefix extends Chat {
-	private static Pattern antiMagixPrefixRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\| (\\w{1,16}))");
+	private static Pattern antiMagixPrefixRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16}))");
 
 	@Override
 	public String getName() {

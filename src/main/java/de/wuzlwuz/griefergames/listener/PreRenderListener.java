@@ -37,7 +37,7 @@ public class PreRenderListener {
 								IChatComponent newPlayerDisplayName = new ChatComponentText("");
 								for (IChatComponent displayName : playerDisplayName.getSiblings()) {
 									if (displayName.getChatStyle().getObfuscated() && displayName.getUnformattedText()
-											.matches("(([A-Za-z\\-]+\\+?) \\| (\\w{1,16}))")) {
+											.matches("(([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16}))")) {
 										ChatStyle playerDisplayNameStyling = displayName.getChatStyle().createDeepCopy()
 												.setObfuscated(false);
 										String chatRepText = GrieferGames.getSettings().getAMPTablistReplacement();
