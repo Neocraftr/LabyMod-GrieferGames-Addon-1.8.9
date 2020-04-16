@@ -361,7 +361,7 @@ public class Helper {
 
 	public boolean showAuraModule(String playerRank) {
 		List<String> auraRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "youtuber+", "yt+");
+				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "youtuber+", "yt+");
 		return auraRanks.contains(playerRank);
 	}
 
