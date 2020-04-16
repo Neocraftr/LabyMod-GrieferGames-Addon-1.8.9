@@ -174,7 +174,7 @@ public class BoosterModule extends Module {
 
 		amplifierColorPicker.setHasAdvanced(true);
 		amplifierColorPicker.setHasDefault(false);
-		nameColorPicker.setUpdateListener(new Consumer<Color>() {
+		amplifierColorPicker.setUpdateListener(new Consumer<Color>() {
 			@Override
 			public void accept(Color color) {
 				BoosterModule.this.getAttributes().put("ampColor", String.valueOf(color == null ? -1 : color.getRGB()));
@@ -192,7 +192,7 @@ public class BoosterModule extends Module {
 
 		durationColorPicker.setHasAdvanced(true);
 		durationColorPicker.setHasDefault(false);
-		nameColorPicker.setUpdateListener(new Consumer<Color>() {
+		durationColorPicker.setUpdateListener(new Consumer<Color>() {
 			@Override
 			public void accept(Color color) {
 				BoosterModule.this.getAttributes().put("durationColor",
