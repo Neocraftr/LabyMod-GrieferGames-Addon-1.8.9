@@ -75,21 +75,25 @@ public class BoosterModule extends Module {
 
 					if (showCount && count > 0) {
 						LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow("x" + count.toString(),
-								x + (28 + stringWidth), y - 1,
-								getColor("ampColor", DefaultValues.POTION_AMPLIFIER_COLOR));
+								x + (28 + stringWidth), y - 1, getColor("ampColor", new Color(85, 255, 255).getRGB()));
 					}
 
 					LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow(booster.getDurationString(),
 							x + 28, y + 9, getColor("durationColor", DefaultValues.POTION_DURATION_COLOR));
 				} else {
 					int stringWidth = 0;
-					LabyMod.getInstance().getDrawUtils().drawRightStringWithShadow(name, rightX - 28, y - 1,
-							getColor("nameColor", DefaultValues.POTION_NAME_COLOR));
+					String countStr = "x" + count.toString();
+					if (showCount && count > 0) {
+						stringWidth = LabyModCore.getMinecraft().getFontRenderer().getStringWidth(" " + countStr);
+					}
+					LabyMod.getInstance().getDrawUtils().drawRightStringWithShadow(name, rightX - (28 + stringWidth),
+							y - 1, getColor("nameColor", DefaultValues.POTION_NAME_COLOR));
 
 					if (showCount && count > 0) {
+						stringWidth = LabyModCore.getMinecraft().getFontRenderer().getStringWidth(countStr);
 						LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow("x" + count.toString(),
 								rightX - (28 + stringWidth), y - 1,
-								getColor("ampColor", DefaultValues.POTION_AMPLIFIER_COLOR));
+								getColor("ampColor", new Color(85, 255, 255).getRGB()));
 					}
 
 					LabyMod.getInstance().getDrawUtils().drawRightStringWithShadow(booster.getDurationString(),
@@ -168,7 +172,7 @@ public class BoosterModule extends Module {
 				ModColor.getColorByString((String) getAttributes().get("ampColor")),
 				new ColorPicker.DefaultColorCallback() {
 					public Color getDefaultColor() {
-						return new Color(DefaultValues.POTION_AMPLIFIER_COLOR);
+						return new Color(new Color(85, 255, 255).getRGB());
 					}
 				}, 0, 0, 0, 0);
 
