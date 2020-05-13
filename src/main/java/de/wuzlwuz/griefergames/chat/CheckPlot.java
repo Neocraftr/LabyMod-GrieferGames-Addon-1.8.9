@@ -19,9 +19,10 @@ public class CheckPlot extends Chat {
 		public void run() {
 			try {
 				Thread.sleep(1500);
-			} catch (Exception e) {
 				getHelper().delChatToolFilter("GG-Addon-Filter-helper");
 				getHelper().delChatToolFilter("GG-Addon-Filter-helper_2nd");
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	};
@@ -40,6 +41,13 @@ public class CheckPlot extends Chat {
 				// getApi().displayMessageInChat(ModColor.cl("4") + "Checkplot helper
 				// deaktiviert!");
 				TeamMenu.printMenu();
+				if (thread != null) {
+					System.out.println(thread.getState());
+				}
+				if (thread == null || thread.getState() == Thread.State.TERMINATED) {
+					thread = new Thread(runnable);
+					thread.start();
+				}
 			} else {
 				getSettings().activateCheckPlotHelper();
 				// getApi().displayMessageInChat(ModColor.cl("2") + "Checkplot helper
@@ -58,6 +66,7 @@ public class CheckPlot extends Chat {
 
 	@Override
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
+		System.out.println(getHelper().getProperChatFormat(msg.getFormattedText()));
 		if (doActionReceiveMessage(msg.getFormattedText(), msg.getUnformattedText())) {
 			// getHelper().setChatToolFilterText();
 			// getHelper().setChatToolFilterRoom();
@@ -134,12 +143,18 @@ public class CheckPlot extends Chat {
 			} else if (propFormatted.indexOf("§cDer Spieler ist aktiv auf GrieferGames.§r") >= 0) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§6§lInformationen: §r§f§nhttp://plots.griefergames.net/§r§f§n §r") >= 0) {
-				setSecondChat(true);
+			} else if (propFormatted.indexOf("§6§lInformationen: §r§f§nhttp://plots.griefergames.net/§r§f§n") >= 0) {
+				setSecondChat(false);
 				return true;
 			} else if (propFormatted.indexOf("§6ID") >= 0 && (propFormatted.indexOf("§r§eoffen §r") >= 0
-					|| propFormatted.indexOf("§r§4§labgelehnt: §r§4") >= 0)) {
-				setSecondChat(true);
+					|| propFormatted.indexOf("§r§4§labgelehnt: §r§4") >= 0
+					|| propFormatted.indexOf("§r§2angenommen§r§a") >= 0
+					|| propFormatted.indexOf("§aPlot wurde best\u00E4tigt.") >= 0
+					|| propFormatted.indexOf("§r§a§l\u00FCbergeben§r") >= 0)) {
+				setSecondChat(false);
+				return true;
+			} else if (propFormatted.indexOf("§6§lInformationen: §r§f§nhttp://plots.griefergames.net/§r§f§n") >= 0) {
+				setSecondChat(false);
 				return true;
 			} else if (propFormatted.indexOf("§cDu bist zu weit vom Grundst\u00FCck entfernt!§r") >= 0) {
 				setSecondChat(true);
@@ -157,6 +172,12 @@ public class CheckPlot extends Chat {
 			} else if (propFormatted.indexOf("§cMerge-Grundst\u00FCcke k\u00F6nnen nicht beantragt werden.§r") >= 0) {
 				setSecondChat(true);
 				return true;
+			} else if (propFormatted.indexOf("§Das Grundst\u00FCcke wurde bereits beantragt.§r") >= 0) {
+				setSecondChat(true);
+				return true;
+			} else if (propFormatted.indexOf("§cDer Spieler konnte nicht identifiziert werden.") >= 0) {
+				setSecondChat(true);
+				return true;
 			} else if (propFormatted.indexOf(
 					"§aDu kannst das Grundst\u00FCck jetzt l\u00F6schen. Bitte best\u00E4tige mit §r§2/checkplot confirm§r§a.§r") >= 0) {
 				setSecondChat(true);
@@ -171,7 +192,7 @@ public class CheckPlot extends Chat {
 			} else if (propFormatted.indexOf("§cDer Antrag wurde nicht gefunden.§r") >= 0) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§6Das Grundst\u00FCck wird gepr\u00FCft") >= 0) {
+			} else if (propFormatted.indexOf("§7Das Grundst\u00FCck wird gepr\u00FCft") >= 0) {
 				setSecondChat(true);
 				return true;
 			}

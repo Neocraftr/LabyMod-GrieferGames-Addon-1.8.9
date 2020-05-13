@@ -20,7 +20,7 @@ plugins {
 }
 */
 
-version = "7"
+version = "8"
 group= "de.wuzlwuz.griefergames" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "GrieferGames"
 

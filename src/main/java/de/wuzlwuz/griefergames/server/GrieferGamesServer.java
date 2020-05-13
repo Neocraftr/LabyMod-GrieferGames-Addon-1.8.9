@@ -15,11 +15,12 @@ import de.wuzlwuz.griefergames.chat.ChatTime;
 import de.wuzlwuz.griefergames.chat.CheckPlot;
 import de.wuzlwuz.griefergames.chat.ClanTag;
 import de.wuzlwuz.griefergames.chat.ClearChat;
-import de.wuzlwuz.griefergames.chat.ItemRemover;
 import de.wuzlwuz.griefergames.chat.GlobalMessage;
 import de.wuzlwuz.griefergames.chat.IgnoreList;
+import de.wuzlwuz.griefergames.chat.ItemRemover;
 import de.wuzlwuz.griefergames.chat.LobbyHub;
 import de.wuzlwuz.griefergames.chat.MobRemover;
+import de.wuzlwuz.griefergames.chat.News;
 import de.wuzlwuz.griefergames.chat.Nickname;
 import de.wuzlwuz.griefergames.chat.Payment;
 import de.wuzlwuz.griefergames.chat.PlotChat;
@@ -154,13 +155,13 @@ public class GrieferGamesServer extends Server {
 		getGG().addChatModule(new ClearChat());
 		getGG().addChatModule(new Blanks());
 		getGG().addChatModule(new SupremeBlanks());
+		getGG().addChatModule(new News());
 		getGG().addChatModule(new PrivateMessage());
 		getGG().addChatModule(new Payment());
 		getGG().addChatModule(new Bank());
 		getGG().addChatModule(new ItemRemover());
 		getGG().addChatModule(new MobRemover());
 		getGG().addChatModule(new PlotChat());
-		getGG().addChatModule(new Teleport());
 		getGG().addChatModule(new Vote());
 		getGG().addChatModule(new GlobalMessage());
 		getGG().addChatModule(new LobbyHub());
@@ -168,6 +169,7 @@ public class GrieferGamesServer extends Server {
 		getGG().addChatModule(new IgnoreList());
 		getGG().addChatModule(new ClanTag());
 		getGG().addChatModule(new AntiMagicClanTag());
+		getGG().addChatModule(new Teleport());
 		getGG().addChatModule(new AntiMagicPrefix());
 		getGG().addChatModule(new Nickname());
 		getGG().addChatModule(new CheckPlot());
@@ -178,6 +180,7 @@ public class GrieferGamesServer extends Server {
 			@Override
 			public void onSubServerChanged(String subServerNameOld, String subServerName) {
 				getGG().setNickname("");
+				getGG().setNewsStart(false);
 
 				if (getHelper().doResetBoosterBySubserver(subServerName)) {
 					getGG().setBoosters(new ArrayList<Booster>());

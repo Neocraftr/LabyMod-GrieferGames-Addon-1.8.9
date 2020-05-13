@@ -298,7 +298,8 @@ public class Helper {
 
 	public boolean doCheckPlotRoom(String playerRank) {
 		List<String> checkPlotRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support",
-				"orga", "obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "supporter", "sup");
+				"orga", "obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter",
+				"sup");
 		return checkPlotRanks.contains(playerRank);
 	}
 
@@ -355,7 +356,7 @@ public class Helper {
 
 	public boolean showGodModule(String playerRank) {
 		List<String> godRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod");
+				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup");
 		return godRanks.contains(playerRank);
 	}
 

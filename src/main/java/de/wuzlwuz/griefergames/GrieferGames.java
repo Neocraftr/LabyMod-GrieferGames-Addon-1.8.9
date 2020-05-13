@@ -44,6 +44,7 @@ public class GrieferGames extends LabyModAddon {
 	private boolean isInTeam = false;
 	private String nickname = "";
 	private String playerRank = "Spieler";
+	private boolean newsStart = false;
 
 	public static GrieferGames getGriefergames() {
 		return griefergames;
@@ -243,6 +244,14 @@ public class GrieferGames extends LabyModAddon {
 
 	public void setPlayerRank(String playerRank) {
 		this.playerRank = playerRank;
+	}
+
+	public boolean getNewsStart() {
+		return newsStart;
+	}
+
+	public void setNewsStart(boolean newsStart) {
+		this.newsStart = newsStart;
 	}
 
 	private GrieferGamesServer ggserver;

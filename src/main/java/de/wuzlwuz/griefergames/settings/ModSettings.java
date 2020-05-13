@@ -62,6 +62,8 @@ public class ModSettings {
 
 	private boolean cleanVoteMsg = false;
 
+	private boolean cleanNewsMsg = false;
+
 	private boolean updateBoosterState = false;
 
 	private boolean clearMapCache = false;
@@ -144,6 +146,8 @@ public class ModSettings {
 			return "note.hat";
 		case PLING:
 			return "note.pling";
+		case POP:
+			return "random.pop";
 		case SNARE:
 			return "note.snare";
 		default:
@@ -374,6 +378,14 @@ public class ModSettings {
 		this.cleanVoteMsg = cleanVoteMsg;
 	}
 
+	public boolean isCleanNewsMsg() {
+		return cleanNewsMsg;
+	}
+
+	public void setCleanNewsMsg(boolean cleanNewsMsg) {
+		this.cleanNewsMsg = cleanNewsMsg;
+	}
+
 	public boolean isUpdateBoosterState() {
 		return updateBoosterState;
 	}
@@ -535,6 +547,9 @@ public class ModSettings {
 		if (getConfig().has("cleanVoteMsg"))
 			setCleanVoteMsg(getConfig().get("cleanVoteMsg").getAsBoolean());
 
+		if (getConfig().has("cleanNewsMsg"))
+			setCleanBlanks(getConfig().get("cleanNewsMsg").getAsBoolean());
+
 		if (getConfig().has("updateBoosterState"))
 			setUpdateBoosterState(getConfig().get("updateBoosterState").getAsBoolean());
 
@@ -689,6 +704,18 @@ public class ModSettings {
 					}
 				}, isCleanVoteMsg());
 		settings.add(cleanVoteMsgBtn);
+
+		final BooleanElement cleanNewsMsgBtn = new BooleanElement("News Nachrichten l\u00f6schen",
+				new ControlElement.IconData("labymod/textures/settings/settings/autotext.png"),
+				new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean cleanNewsMsg) {
+						setCleanNewsMsg(cleanNewsMsg);
+						getConfig().addProperty("cleanNewsMsg", cleanNewsMsg);
+						saveConfig();
+					}
+				}, isCleanNewsMsg());
+		settings.add(cleanNewsMsgBtn);
 
 		settings.add(new HeaderElement("Realname"));
 		final DropDownMenu<EnumRealnameShown> realnameDropDownMenu = new DropDownMenu<EnumRealnameShown>(
