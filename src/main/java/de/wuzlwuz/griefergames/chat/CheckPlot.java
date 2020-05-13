@@ -41,9 +41,6 @@ public class CheckPlot extends Chat {
 				// getApi().displayMessageInChat(ModColor.cl("4") + "Checkplot helper
 				// deaktiviert!");
 				TeamMenu.printMenu();
-				if (thread != null) {
-					System.out.println(thread.getState());
-				}
 				if (thread == null || thread.getState() == Thread.State.TERMINATED) {
 					thread = new Thread(runnable);
 					thread.start();
@@ -66,7 +63,6 @@ public class CheckPlot extends Chat {
 
 	@Override
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
-		System.out.println(getHelper().getProperChatFormat(msg.getFormattedText()));
 		if (doActionReceiveMessage(msg.getFormattedText(), msg.getUnformattedText())) {
 			// getHelper().setChatToolFilterText();
 			// getHelper().setChatToolFilterRoom();
@@ -142,9 +138,6 @@ public class CheckPlot extends Chat {
 				return true;
 			} else if (propFormatted.indexOf("§cDer Spieler ist aktiv auf GrieferGames.§r") >= 0) {
 				setSecondChat(true);
-				return true;
-			} else if (propFormatted.indexOf("§6§lInformationen: §r§f§nhttp://plots.griefergames.net/§r§f§n") >= 0) {
-				setSecondChat(false);
 				return true;
 			} else if (propFormatted.indexOf("§6ID") >= 0 && (propFormatted.indexOf("§r§eoffen §r") >= 0
 					|| propFormatted.indexOf("§r§4§labgelehnt: §r§4") >= 0
