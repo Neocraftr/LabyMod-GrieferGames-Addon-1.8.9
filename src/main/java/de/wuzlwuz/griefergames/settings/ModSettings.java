@@ -548,7 +548,7 @@ public class ModSettings {
 			setCleanVoteMsg(getConfig().get("cleanVoteMsg").getAsBoolean());
 
 		if (getConfig().has("cleanNewsMsg"))
-			setCleanBlanks(getConfig().get("cleanNewsMsg").getAsBoolean());
+			setCleanNewsMsg(getConfig().get("cleanNewsMsg").getAsBoolean());
 
 		if (getConfig().has("updateBoosterState"))
 			setUpdateBoosterState(getConfig().get("updateBoosterState").getAsBoolean());
