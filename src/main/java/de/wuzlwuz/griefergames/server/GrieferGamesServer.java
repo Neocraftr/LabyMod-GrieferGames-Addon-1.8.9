@@ -58,6 +58,7 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -444,6 +445,16 @@ public class GrieferGamesServer extends Server {
 					if (!getSettings().isModEnabled())
 						return false;
 
+					if (unformatted.startsWith("[SCAMMER] ")) {
+						String newFormatted = getHelper().getProperTextFormat(formatted);
+						newFormatted = formatted.replaceFirst("§r§6[§r§4§lSCAMMER§r§6]§r§r", "").trim();
+						formatted = getHelper().getProperChatFormat(newFormatted);
+
+						String newUnformatted = unformatted;
+						newUnformatted = unformatted.replaceFirst("[SCAMMER]", "").trim();
+						unformatted = newUnformatted;
+					}
+
 					List<Chat> chatModules = getGG().getChatModules();
 					for (Chat chatModule : chatModules) {
 						if (chatModule.doActionReceiveMessage(formatted, unformatted)) {
@@ -464,11 +475,24 @@ public class GrieferGamesServer extends Server {
 			return o;
 
 		try {
+			boolean hasPrefix = false;
 			IChatComponent msg = (IChatComponent) o;
+			IChatComponent prefix = new ChatComponentText("");
+
+			if (msg.getUnformattedText().startsWith("[SCAMMER] ")) {
+				hasPrefix = true;
+				for (int i = 0; i < (msg.getSiblings().size() - 1); i++) {
+					prefix.appendSibling(msg.getSiblings().get(i));
+				}
+				msg = msg.getSiblings().get(msg.getSiblings().size() - 1);
+			}
 
 			List<Chat> chatModules = getGG().getChatModules();
 			for (Chat chatModule : chatModules) {
 				if (chatModule.doActionModifyChatMessage(msg)) {
+					if (chatModule.getName().equalsIgnoreCase("chatTime") && hasPrefix) {
+						msg = prefix.appendSibling(msg);
+					}
 					msg = chatModule.modifyChatMessage(msg);
 				}
 			}
