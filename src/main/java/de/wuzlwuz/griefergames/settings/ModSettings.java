@@ -136,9 +136,7 @@ public class ModSettings {
 		switch (this.privateChatSound) {
 		case BASS:
 			return "note.bass";
-		case BASSATTACK:
-			return "note.bassattack";
-		case BD:
+		case BASSDRUM:
 			return "note.bd";
 		case HARP:
 			return "note.harp";
