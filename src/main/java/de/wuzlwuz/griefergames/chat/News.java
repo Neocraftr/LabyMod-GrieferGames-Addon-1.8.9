@@ -7,7 +7,7 @@ import net.labymod.servermanager.ChatDisplayAction;
 
 public class News extends Chat {
 
-	private static Pattern userRegexp = Pattern.compile("([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16})");
+	private static Pattern userRegexp = Pattern.compile("([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16})");
 
 	@Override
 	public String getName() {

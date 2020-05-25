@@ -9,10 +9,10 @@ import net.minecraft.util.IChatComponent;
 
 public class GlobalMessage extends Chat {
 	// private static Pattern msgUserGlobalChatRegex =
-	// Pattern.compile("^([A-Za-z\\-]+\\+?) \\| (\\w{1,16})\\s\\:");
-	private static Pattern msgUserGlobalChatRegex = Pattern.compile("^([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16})");
+	// Pattern.compile("^([A-Za-z\\-]+\\+?) ┃ (\\w{1,16})\\s\\:");
+	private static Pattern msgUserGlobalChatRegex = Pattern.compile("^([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16})");
 	private static Pattern msgUserGlobalChatClanRegex = Pattern
-			.compile("^(\\[[^\\]]+\\])\\s([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16})\\s\\:");
+			.compile("^(\\[[^\\]]+\\])\\s([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16})\\s\\:");
 
 	@Override
 	public String getName() {
@@ -44,6 +44,7 @@ public class GlobalMessage extends Chat {
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
+		// TODO: fix click to msg
 		String unformatted = msg.getUnformattedText();
 
 		String username = "/msg " + getUserFromGlobalMessage(unformatted) + " ";

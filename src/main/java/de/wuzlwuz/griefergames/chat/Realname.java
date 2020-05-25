@@ -9,11 +9,11 @@ import net.minecraft.util.IChatComponent;
 
 public class Realname extends Chat {
 	private static Pattern realnameRegex = Pattern
-			.compile("^([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16}) ist (\\w{1,16})$");
+			.compile("^([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16}) ist (\\w{1,16})$");
 	private static Pattern realnameRegex2 = Pattern.compile("§r ist ((\\u007E)?\\w{1,16})§r$");
 
 	private static Pattern realnameDupRegex = Pattern
-			.compile("^\\$\\{dup\\}([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16}) ist (\\w{1,16})$");
+			.compile("^\\$\\{dup\\}([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16}) ist (\\w{1,16})$");
 
 	// private static Pattern isNickedPlayer = Pattern.compile("([A-Za-z\\-]+\\+?)
 	// \\| (\\u007E\\w{1,16})");

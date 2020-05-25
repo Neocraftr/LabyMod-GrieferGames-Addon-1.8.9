@@ -8,7 +8,7 @@ import net.minecraft.util.IChatComponent;
 
 public class ClearChat extends Chat {
 	private static Pattern chatClearedRegex = Pattern
-			.compile("^Der Chat wurde von ([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16}) geleert.$");
+			.compile("^\\[Chat\\] Der Chat wurde von ([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16}) geleert.$");
 
 	@Override
 	public String getName() {
@@ -35,10 +35,7 @@ public class ClearChat extends Chat {
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		IChatComponent newMsg = new ChatComponentText("\n");
-		for (int i = 0; i < 100; i++) {
-			newMsg.appendSibling(new ChatComponentText("\n"));
-		}
+		IChatComponent newMsg = new ChatComponentText("\n\n");
 		newMsg.appendSibling(msg);
 
 		return super.modifyChatMessage(newMsg);

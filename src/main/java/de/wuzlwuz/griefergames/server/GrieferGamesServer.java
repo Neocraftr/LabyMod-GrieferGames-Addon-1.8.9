@@ -206,7 +206,7 @@ public class GrieferGamesServer extends Server {
 					}
 				}
 				if (subServerName.equalsIgnoreCase("lobby")) {
-					getGG().setShowBoosterDummy(true);
+					//getGG().setShowBoosterDummy(true);
 					boolean loadRank = loadPlayerRank();
 					if (!loadRank) {
 						Thread thread = new Thread() {
@@ -239,7 +239,7 @@ public class GrieferGamesServer extends Server {
 					}
 				} else {
 					// Minecraft.getMinecraft().entityRenderer.getMapItemRenderer().clearLoadedMaps();
-					getGG().setShowBoosterDummy(false);
+					//getGG().setShowBoosterDummy(false);
 				}
 
 				getGG().setGodActive(false);
