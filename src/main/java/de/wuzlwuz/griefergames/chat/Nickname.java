@@ -5,9 +5,11 @@ import java.util.regex.Pattern;
 
 public class Nickname extends Chat {
 	// private static Pattern userInChatRegexp = Pattern.compile("([A-Za-z\\-]+\\+?
-	// \\| \\w{1,16})(\\]| -> mir\\]|\\s:)");
+	// \\u2503 \\w{1,16})(\\]| -> mir\\]|\\s:)");
+	// private static Pattern nicknameMsgRegex = Pattern.compile("^Dein Spitzname
+	// ist nun ([A-Za-z\\-]+\\+?) \\u2503 (\\u007E)?(\\w{1,16}).$");
 	private static Pattern nicknameMsgRegex = Pattern
-			.compile("^Dein Spitzname ist nun ([A-Za-z\\-]+\\+?) \\| (\\u007E)?(\\w{1,16}).$");
+			.compile("^\\[GrieferGames\\] Dein Name lautet nun ([A-Za-z\\-]+\\+?) \\u2503 (\\u007E)?(\\w{1,16}).$");
 
 	@Override
 	public String getName() {
@@ -20,7 +22,7 @@ public class Nickname extends Chat {
 			Matcher nicknameMsg = nicknameMsgRegex.matcher(unformatted);
 			if (nicknameMsg.find()) {
 				getGG().setNickname(nicknameMsg.group(3));
-			} else if (unformatted.trim().equalsIgnoreCase("Du hast keinen Spitznamen mehr.")) {
+			} else if (unformatted.trim().equalsIgnoreCase("[GrieferGames] Dein Name wurde zur\u00FCckgesetzt.")) {
 				getGG().setNickname("");
 			}
 		}

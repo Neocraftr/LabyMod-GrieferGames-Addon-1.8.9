@@ -20,9 +20,9 @@ import net.minecraft.util.IChatComponent;
 
 public class Payment extends Chat {
 	private static Pattern getMoneyValidRegex = Pattern.compile(
-			"^([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16}) hat dir \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
+			"^([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}) hat dir \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
 	private static Pattern payedMoneyRegex = Pattern.compile(
-			"^Du hast ([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16}) \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
+			"^Du hast ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}) \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
 	private static Pattern earnedMoneyRegex = Pattern
 			.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) wurde zu deinem Konto hinzugef\\u00FCgt");
 	private static Pattern getMoneyRegex = Pattern.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?)");
@@ -138,5 +138,19 @@ public class Payment extends Chat {
 			}
 		}
 		return money;
+	}
+
+	@Override
+	public boolean doActionCommandMessage(String unformatted) {
+		if (unformatted.toLowerCase().startsWith("/pay") && unformatted.toLowerCase().contains(",")) {
+			getMC().getPlayer().sendChatMessage(unformatted.replace(",", "."));
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean commandMessage(String unformatted) {
+		return true;
 	}
 }

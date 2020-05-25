@@ -8,7 +8,7 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
 
 public class AntiMagicPrefix extends Chat {
-	private static Pattern antiMagixPrefixRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16}))");
+	private static Pattern antiMagixPrefixRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16})");
 
 	@Override
 	public String getName() {
@@ -40,27 +40,67 @@ public class AntiMagicPrefix extends Chat {
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
 		if (doActionModifyChatMessage(msg)) {
 			IChatComponent newMsg = new ChatComponentText("");
-			for (IChatComponent component : msg.getSiblings()) {
-				Matcher antiMagixPrefix = antiMagixPrefixRegex.matcher(component.getUnformattedText());
-				if (component.getChatStyle().getObfuscated() && antiMagixPrefix.find()) {
-					ChatStyle msgStyling = component.getChatStyle().createDeepCopy().setObfuscated(false);
-					String chatRepText = getSettings().getAMPChatReplacement();
+			Matcher antiMagixPrefix = antiMagixPrefixRegex.matcher(msg.getUnformattedText());
 
-					if (chatRepText.indexOf("%CLEAN%") == -1) {
-						chatRepText = getSettings().getDefaultAMPChatReplacement();
+			// §r§6Spieler in der Nähe:§r
+			// §r§c§kSupreme§r§8 ┃ §r§c§kCobbleShop_MM§r§f(§r§446m§r§f),
+			// §r§c§kGriefer§r§8 ┃ §r§c§kRatschkatl§r§f(§r§44m§r§f)§r
+
+			if (antiMagixPrefix.find()) {
+				if (msg.getUnformattedText().trim().toLowerCase().startsWith("spieler in der")) {
+					for (IChatComponent component : msg.getSiblings()) {
+						if (component.getChatStyle().getObfuscated()) {
+							int curIdx = msg.getSiblings().indexOf(component);
+							if (msg.getSiblings().get(curIdx + 1).getUnformattedText().trim().contentEquals("\u2503")) {
+								ChatStyle msgStyling = component.getChatStyle().createDeepCopy().setObfuscated(false);
+								String chatRepText = getSettings().getAMPChatReplacement();
+
+								if (chatRepText.indexOf("%CLEAN%") == -1) {
+									chatRepText = getSettings().getDefaultAMPChatReplacement();
+								}
+
+								chatRepText = chatRepText.replaceAll("%CLEAN%", component.getUnformattedText());
+								chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
+
+								newMsg.appendSibling(new ChatComponentText(
+										chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
+												.setChatStyle(msgStyling));
+							} else {
+								ChatStyle msgStyling = component.getChatStyle().createDeepCopy().setObfuscated(false);
+								newMsg.appendSibling(component.setChatStyle(msgStyling));
+							}
+						} else {
+							newMsg.appendSibling(component);
+						}
 					}
-
-					chatRepText = chatRepText.replaceAll("%CLEAN%", component.getUnformattedText());
-					chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
-
-					newMsg.appendSibling(
-							new ChatComponentText(chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
-									.setChatStyle(msgStyling));
 				} else {
-					newMsg.appendSibling(component);
+					for (IChatComponent component : msg.getSiblings()) {
+						if (component.getChatStyle().getObfuscated()
+								&& component.getUnformattedText().equalsIgnoreCase(antiMagixPrefix.group(1).trim())) {
+							ChatStyle msgStyling = component.getChatStyle().createDeepCopy().setObfuscated(false);
+							String chatRepText = getSettings().getAMPChatReplacement();
+
+							if (chatRepText.indexOf("%CLEAN%") == -1) {
+								chatRepText = getSettings().getDefaultAMPChatReplacement();
+							}
+
+							chatRepText = chatRepText.replaceAll("%CLEAN%", component.getUnformattedText());
+							chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
+
+							newMsg.appendSibling(new ChatComponentText(
+									chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
+											.setChatStyle(msgStyling));
+						} else if (component.getChatStyle().getObfuscated()
+								&& component.getUnformattedText().equalsIgnoreCase(antiMagixPrefix.group(2))) {
+							ChatStyle msgStyling = component.getChatStyle().createDeepCopy().setObfuscated(false);
+							newMsg.appendSibling(component.setChatStyle(msgStyling));
+						} else {
+							newMsg.appendSibling(component);
+						}
+					}
 				}
+				return newMsg;
 			}
-			return newMsg;
 		}
 
 		return msg;

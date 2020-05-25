@@ -24,18 +24,18 @@ public class Helper {
 	}
 
 	private static Pattern subServerNameRegex = Pattern.compile("§3§lServer\\:?$");
-	private static Pattern displayNameRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16}))");
+	private static Pattern displayNameRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}))");
 
-	private static Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16})");
+	private static Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16})");
 	private static Pattern playerNameRankRegex2 = Pattern.compile("([0-9]+)([A-Za-z\\-]+\\+?)");
 
 	private static Pattern portalRoomRegex = Pattern
 			.compile("^\\[GrieferGames\\] Du bist im Portalraum. Wähle deinen Citybuild aus.$");
 
 	private static Pattern vanishRegex = Pattern
-			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16}) : aktiviert$");
+			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}) : aktiviert$");
 	private static Pattern vanishRegex2 = Pattern
-			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16}) : deaktiviert$");
+			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}) : deaktiviert$");
 
 	private static Pattern godmodeRegex = Pattern.compile("^Unsterblichkeit aktiviert.$");
 	private static Pattern godmodeRegex2 = Pattern.compile("^Unsterblichkeit deaktiviert.$");
@@ -44,11 +44,11 @@ public class Helper {
 	private static Pattern auraRegex2 = Pattern.compile("^Deine Aura ist jetzt deaktiviert.$");
 
 	private static Pattern getBoosterValidRegexp = Pattern.compile(
-			"^\\[Booster\\] ([A-Za-z\\-]+\\+? \\| (\\u007E)?\\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster|Erfahrungsbooster) f\\u00FCr ([0-9]+) Minuten aktiviert!$");
+			"^\\[Booster\\] ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster|Erfahrungsbooster) f\\u00FCr ([0-9]+) Minuten aktiviert!$");
 	private static Pattern getBoosterDoneValidRegexp = Pattern
 			.compile("^\\[Booster\\] ([A-z]+\\-Booster|Erfahrungsbooster) ist jetzt wieder deaktiviert!$");
 	private static Pattern getBoosterMultiDoneValidRegexp = Pattern.compile(
-			"^\\[Booster\\] Der ([A-z]+\\-Booster|Erfahrungsbooster) \\(Stufe [2-6]\\) von ([A-Za-z\\-]+\\+? \\| (\\u007E)?\\w{1,16}) ist abgelaufen.$");
+			"^\\[Booster\\] Der ([A-z]+\\-Booster|Erfahrungsbooster) \\(Stufe [2-6]\\) von ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\w{1,16}) ist abgelaufen.$");
 	private static Pattern getCurrentBoosters = Pattern.compile(
 			"^([A-z]+\\-Booster|Erfahrungsbooster) Multiplikator: ([0-9])x ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
 

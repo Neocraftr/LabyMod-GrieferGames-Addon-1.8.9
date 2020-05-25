@@ -48,6 +48,7 @@ import net.labymod.api.events.MessageReceiveEvent;
 import net.labymod.api.events.MessageSendEvent;
 import net.labymod.api.events.TabListEvent;
 import net.labymod.core.LabyModCore;
+import net.labymod.core.MinecraftAdapter;
 import net.labymod.ingamegui.ModuleCategoryRegistry;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.labymod.servermanager.Server;
@@ -88,12 +89,16 @@ public class GrieferGamesServer extends Server {
 		return GrieferGames.getGriefergames().getHelper();
 	}
 
-	public Minecraft getMc() {
+	public Minecraft getMC() {
 		return mc;
 	}
 
-	public void setMc(Minecraft mc) {
+	private void setMC(Minecraft mc) {
 		this.mc = mc;
+	}
+
+	public MinecraftAdapter getMinecraft() {
+		return LabyModCore.getMinecraft();
 	}
 
 	public LabyModAPI getApi() {
@@ -143,7 +148,7 @@ public class GrieferGamesServer extends Server {
 		super("GrieferGames", GrieferGames.getGriefergames().getServerIp(),
 				GrieferGames.getGriefergames().getSecondServerIp());
 
-		setMc(minecraft);
+		setMC(minecraft);
 		setApi(getGG().getApi());
 
 		ModuleCategoryRegistry.loadCategory(getGG().getModuleCategory());
@@ -237,6 +242,7 @@ public class GrieferGamesServer extends Server {
 						};
 						thread.start();
 					}
+
 				} else {
 					// Minecraft.getMinecraft().entityRenderer.getMapItemRenderer().clearLoadedMaps();
 					getGG().setShowBoosterDummy(false);
@@ -297,8 +303,8 @@ public class GrieferGamesServer extends Server {
 
 			for (NetworkPlayerInfo player : playerMap) {
 				IChatComponent tabListName = player.getDisplayName();
-				String teamName = player.getPlayerTeam().getTeamName();
-				String registeredName = player.getGameProfile().getName();
+				// String teamName = player.getPlayerTeam().getTeamName();
+				// String registeredName = player.getGameProfile().getName();
 
 				if (tabListName != null) {
 					if (accountName.length() > 0 && accountName
@@ -307,11 +313,14 @@ public class GrieferGamesServer extends Server {
 						setPlayerRank(getHelper().getPlayerRank(tabListName.getUnformattedText().trim()));
 						getGG().setIsInTeam(getHelper().isInTeam(getPlayerRank()));
 					}
-				} else if (accountName.length() > 0 && registeredName.length() > 0 && teamName.length() > 0
-						&& accountName.trim().equalsIgnoreCase(registeredName.trim())) {
-					setPlayerRank(getHelper().getPlayerRank(teamName.trim()));
-					getGG().setIsInTeam(getHelper().isInTeam(getPlayerRank()));
 				}
+				/*
+				 * else if (accountName.length() > 0 && registeredName.length() > 0 &&
+				 * teamName.length() > 0 &&
+				 * accountName.trim().equalsIgnoreCase(registeredName.trim())) {
+				 * setPlayerRank(getHelper().getPlayerRank(teamName.trim()));
+				 * getGG().setIsInTeam(getHelper().isInTeam(getPlayerRank())); }
+				 */
 			}
 			if (!getModulesLoaded()) {
 				setModulesLoaded(true);
@@ -361,7 +370,7 @@ public class GrieferGamesServer extends Server {
 
 				if (getSettings().isUpdateBoosterState() && getHelper().isSwitcherDoneMsg(unformatted, formatted) > 0) {
 					getGG().setBoosters(new ArrayList<Booster>());
-					getMc().thePlayer.sendChatMessage("/booster");
+					getMinecraft().getPlayer().sendChatMessage("/booster");
 				}
 
 				int status = getHelper().isVanishMessage(unformatted, formatted);

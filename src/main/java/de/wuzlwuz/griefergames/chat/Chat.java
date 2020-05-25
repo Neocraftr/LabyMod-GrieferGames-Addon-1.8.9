@@ -4,6 +4,8 @@ import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.helper.Helper;
 import de.wuzlwuz.griefergames.settings.ModSettings;
 import net.labymod.api.LabyModAPI;
+import net.labymod.core.LabyModCore;
+import net.labymod.core.MinecraftAdapter;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.minecraft.util.IChatComponent;
 
@@ -22,6 +24,10 @@ public class Chat {
 
 	protected ModSettings getSettings() {
 		return GrieferGames.getSettings();
+	}
+
+	protected MinecraftAdapter getMC() {
+		return LabyModCore.getMinecraft();
 	}
 
 	public String getName() {
