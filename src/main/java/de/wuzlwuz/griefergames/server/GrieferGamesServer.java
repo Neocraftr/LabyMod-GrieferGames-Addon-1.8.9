@@ -456,7 +456,8 @@ public class GrieferGamesServer extends Server {
 
 					if (unformatted.startsWith("[SCAMMER] ")) {
 						String newFormatted = getHelper().getProperTextFormat(formatted);
-						newFormatted = formatted.replaceFirst("§r§6[§r§4§lSCAMMER§r§6]§r§r", "").trim();
+						newFormatted = formatted.replaceFirst("((§r)?§6\\[§r§([0-9]|[a-f])§lSCAMMER§r§6\\]§r§r)", "")
+								.trim();
 						formatted = getHelper().getProperChatFormat(newFormatted);
 
 						String newUnformatted = unformatted;
