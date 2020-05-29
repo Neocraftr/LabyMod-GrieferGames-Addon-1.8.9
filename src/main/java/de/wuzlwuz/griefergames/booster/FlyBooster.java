@@ -8,19 +8,19 @@ import net.minecraft.util.ResourceLocation;
 
 public class FlyBooster extends Booster {
 	public FlyBooster() {
-		super(LanguageManager.translateOrReturnKey("booster_gg_fly", new Object[0]), "fly",
+		super(LanguageManager.translateOrReturnKey("booster_gg_fly"), "fly",
 				new IconData(new ResourceLocation("griefergames/textures/icons/booster_fliegen.png")), 3, false);
 		setShowCount(false);
 	}
 
 	public FlyBooster(int count) {
-		super(LanguageManager.translateOrReturnKey("booster_gg_fly", new Object[0]), "fly", count,
+		super(LanguageManager.translateOrReturnKey("booster_gg_fly"), "fly", count,
 				new IconData(new ResourceLocation("griefergames/textures/icons/booster_fliegen.png")), 3, false);
 		setShowCount(false);
 	}
 
 	public FlyBooster(int count, LocalDateTime endDate) {
-		super(LanguageManager.translateOrReturnKey("booster_gg_fly", new Object[0]), "fly", count, endDate,
+		super(LanguageManager.translateOrReturnKey("booster_gg_fly"), "fly", count, endDate,
 				new IconData(new ResourceLocation("griefergames/textures/icons/booster_fliegen.png")), 3, false);
 		setShowCount(false);
 	}

@@ -7,7 +7,7 @@ public class Nickname extends Chat {
 	// private static Pattern userInChatRegexp = Pattern.compile("([A-Za-z\\-]+\\+?
 	// \\| \\w{1,16})(\\]| -> mir\\]|\\s:)");
 	private static Pattern nicknameMsgRegex = Pattern
-			.compile("^\\[GrieferGames\\] Dein Name lautet nun ([A-Za-z\\-]+\\+?) ┃ (\\u007E)?(\\w{1,16}).$");
+			.compile("^\\[GrieferGames\\] Dein Name lautet nun ([A-Za-z\\-]+\\+?) \\u2503 (\\u007E)?(\\w{1,16}).$");
 
 	@Override
 	public String getName() {

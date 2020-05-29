@@ -18,7 +18,7 @@ public class NicknameModule extends SimpleModule {
 
 	@Override
 	public String getDisplayName() {
-		return LanguageManager.translateOrReturnKey("module_gg_nickname_displayName", new Object[0]);
+		return LanguageManager.translateOrReturnKey("module_gg_nickname_displayName");
 	}
 
 	@Override
@@ -26,13 +26,13 @@ public class NicknameModule extends SimpleModule {
 		if (getGG().isNicknameActive()) {
 			return getGG().getNickname();
 		} else {
-			return LanguageManager.translateOrReturnKey("module_gg_nickname_off", new Object[0]);
+			return LanguageManager.translateOrReturnKey("module_gg_nickname_off");
 		}
 	}
 
 	@Override
 	public String getDefaultValue() {
-		return LanguageManager.translateOrReturnKey("gg_nick_off", new Object[0]);
+		return LanguageManager.translateOrReturnKey("gg_nick_off");
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class NicknameModule extends SimpleModule {
 
 	@Override
 	public String getDescription() {
-		return LanguageManager.translateOrReturnKey("module_gg_nickname_description", new Object[0]);
+		return LanguageManager.translateOrReturnKey("module_gg_nickname_description");
 	}
 
 	@Override

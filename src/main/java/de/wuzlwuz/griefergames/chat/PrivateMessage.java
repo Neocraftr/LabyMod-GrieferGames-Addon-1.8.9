@@ -11,9 +11,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class PrivateMessage extends Chat {
 	private static Pattern privateMessageRegex = Pattern
-			.compile("^\\[([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16}) -> mir\\](.*)$");
+			.compile("^\\[([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}) -> mir\\](.*)$");
 	private static Pattern privateMessageSentRegex = Pattern
-			.compile("^\\[mir -> ([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16})\\](.*)$");
+			.compile("^\\[mir -> ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16})\\](.*)$");
 
 	@Override
 	public String getName() {
@@ -67,7 +67,6 @@ public class PrivateMessage extends Chat {
 					LabyModCore.getMinecraft().playSound(new ResourceLocation(getSettings().getPrivateChatSoundPath()),
 							1.0F);
 				}
-				// Doesn't work with red-white prefix
 				if (msg.getSiblings().size() > 5) {
 					String username = "/msg " + getPrivateMessageName(unformatted) + " ";
 					msg.getSiblings().get(1).getChatStyle()
@@ -84,7 +83,6 @@ public class PrivateMessage extends Chat {
 			}
 
 			if (privateMessageSent.find()) {
-				System.out.println(msg.toString());
 				if (msg.getSiblings().size() > 5) {
 					String username = "/msg " + getSentPrivateMessageName(unformatted) + " ";
 					msg.getSiblings().get(3).getChatStyle()

@@ -8,17 +8,17 @@ import net.minecraft.util.ResourceLocation;
 
 public class ExperienceBooster extends Booster {
 	public ExperienceBooster() {
-		super(LanguageManager.translateOrReturnKey("booster_gg_experience", new Object[0]), "xp",
+		super(LanguageManager.translateOrReturnKey("booster_gg_experience"), "xp",
 				new IconData(new ResourceLocation("griefergames/textures/icons/booster_xp.png")), 1);
 	}
 
 	public ExperienceBooster(int count) {
-		super(LanguageManager.translateOrReturnKey("booster_gg_experience", new Object[0]), "xp", count,
+		super(LanguageManager.translateOrReturnKey("booster_gg_experience"), "xp", count,
 				new IconData(new ResourceLocation("griefergames/textures/icons/booster_xp.png")), 1);
 	}
 
 	public ExperienceBooster(int count, LocalDateTime endDate) {
-		super(LanguageManager.translateOrReturnKey("booster_gg_experience", new Object[0]), "xp", count, endDate,
+		super(LanguageManager.translateOrReturnKey("booster_gg_experience"), "xp", count, endDate,
 				new IconData(new ResourceLocation("griefergames/textures/icons/booster_xp.png")), 1);
 	}
 }

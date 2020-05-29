@@ -20,9 +20,9 @@ import net.minecraft.util.IChatComponent;
 
 public class Payment extends Chat {
 	private static Pattern getMoneyValidRegex = Pattern.compile(
-			"^([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16}) hat dir \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
+			"^([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}) hat dir \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
 	private static Pattern payedMoneyRegex = Pattern.compile(
-			"^Du hast ([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16}) \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
+			"^Du hast ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}) \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
 	private static Pattern earnedMoneyRegex = Pattern
 			.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) wurde zu deinem Konto hinzugef\\u00FCgt");
 	private static Pattern getMoneyRegex = Pattern.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?)");
@@ -34,7 +34,6 @@ public class Payment extends Chat {
 
 	@Override
 	public boolean doAction(String unformatted, String formatted) {
-		System.out.println(formatted);
 		if (!getHelper().getProperTextFormat(formatted).contains("§r§f §r§ahat dir $")) {
 			Matcher matcher = getMoneyValidRegex.matcher(unformatted);
 			if (matcher.find()) {
@@ -80,13 +79,13 @@ public class Payment extends Chat {
 			if (money > 0) {
 				DecimalFormat moneyFormat = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.ENGLISH);
 
-				String title = LanguageManager.translateOrReturnKey("message_gg_gotMoney", new Object[0]);
-				String desc = LanguageManager.translateOrReturnKey("message_gg_gotMoneyFrom", new Object[0]);
+				String title = LanguageManager.translateOrReturnKey("message_gg_gotMoney");
+				String desc = LanguageManager.translateOrReturnKey("message_gg_gotMoneyFrom");
 
 				Matcher payedMoney = payedMoneyRegex.matcher(unformatted);
 				if (payedMoney.find()) {
-					title = LanguageManager.translateOrReturnKey("message_gg_paidMoney", new Object[0]);
-					desc = LanguageManager.translateOrReturnKey("message_gg_paidMoneyTo", new Object[0]);
+					title = LanguageManager.translateOrReturnKey("message_gg_paidMoney");
+					desc = LanguageManager.translateOrReturnKey("message_gg_paidMoneyTo");
 				}
 
 				title = title.replace("{money}", moneyFormat.format(money));
@@ -114,13 +113,27 @@ public class Payment extends Chat {
 		}
 
 		if (getSettings().isPayHover()) {
-			String ValidPayment = LanguageManager.translateOrReturnKey("message_gg_validPayment", new Object[0]);
+			String ValidPayment = LanguageManager.translateOrReturnKey("message_gg_validPayment");
 
 			IChatComponent hoverText = new ChatComponentText(ValidPayment);
 			msg.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 		}
 
 		return msg;
+	}
+
+	@Override
+	public boolean doActionCommandMessage(String unformatted) {
+		if (unformatted.toLowerCase().startsWith("/pay") && unformatted.toLowerCase().contains(",")) {
+			getMC().getPlayer().sendChatMessage(unformatted.replace(",", "."));
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean commandMessage(String unformatted) {
+		return true;
 	}
 
 	public double getMoneyPay(String unformatted) {

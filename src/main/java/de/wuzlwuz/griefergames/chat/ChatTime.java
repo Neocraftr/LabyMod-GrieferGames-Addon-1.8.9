@@ -27,7 +27,7 @@ public class ChatTime extends Chat {
 		String unformatted = msg.getUnformattedText();
 		String formatted = msg.getFormattedText();
 
-		return (doAction(unformatted, formatted) && true);
+		return doAction(unformatted, formatted);
 	}
 
 	@Override

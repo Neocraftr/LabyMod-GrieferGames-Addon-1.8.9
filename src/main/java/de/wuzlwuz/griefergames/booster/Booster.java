@@ -215,7 +215,7 @@ public class Booster {
 
 	public String getDurationString() {
 		LocalDateTime curDateTime = LocalDateTime.now();
-		String ret = LanguageManager.translateOrReturnKey("gg_on", new Object[0]);
+		String ret = LanguageManager.translateOrReturnKey("gg_on");
 		LocalDateTime endDate = getEndDate(0);
 
 		if (endDate != null) {

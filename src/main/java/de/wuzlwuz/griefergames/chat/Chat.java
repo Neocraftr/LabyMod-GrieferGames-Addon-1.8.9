@@ -4,6 +4,8 @@ import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.helper.Helper;
 import de.wuzlwuz.griefergames.settings.ModSettings;
 import net.labymod.api.LabyModAPI;
+import net.labymod.core.LabyModCore;
+import net.labymod.core.MinecraftAdapter;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.minecraft.util.IChatComponent;
 
@@ -62,5 +64,9 @@ public class Chat {
 
 	public boolean receiveMessage(String formatted, String unformatted) {
 		return false;
+	}
+
+	protected MinecraftAdapter getMC() {
+		return LabyModCore.getMinecraft();
 	}
 }

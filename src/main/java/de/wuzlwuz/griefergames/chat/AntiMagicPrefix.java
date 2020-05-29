@@ -8,7 +8,7 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
 
 public class AntiMagicPrefix extends Chat {
-	private static Pattern antiMagixPrefixRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16}))");
+	private static Pattern antiMagicPrefixRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}))");
 
 	@Override
 	public String getName() {
@@ -19,13 +19,10 @@ public class AntiMagicPrefix extends Chat {
 	public boolean doAction(String unformatted, String formatted) {
 		String oldMessage = getHelper().getProperTextFormat(formatted);
 
-		Matcher antiMagixPrefix = antiMagixPrefixRegex.matcher(unformatted);
+		Matcher antiMagicPrefix = antiMagicPrefixRegex.matcher(unformatted);
 
-		if (getSettings().isAMPEnabled() && unformatted.trim().length() > 0 && oldMessage.indexOf("§k") != -1
-				&& antiMagixPrefix.find())
-			return true;
-
-		return false;
+		return getSettings().isAMPEnabled() && unformatted.trim().length() > 0 && oldMessage.contains("§k")
+				&& antiMagicPrefix.find();
 	}
 
 	@Override
@@ -40,24 +37,39 @@ public class AntiMagicPrefix extends Chat {
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
 		if (doActionModifyChatMessage(msg)) {
 			IChatComponent newMsg = new ChatComponentText("");
-			for (IChatComponent component : msg.getSiblings()) {
-				Matcher antiMagixPrefix = antiMagixPrefixRegex.matcher(component.getUnformattedText());
-				if (component.getChatStyle().getObfuscated() && antiMagixPrefix.find()) {
-					ChatStyle msgStyling = component.getChatStyle().createDeepCopy().setObfuscated(false);
-					String chatRepText = getSettings().getAMPChatReplacement();
+			for(int i=0; i<msg.getSiblings().size(); i++) {
+				if(i+2 < msg.getSiblings().size()) {
+					String messageToCheck = msg.getSiblings().get(i).getUnformattedText()+msg.getSiblings().get(i+1).getUnformattedText()+msg.getSiblings().get(i+2).getUnformattedText();
+					Matcher antiMagicPrefix = antiMagicPrefixRegex.matcher(messageToCheck);
+					if (msg.getSiblings().get(i).getChatStyle().getObfuscated() && antiMagicPrefix.find()) {
+						ChatStyle msgStyling = msg.getSiblings().get(i).getChatStyle().createDeepCopy().setObfuscated(false);
 
-					if (chatRepText.indexOf("%CLEAN%") == -1) {
-						chatRepText = getSettings().getDefaultAMPChatReplacement();
+						String chatRepText = getSettings().getAMPChatReplacement();
+
+						if (!chatRepText.contains("%CLEAN%")) {
+							chatRepText = getSettings().getDefaultAMPChatReplacement();
+						}
+
+						chatRepText = chatRepText.replaceAll("%CLEAN%", msg.getSiblings().get(i).getUnformattedText());
+						chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
+
+						// Rank
+						newMsg.appendSibling(
+								new ChatComponentText(chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
+										.setChatStyle(msgStyling));
+						// Separator: ┃
+						newMsg.appendSibling(msg.getSiblings().get(i+1));
+
+						// Name
+						ChatStyle msgStyling2 = msg.getSiblings().get(i+2).getChatStyle().createDeepCopy().setObfuscated(false);
+						newMsg.appendSibling(new ChatComponentText(msg.getSiblings().get(i+2).getUnformattedText()).setChatStyle(msgStyling2));
+
+						i += 2;
+					} else {
+						newMsg.appendSibling(msg.getSiblings().get(i));
 					}
-
-					chatRepText = chatRepText.replaceAll("%CLEAN%", component.getUnformattedText());
-					chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
-
-					newMsg.appendSibling(
-							new ChatComponentText(chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
-									.setChatStyle(msgStyling));
 				} else {
-					newMsg.appendSibling(component);
+					newMsg.appendSibling(msg.getSiblings().get(i));
 				}
 			}
 			return newMsg;

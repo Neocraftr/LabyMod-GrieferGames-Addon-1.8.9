@@ -8,17 +8,17 @@ import net.minecraft.util.ResourceLocation;
 
 public class MobBooster extends Booster {
 	public MobBooster() {
-		super(LanguageManager.translateOrReturnKey("booster_gg_mob", new Object[0]), "mob",
+		super(LanguageManager.translateOrReturnKey("booster_gg_mob"), "mob",
 				new IconData(new ResourceLocation("griefergames/textures/icons/booster_mobs.png")), 2);
 	}
 
 	public MobBooster(int count) {
-		super(LanguageManager.translateOrReturnKey("booster_gg_mob", new Object[0]), "mob", count,
+		super(LanguageManager.translateOrReturnKey("booster_gg_mob"), "mob", count,
 				new IconData(new ResourceLocation("griefergames/textures/icons/booster_mobs.png")), 2);
 	}
 
 	public MobBooster(int count, LocalDateTime endDate) {
-		super(LanguageManager.translateOrReturnKey("booster_gg_mob", new Object[0]), "mob", count, endDate,
+		super(LanguageManager.translateOrReturnKey("booster_gg_mob"), "mob", count, endDate,
 				new IconData(new ResourceLocation("griefergames/textures/icons/booster_mobs.png")), 2);
 	}
 }

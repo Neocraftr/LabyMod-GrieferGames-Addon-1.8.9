@@ -24,18 +24,18 @@ public class Helper {
 	}
 
 	private static Pattern subServerNameRegex = Pattern.compile("§3§lServer:?$");
-	private static Pattern displayNameRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16}))");
+	private static Pattern displayNameRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}))");
 
-	private static Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16})");
+	private static Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16})");
 	private static Pattern playerNameRankRegex2 = Pattern.compile("([0-9]+)([A-Za-z\\-]+\\+?)"); // Don't know what that is for
 
 	private static Pattern portalRoomRegex = Pattern
 			.compile("^\\[GrieferGames\\] Du bist im Portalraum. Wähle deinen Citybuild aus.$");
 
 	private static Pattern vanishRegex = Pattern
-			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16}) : aktiviert$");
+			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}) : aktiviert$");
 	private static Pattern vanishRegex2 = Pattern
-			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) ┃ ((\\u007E)?\\w{1,16}) : deaktiviert$");
+			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}) : deaktiviert$");
 
 	private static Pattern godmodeRegex = Pattern.compile("^Unsterblichkeit aktiviert.$");
 	private static Pattern godmodeRegex2 = Pattern.compile("^Unsterblichkeit deaktiviert.$");
@@ -44,11 +44,11 @@ public class Helper {
 	private static Pattern auraRegex2 = Pattern.compile("^Deine Aura ist jetzt deaktiviert.$");
 
 	private static Pattern getBoosterValidRegexp = Pattern.compile(
-			"^\\[Booster\\] ([A-Za-z\\-]+\\+? ┃ (\\u007E)?\\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster|Erfahrungsbooster) f\\u00FCr ([0-9]+) Minuten aktiviert!$");
+			"^\\[Booster\\] ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster|Erfahrungsbooster) f\\u00FCr ([0-9]+) Minuten aktiviert!$");
 	private static Pattern getBoosterDoneValidRegexp = Pattern
 			.compile("^\\[Booster\\] ([A-z]+\\-Booster|Erfahrungsbooster) ist jetzt wieder deaktiviert!$");
 	private static Pattern getBoosterMultiDoneValidRegexp = Pattern.compile(
-			"^\\[Booster\\] Der ([A-z]+\\-Booster|Erfahrungsbooster) \\(Stufe [2-6]\\) von ([A-Za-z\\-]+\\+? ┃ (\\u007E)?\\w{1,16}) ist abgelaufen.$");
+			"^\\[Booster\\] Der ([A-z]+\\-Booster|Erfahrungsbooster) \\(Stufe [2-6]\\) von ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\w{1,16}) ist abgelaufen.$");
 	private static Pattern getCurrentBoosters = Pattern.compile(
 			"^([A-z]+\\-Booster|Erfahrungsbooster) Multiplikator: ([0-9])x ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
 
@@ -66,7 +66,7 @@ public class Helper {
 
 		String fMsg = getProperTextFormat(formatted);
 
-		if (fMsg.indexOf("§3§lServer") >= 0) {
+		if (fMsg.contains("§3§lServer")) {
 			Matcher matcher = subServerNameRegex.matcher(fMsg);
 			if (matcher.find()) {
 				return true;
@@ -82,7 +82,7 @@ public class Helper {
 
 		String fMsg = getProperTextFormat(formatted);
 
-		if (fMsg.indexOf("§r§cist jetzt wieder deaktiviert!§r") >= 0) {
+		if (fMsg.contains("§r§cist jetzt wieder deaktiviert!§r")) {
 
 			Matcher matcher = getBoosterDoneValidRegexp.matcher(unformatted.trim());
 			if (matcher.find()) {
@@ -123,8 +123,8 @@ public class Helper {
 
 		String fMsg = getProperTextFormat(formatted);
 
-		if (fMsg.indexOf("§r§fDer §r§b") >= 0 && fMsg.indexOf("§r§7(Stufe") >= 0
-				&& fMsg.indexOf("§r§fist abgelaufen.§r") >= 0) {
+		if (fMsg.contains("§r§fDer §r§b") && fMsg.contains("§r§7(Stufe")
+				&& fMsg.contains("§r§fist abgelaufen.§r")) {
 			Matcher matcher = getBoosterMultiDoneValidRegexp.matcher(unformatted.trim());
 			if (matcher.find()) {
 				String boosterName = matcher.group(1);
@@ -164,7 +164,7 @@ public class Helper {
 
 		String fMsg = getProperTextFormat(formatted);
 
-		if (fMsg.indexOf("§r§ahat f\u00FCr die GrieferGames Community den §r§b§l") >= 0) {
+		if (fMsg.contains("§r§ahat f\u00FCr die GrieferGames Community den §r§b§l")) {
 			Matcher matcher = getBoosterValidRegexp.matcher(unformatted);
 			if (matcher.find()) {
 				String boosterName = matcher.group(3);

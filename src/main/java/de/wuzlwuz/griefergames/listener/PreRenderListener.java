@@ -1,6 +1,8 @@
 package de.wuzlwuz.griefergames.listener;
 
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.wuzlwuz.griefergames.GrieferGames;
 import net.labymod.core.LabyModCore;
@@ -14,6 +16,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class PreRenderListener {
+	private static Pattern antiMagicPrefixRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16})");
+
 	@SubscribeEvent
 	public void onPreRender(RenderGameOverlayEvent event) {
 		if (GrieferGames.getGriefergames().getGGServer().getMc().gameSettings.keyBindPlayerList.isKeyDown()
@@ -27,34 +31,52 @@ public class PreRenderListener {
 				Collection<NetworkPlayerInfo> players = handler.getPlayerInfoMap();
 				for (NetworkPlayerInfo player : players) {
 					if (player.getDisplayName() != null) {
-						IChatComponent playerDisplayName = (IChatComponent) player.getDisplayName();
+						IChatComponent playerDisplayName = player.getDisplayName();
 
 						if (playerDisplayName.getUnformattedText().length() > 0
 								&& GrieferGames.getSettings().isAMPEnabled()) {
 							String oldPlayerDisplayName = GrieferGames.getGriefergames().getHelper()
 									.getProperTextFormat(playerDisplayName.getFormattedText());
-							if (oldPlayerDisplayName.indexOf("§k") != -1) {
+							if (oldPlayerDisplayName.contains("§k")) {
+								Matcher antiMagicPrefix = antiMagicPrefixRegex
+										.matcher(playerDisplayName.getUnformattedText());
 								IChatComponent newPlayerDisplayName = new ChatComponentText("");
-								for (IChatComponent displayName : playerDisplayName.getSiblings()) {
-									if (displayName.getChatStyle().getObfuscated() && displayName.getUnformattedText()
-											.matches("(([A-Za-z\\-]+\\+?) \\| ((\\u007E)?\\w{1,16}))")) {
-										ChatStyle playerDisplayNameStyling = displayName.getChatStyle().createDeepCopy()
-												.setObfuscated(false);
-										String chatRepText = GrieferGames.getSettings().getAMPTablistReplacement();
+								if (antiMagicPrefix.find()) {
+									for (IChatComponent displayName : playerDisplayName.getSiblings()) {
+										// if (displayName.getChatStyle().getObfuscated() &&
+										// displayName.getUnformattedText().matches("(([A-Za-z\\-]+\\+?) \\u2503
+										// ((\\u007E)?\\w{1,16}))")) {
+										if (displayName.getChatStyle().getObfuscated() && displayName
+												.getUnformattedText().equalsIgnoreCase(antiMagicPrefix.group(1))) {
 
-										if (chatRepText.indexOf("%CLEAN%") == -1) {
-											chatRepText = GrieferGames.getSettings().getDefaultAMPTablistReplacement();
+											ChatStyle playerDisplayNameStyling = displayName.getChatStyle()
+													.createDeepCopy().setObfuscated(false);
+											String chatRepText = GrieferGames.getSettings().getAMPTablistReplacement();
+
+											if (!chatRepText.contains("%CLEAN%")) {
+												chatRepText = GrieferGames.getSettings()
+														.getDefaultAMPTablistReplacement();
+											}
+
+											chatRepText = chatRepText.replaceAll("%CLEAN%",
+													displayName.getUnformattedText());
+											chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
+
+											newPlayerDisplayName.appendSibling(new ChatComponentText(
+													chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
+													.setChatStyle(playerDisplayNameStyling));
+										} else if (displayName.getChatStyle().getObfuscated() && displayName
+												.getUnformattedText().equalsIgnoreCase(antiMagicPrefix.group(2))) {
+											ChatStyle playerDisplayNameStyling = displayName.getChatStyle()
+													.createDeepCopy().setObfuscated(false);
+											newPlayerDisplayName
+													.appendSibling(displayName.setChatStyle(playerDisplayNameStyling));
+										} else {
+											newPlayerDisplayName.appendSibling(displayName);
 										}
-
-										chatRepText = chatRepText.replaceAll("%CLEAN%",
-												displayName.getUnformattedText());
-										chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
-
-										newPlayerDisplayName.appendSibling(new ChatComponentText(
-												chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
-														.setChatStyle(playerDisplayNameStyling));
-										player.setDisplayName(newPlayerDisplayName);
 									}
+
+									player.setDisplayName(newPlayerDisplayName);
 								}
 							}
 						}

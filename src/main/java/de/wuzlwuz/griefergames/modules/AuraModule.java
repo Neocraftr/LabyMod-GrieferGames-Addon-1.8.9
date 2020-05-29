@@ -18,21 +18,21 @@ public class AuraModule extends SimpleModule {
 
 	@Override
 	public String getDisplayName() {
-		return LanguageManager.translateOrReturnKey("module_gg_aura_displayName", new Object[0]);
+		return LanguageManager.translateOrReturnKey("module_gg_aura_displayName");
 	}
 
 	@Override
 	public String getDisplayValue() {
 		if (getGG().isAuraActive()) {
-			return LanguageManager.translateOrReturnKey("gg_on", new Object[0]);
+			return LanguageManager.translateOrReturnKey("gg_on");
 		} else {
-			return LanguageManager.translateOrReturnKey("gg_off", new Object[0]);
+			return LanguageManager.translateOrReturnKey("gg_off");
 		}
 	}
 
 	@Override
 	public String getDefaultValue() {
-		return LanguageManager.translateOrReturnKey("gg_off", new Object[0]);
+		return LanguageManager.translateOrReturnKey("gg_off");
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class AuraModule extends SimpleModule {
 
 	@Override
 	public String getDescription() {
-		return LanguageManager.translateOrReturnKey("module_gg_aura_description", new Object[0]);
+		return LanguageManager.translateOrReturnKey("module_gg_aura_description");
 	}
 
 	@Override

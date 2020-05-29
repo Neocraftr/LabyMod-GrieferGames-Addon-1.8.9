@@ -12,7 +12,7 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
 
 public class ClanTag extends Chat {
-	private static Pattern clanTagRegex = Pattern.compile("^\\[([^\\]]+)\\] [A-Za-z\\-]+\\+? ┃ (\\u007E)?\\w{1,16}");
+	private static Pattern clanTagRegex = Pattern.compile("^\\[([^\\]]+)\\] [A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\w{1,16}");
 
 	@Override
 	public String getName() {
@@ -49,7 +49,7 @@ public class ClanTag extends Chat {
 							.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, clanTag));
 
 					String clanTagClickHoverTxt = LanguageManager
-							.translateOrReturnKey("message_gg_clanTagClickHoverTxt", new Object[0]);
+							.translateOrReturnKey("message_gg_clanTagClickHoverTxt");
 					IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") + clanTagClickHoverTxt);
 
 					msgStyling.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));

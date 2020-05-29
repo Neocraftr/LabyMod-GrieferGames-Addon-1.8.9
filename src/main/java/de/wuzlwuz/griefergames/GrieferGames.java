@@ -3,6 +3,7 @@ package de.wuzlwuz.griefergames;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -284,7 +285,7 @@ public class GrieferGames extends LabyModAddon {
 		loadTranslations();
 
 		// set module category
-		setModuleCategory(new ModuleCategory(LanguageManager.translateOrReturnKey("modules_category_gg", new Object[0]),
+		setModuleCategory(new ModuleCategory(LanguageManager.translateOrReturnKey("modules_category_gg"),
 				true, new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/icon.png"))));
 
 		setGGServer(new GrieferGamesServer(Minecraft.getMinecraft()));
@@ -296,8 +297,8 @@ public class GrieferGames extends LabyModAddon {
 		getApi().getEventManager().registerOnJoin(new Consumer<ServerData>() {
 			@Override
 			public void accept(ServerData serverData) {
-				boolean showModules = (serverData.getIp().toLowerCase().indexOf(getServerIp()) >= 0
-						|| serverData.getIp().toLowerCase().indexOf(getSecondServerIp()) >= 0);
+				boolean showModules = (serverData.getIp().toLowerCase().contains(getServerIp())
+						|| serverData.getIp().toLowerCase().contains(getSecondServerIp()));
 				setShowModules(showModules);
 			}
 		});
@@ -321,7 +322,7 @@ public class GrieferGames extends LabyModAddon {
 			}
 
 			if (stream != null) {
-				InputStreamReader reader = new InputStreamReader(stream, Charset.forName("UTF-8"));
+				InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
 				prop.load(reader);
 				reader.close();
 				found = true;
