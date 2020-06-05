@@ -78,13 +78,11 @@ public class GlobalMessage extends Chat {
 		// IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") +
 		// suggestMsgHoverTxt);
 
-		System.out.println("Start: "+nameStart);
 		msg.getSiblings().get(nameStart).getChatStyle()
 				.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
 		// .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 
 		for (int i = nameStart; i <= nameEnd; i++) {
-			System.out.println("End: "+nameEnd);
 			msg.getSiblings().get(i).getChatStyle()
 					.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
 			// .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));

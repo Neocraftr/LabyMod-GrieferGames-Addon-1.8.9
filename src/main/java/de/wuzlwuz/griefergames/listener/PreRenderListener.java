@@ -20,8 +20,8 @@ public class PreRenderListener {
 
 	@SubscribeEvent
 	public void onPreRender(RenderGameOverlayEvent event) {
-		if (GrieferGames.getGriefergames().getGGServer().getMc().gameSettings.keyBindPlayerList.isKeyDown()
-				&& !GrieferGames.getGriefergames().getGGServer().getMc().isIntegratedServerRunning()
+		if (GrieferGames.getGriefergames().getGGServer().getMC().gameSettings.keyBindPlayerList.isKeyDown()
+				&& !GrieferGames.getGriefergames().getGGServer().getMC().isIntegratedServerRunning()
 				&& GrieferGames.getSettings().isAMPEnabled()) {
 
 			ScoreObjective scoreobjective = LabyModCore.getMinecraft().getWorld().getScoreboard()

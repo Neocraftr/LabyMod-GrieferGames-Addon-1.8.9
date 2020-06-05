@@ -69,8 +69,4 @@ public class Chat {
 	public boolean receiveMessage(String formatted, String unformatted) {
 		return false;
 	}
-
-	protected MinecraftAdapter getMC() {
-		return LabyModCore.getMinecraft();
-	}
 }
