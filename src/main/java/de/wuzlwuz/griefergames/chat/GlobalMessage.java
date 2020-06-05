@@ -51,13 +51,16 @@ public class GlobalMessage extends Chat {
 
 		int siblingCnt = 0;
 		int nameStart = 0;
-		int nameEnd = 0;
+		int nameEnd = 3;
 		for (IChatComponent msgs : msg.getSiblings()) {
+			System.out.println();
 			if (msgs.getUnformattedText().equals("] ") && nameStart == 0) {
 				nameStart = siblingCnt + 1;
 			}
 
-			if (msgs.getUnformattedText().trim().equalsIgnoreCase("\u00BB")) {
+			if (msgs.getUnformattedText().trim().equalsIgnoreCase("\u00BB")
+					|| getHelper().getProperTextFormat(msgs.getFormattedText()).equalsIgnoreCase("§f §r")
+							&& nameEnd == 3) {
 				nameEnd = siblingCnt - 1;
 			}
 			siblingCnt++;
@@ -68,6 +71,10 @@ public class GlobalMessage extends Chat {
 		// Object[0]);
 		// IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") +
 		// suggestMsgHoverTxt);
+
+		if (nameEnd < nameStart) {
+			nameEnd = nameStart;
+		}
 
 		for (int i = nameStart; i <= nameEnd; i++) {
 			msg.getSiblings().get(i).getChatStyle()

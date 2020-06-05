@@ -24,6 +24,7 @@ public class Helper {
 	}
 
 	private static Pattern subServerNameRegex = Pattern.compile("§3§lServer\\:?$");
+	private static Pattern subServerCityBuildRegex = Pattern.compile("^cb([0-9])+$");
 	private static Pattern displayNameRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}))");
 
 	private static Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16})");
@@ -534,5 +535,29 @@ public class Helper {
 
 	public void setChatToolFilterSecondChat(String name) {
 		setChatToolFilterSecondChat(name, false);
+	}
+
+	public String getServerMessageName(String subServerName) {
+		String subServerNameLower = subServerName.toLowerCase();
+
+		String prefix = "GrieferGames.net";
+
+		Matcher matcher = subServerCityBuildRegex.matcher(subServerNameLower);
+		if (subServerName.equalsIgnoreCase("cb0")) {
+			return prefix + " - CityBuild Zero";
+		} else if (matcher.find()) {
+			String cbNum = matcher.group(1);
+			return prefix + " - CityBuild " + cbNum;
+		} else if (subServerName.equalsIgnoreCase("cbe")) {
+			return prefix + " - CityBuild Evil";
+		} else if (subServerName.equalsIgnoreCase("extreme") || subServerName.equalsIgnoreCase("nature")) {
+			return prefix + " - CityBuild " + subServerName;
+		} else if (subServerName.equalsIgnoreCase("lava") || subServerName.equalsIgnoreCase("wasser")) {
+			return prefix + " - Farmserver " + subServerName;
+		} else if (subServerName.equalsIgnoreCase("lobby") || subServerName.equalsIgnoreCase("portal")) {
+			return prefix;
+		}
+
+		return prefix + " - " + subServerName;
 	}
 }

@@ -8,6 +8,7 @@ import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.enums.EnumRealnameShown;
 import de.wuzlwuz.griefergames.enums.EnumSounds;
 import net.labymod.gui.elements.DropDownMenu;
+import net.labymod.main.LabyMod;
 import net.labymod.settings.elements.BooleanElement;
 import net.labymod.settings.elements.ControlElement;
 import net.labymod.settings.elements.DropDownElement;
@@ -67,6 +68,8 @@ public class ModSettings {
 	private boolean updateBoosterState = false;
 
 	private boolean clearMapCache = false;
+
+	private boolean labyChatShowSubServerEnabled = false;
 
 	private boolean vanishHelper = false;
 
@@ -400,6 +403,28 @@ public class ModSettings {
 		this.clearMapCache = clearMapCache;
 	}
 
+	public boolean isLabyChatShowSubServerEnabled() {
+		return labyChatShowSubServerEnabled;
+	}
+
+	public void setLabyChatShowSubServerEnabled(boolean labyChatShowSubServerEnabled) {
+		JsonObject serverMessage = new JsonObject();
+		serverMessage.addProperty("show_gamemode", false);
+		serverMessage.addProperty("gamemode_name", "");
+
+		if (labyChatShowSubServerEnabled) {
+			String LabyConnectString = getGG().getHelper().getServerMessageName("lobby");
+
+			if (LabyConnectString != null && LabyConnectString.trim().length() > 0) {
+				serverMessage.addProperty("show_gamemode", true);
+				serverMessage.addProperty("gamemode_name", LabyConnectString);
+			}
+		}
+		LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
+
+		this.labyChatShowSubServerEnabled = labyChatShowSubServerEnabled;
+	}
+
 	public boolean isVanishHelper() {
 		return vanishHelper;
 	}
@@ -553,6 +578,9 @@ public class ModSettings {
 
 		if (getConfig().has("clearMapCache"))
 			setClearMapCache(getConfig().get("clearMapCache").getAsBoolean());
+
+		if (getConfig().has("labyChatShowSubServerEnabled"))
+			setLabyChatShowSubServerEnabled(getConfig().get("labyChatShowSubServerEnabled").getAsBoolean());
 
 		if (getConfig().has("vanishHelper"))
 			setVanishHelper(getConfig().get("vanishHelper").getAsBoolean());
@@ -963,5 +991,17 @@ public class ModSettings {
 					}
 				}, isAMPClanEnabled());
 		settings.add(ampClanEnabledBtn);
+
+		settings.add(new HeaderElement("LabyChat"));
+		final BooleanElement labyChatShowSubServerEnabledBtn = new BooleanElement("Spielmodus teilen",
+				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean labyChatShowSubServerEnabled) {
+						setLabyChatShowSubServerEnabled(labyChatShowSubServerEnabled);
+						getConfig().addProperty("labyChatShowSubServerEnabled", labyChatShowSubServerEnabled);
+						saveConfig();
+					}
+				}, isLabyChatShowSubServerEnabled());
+		settings.add(labyChatShowSubServerEnabledBtn);
 	}
 }

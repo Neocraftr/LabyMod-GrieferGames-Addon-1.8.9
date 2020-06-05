@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.gson.JsonObject;
+
 import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.booster.Booster;
 import de.wuzlwuz.griefergames.chat.AntiMagicClanTag;
@@ -50,6 +52,7 @@ import net.labymod.api.events.TabListEvent;
 import net.labymod.core.LabyModCore;
 import net.labymod.core.MinecraftAdapter;
 import net.labymod.ingamegui.ModuleCategoryRegistry;
+import net.labymod.main.LabyMod;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.labymod.servermanager.Server;
 import net.labymod.settings.elements.SettingsElement;
@@ -187,6 +190,21 @@ public class GrieferGamesServer extends Server {
 			public void onSubServerChanged(String subServerNameOld, String subServerName) {
 				getGG().setNickname("");
 				getGG().setNewsStart(false);
+
+				JsonObject serverMessage = new JsonObject();
+				serverMessage.addProperty("show_gamemode", false);
+				serverMessage.addProperty("gamemode_name", "");
+
+				if (getSettings().isLabyChatShowSubServerEnabled()) {
+					String LabyConnectString = getHelper().getServerMessageName(subServerName);
+
+					if (LabyConnectString != null && LabyConnectString.trim().length() > 0) {
+						serverMessage.addProperty("show_gamemode", true);
+						serverMessage.addProperty("gamemode_name", LabyConnectString);
+					}
+				}
+
+				LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
 
 				if (getHelper().doResetBoosterBySubserver(subServerName)) {
 					getGG().setBoosters(new ArrayList<Booster>());
