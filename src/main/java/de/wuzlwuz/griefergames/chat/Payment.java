@@ -153,4 +153,18 @@ public class Payment extends Chat {
 		}
 		return money;
 	}
+
+	@Override
+	public boolean doActionCommandMessage(String unformatted) {
+		if (unformatted.toLowerCase().startsWith("/pay") && unformatted.toLowerCase().contains(",")) {
+			getMC().getPlayer().sendChatMessage(unformatted.replace(",", "."));
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean commandMessage(String unformatted) {
+		return true;
+	}
 }

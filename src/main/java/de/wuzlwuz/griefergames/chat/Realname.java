@@ -16,7 +16,7 @@ public class Realname extends Chat {
 			.compile("^\\$\\{\\{dup\\}\\}([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}) ist (\\w{1,16})$");
 
 	// private static Pattern isNickedPlayer = Pattern.compile("([A-Za-z\\-]+\\+?)
-	// \\| (\\u007E\\w{1,16})");
+	// \\u2503 (\\u007E\\w{1,16})");
 
 	@Override
 	public String getName() {

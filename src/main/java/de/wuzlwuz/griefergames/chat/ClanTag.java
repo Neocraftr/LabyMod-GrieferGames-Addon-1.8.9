@@ -49,7 +49,7 @@ public class ClanTag extends Chat {
 							.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, clanTag));
 
 					String clanTagClickHoverTxt = LanguageManager
-							.translateOrReturnKey("message_gg_clanTagClickHoverTxt");
+							.translateOrReturnKey("message_gg_clanTagClickHoverTxt", new Object[0]);
 					IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") + clanTagClickHoverTxt);
 
 					msgStyling.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));

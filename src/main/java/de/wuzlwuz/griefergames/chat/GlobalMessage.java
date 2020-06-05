@@ -9,10 +9,11 @@ import net.minecraft.util.IChatComponent;
 
 public class GlobalMessage extends Chat {
 	// private static Pattern msgUserGlobalChatRegex =
-	// Pattern.compile("^([A-Za-z\\-]+\\+?) ┃ (\\w{1,16})\\s\\:");
-	private static Pattern msgUserGlobalChatRegex = Pattern.compile("^([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16})");
+	// Pattern.compile("^([A-Za-z\\-]+\\+?) \\u2503 (\\w{1,16})\\s\\u00BB");
+	private static Pattern msgUserGlobalChatRegex = Pattern
+			.compile("^([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16})");
 	private static Pattern msgUserGlobalChatClanRegex = Pattern
-			.compile("^(\\[[^\\]]+\\])\\s([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16})\\s");
+			.compile("^(\\[[^\\]]+\\])\\s([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16})\\s\\u00BB");
 
 	@Override
 	public String getName() {

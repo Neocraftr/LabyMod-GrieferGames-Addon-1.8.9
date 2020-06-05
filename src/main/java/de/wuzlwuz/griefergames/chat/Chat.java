@@ -26,6 +26,10 @@ public class Chat {
 		return GrieferGames.getSettings();
 	}
 
+	protected MinecraftAdapter getMC() {
+		return LabyModCore.getMinecraft();
+	}
+
 	public String getName() {
 		return "chat";
 	}

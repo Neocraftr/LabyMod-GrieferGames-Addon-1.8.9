@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.gson.JsonObject;
+
 import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.booster.Booster;
 import de.wuzlwuz.griefergames.chat.AntiMagicClanTag;
@@ -48,7 +50,9 @@ import net.labymod.api.events.MessageReceiveEvent;
 import net.labymod.api.events.MessageSendEvent;
 import net.labymod.api.events.TabListEvent;
 import net.labymod.core.LabyModCore;
+import net.labymod.core.MinecraftAdapter;
 import net.labymod.ingamegui.ModuleCategoryRegistry;
+import net.labymod.main.LabyMod;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.labymod.servermanager.Server;
 import net.labymod.settings.elements.SettingsElement;
@@ -88,12 +92,16 @@ public class GrieferGamesServer extends Server {
 		return GrieferGames.getGriefergames().getHelper();
 	}
 
-	public Minecraft getMc() {
+	public Minecraft getMC() {
 		return mc;
 	}
 
-	public void setMc(Minecraft mc) {
+	private void setMC(Minecraft mc) {
 		this.mc = mc;
+	}
+
+	public MinecraftAdapter getMinecraft() {
+		return LabyModCore.getMinecraft();
 	}
 
 	public LabyModAPI getApi() {
@@ -143,7 +151,7 @@ public class GrieferGamesServer extends Server {
 		super("GrieferGames", GrieferGames.getGriefergames().getServerIp(),
 				GrieferGames.getGriefergames().getSecondServerIp());
 
-		setMc(minecraft);
+		setMC(minecraft);
 		setApi(getGG().getApi());
 
 		ModuleCategoryRegistry.loadCategory(getGG().getModuleCategory());
@@ -182,6 +190,21 @@ public class GrieferGamesServer extends Server {
 			public void onSubServerChanged(String subServerNameOld, String subServerName) {
 				getGG().setNickname("");
 				getGG().setNewsStart(false);
+
+				JsonObject serverMessage = new JsonObject();
+				serverMessage.addProperty("show_gamemode", false);
+				serverMessage.addProperty("gamemode_name", "");
+
+				if (getSettings().isLabyChatShowSubServerEnabled()) {
+					String LabyConnectString = getHelper().getServerMessageName(subServerName);
+
+					if (LabyConnectString != null && LabyConnectString.trim().length() > 0) {
+						serverMessage.addProperty("show_gamemode", true);
+						serverMessage.addProperty("gamemode_name", LabyConnectString);
+					}
+				}
+
+				LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
 
 				if (getHelper().doResetBoosterBySubserver(subServerName)) {
 					getGG().setBoosters(new ArrayList<Booster>());
@@ -297,8 +320,8 @@ public class GrieferGamesServer extends Server {
 
 			for (NetworkPlayerInfo player : playerMap) {
 				IChatComponent tabListName = player.getDisplayName();
-				String teamName = player.getPlayerTeam().getTeamName();
-				String registeredName = player.getGameProfile().getName();
+				// String teamName = player.getPlayerTeam().getTeamName();
+				// String registeredName = player.getGameProfile().getName();
 
 				if (tabListName != null) {
 					if (accountName.length() > 0 && accountName
@@ -307,11 +330,14 @@ public class GrieferGamesServer extends Server {
 						setPlayerRank(getHelper().getPlayerRank(tabListName.getUnformattedText().trim()));
 						getGG().setIsInTeam(getHelper().isInTeam(getPlayerRank()));
 					}
-				} else if (accountName.length() > 0 && registeredName.length() > 0 && teamName.length() > 0
-						&& accountName.trim().equalsIgnoreCase(registeredName.trim())) {
-					setPlayerRank(getHelper().getPlayerRank(teamName.trim()));
-					getGG().setIsInTeam(getHelper().isInTeam(getPlayerRank()));
 				}
+				/*
+				 * else if (accountName.length() > 0 && registeredName.length() > 0 &&
+				 * teamName.length() > 0 &&
+				 * accountName.trim().equalsIgnoreCase(registeredName.trim())) {
+				 * setPlayerRank(getHelper().getPlayerRank(teamName.trim()));
+				 * getGG().setIsInTeam(getHelper().isInTeam(getPlayerRank())); }
+				 */
 			}
 			if (!getModulesLoaded()) {
 				setModulesLoaded(true);
@@ -361,7 +387,7 @@ public class GrieferGamesServer extends Server {
 
 				if (getSettings().isUpdateBoosterState() && getHelper().isSwitcherDoneMsg(unformatted, formatted) > 0) {
 					getGG().setBoosters(new ArrayList<Booster>());
-					getMc().thePlayer.sendChatMessage("/booster");
+					getMinecraft().getPlayer().sendChatMessage("/booster");
 				}
 
 				int status = getHelper().isVanishMessage(unformatted, formatted);
@@ -447,7 +473,8 @@ public class GrieferGamesServer extends Server {
 
 					if (unformatted.startsWith("[SCAMMER] ")) {
 						String newFormatted = getHelper().getProperTextFormat(formatted);
-						newFormatted = formatted.replaceFirst("§r§6[§r§4§lSCAMMER§r§6]§r§r", "").trim();
+						newFormatted = formatted.replaceFirst("((§r)?§6\\[§r§([0-9]|[a-f])§lSCAMMER§r§6\\]§r§r)", "")
+								.trim();
 						formatted = getHelper().getProperChatFormat(newFormatted);
 
 						String newUnformatted = unformatted;
