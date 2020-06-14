@@ -59,6 +59,8 @@ public class ModSettings {
 	private String ampTablistReplacement = "";
 	private String defaultAMPTablistReplacement = "[AMP] %CLEAN%";
 
+	private boolean preventCommandFailure = false;
+
 	private boolean markTPAMsg = true;
 
 	private boolean cleanVoteMsg = false;
@@ -193,6 +195,14 @@ public class ModSettings {
 
 	private void setClanTagClick(boolean clanTagClick) {
 		this.clanTagClick = clanTagClick;
+	}
+
+	public boolean isPreventCommandFailure() {
+		return this.preventCommandFailure;
+	}
+
+	private void setPreventCommandFailure(boolean preventCommandFailure) {
+		this.preventCommandFailure = preventCommandFailure;
 	}
 
 	public boolean isFilterDuplicateMessages() {
@@ -564,6 +574,9 @@ public class ModSettings {
 		if (getConfig().has("tablistReplacement"))
 			setAMPTablistReplacement(getConfig().get("tablistReplacement").getAsString());
 
+		if (getConfig().has("preventCommandFailure"))
+			setPreventCommandFailure(getConfig().get("preventCommandFailure").getAsBoolean());
+
 		if (getConfig().has("markTPAMsg"))
 			setMarkTPAMsg(getConfig().get("markTPAMsg").getAsBoolean());
 
@@ -706,6 +719,17 @@ public class ModSettings {
 			}
 		});
 		settings.add(filterDuplicateMessagesTimeNumber);
+
+		final BooleanElement preventCommandFailureBtn = new BooleanElement("Fehlerhaften Befehl blockieren",
+				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean preventCommandFailure) {
+						setPreventCommandFailure(preventCommandFailure);
+						getConfig().addProperty("preventCommandFailure", preventCommandFailure);
+						saveConfig();
+					}
+				}, isPreventCommandFailure());
+		settings.add(preventCommandFailureBtn);
 
 		final BooleanElement markTPAMsgBtn = new BooleanElement("TPA Nachrichten markieren",
 				new ControlElement.IconData("labymod/textures/settings/settings/autotext.png"),

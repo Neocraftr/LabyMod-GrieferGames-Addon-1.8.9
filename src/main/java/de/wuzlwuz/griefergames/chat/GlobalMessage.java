@@ -53,7 +53,6 @@ public class GlobalMessage extends Chat {
 		int nameStart = 0;
 		int nameEnd = 3;
 		for (IChatComponent msgs : msg.getSiblings()) {
-			System.out.println();
 			if (msgs.getUnformattedText().equals("] ") && nameStart == 0) {
 				nameStart = siblingCnt + 1;
 			}
