@@ -24,7 +24,7 @@ public class Helper {
 	}
 
 	private static Pattern subServerNameRegex = Pattern.compile("§3§lServer\\:?$");
-	private static Pattern subServerCityBuildRegex = Pattern.compile("^cb([0-9])+$");
+	private static Pattern subServerCityBuildRegex = Pattern.compile("^cb([0-9]+)$");
 	private static Pattern displayNameRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}))");
 
 	private static Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16})");
