@@ -61,40 +61,43 @@ public class PrivateMessage extends Chat {
 		Matcher privateMessage = privateMessageRegex.matcher(unformatted);
 		Matcher privateMessageSent = privateMessageSentRegex.matcher(unformatted);
 
-		if (getSettings().isMsgDisplayNameClick() && doAction(unformatted, formatted)) {
-			// String suggestMsgHoverTxt =
-			// LanguageManager.translateOrReturnKey("message_gg_suggestMsgHoverMsg",new
-			// Object[0]);
-			// IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") +
-			// suggestMsgHoverTxt);
-
+		if (doAction(unformatted, formatted)) {
 			if (privateMessage.find()) {
+				// String suggestMsgHoverTxt =
+				// LanguageManager.translateOrReturnKey("message_gg_suggestMsgHoverMsg",new
+				// Object[0]);
+				// IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") +
+				// suggestMsgHoverTxt);
 				if (getSettings().isPrivateChatSound()) {
 					LabyModCore.getMinecraft().playSound(new ResourceLocation(getSettings().getPrivateChatSoundPath()),
 							1.0F);
 				}
 
-				String username = "/msg " + getPrivateMessageName(unformatted) + " ";
-				int siblingCnt = 0;
-				int nameStart = 0;
-				int nameEnd = 0;
-				for (IChatComponent msgs : msg.getSiblings()) {
-					if (nameStart == 0 && getHelper().getProperTextFormat(msgs.getFormattedText()).contains("§6[§r")) {
-						nameStart = siblingCnt + 1;
+				if (getSettings().isMsgDisplayNameClick()) {
+					String username = "/msg " + getPrivateMessageName(unformatted) + " ";
+					int siblingCnt = 0;
+					int nameStart = 0;
+					int nameEnd = 0;
+					for (IChatComponent msgs : msg.getSiblings()) {
+						if (nameStart == 0
+								&& getHelper().getProperTextFormat(msgs.getFormattedText()).contains("§6[§r")) {
+							nameStart = siblingCnt + 1;
+						}
+						if (nameEnd == 0
+								&& getHelper().getProperTextFormat(msgs.getFormattedText()).equals("§6 -> §r")) {
+							nameEnd = siblingCnt - 1;
+						}
+						siblingCnt++;
 					}
-					if (nameEnd == 0 && getHelper().getProperTextFormat(msgs.getFormattedText()).equals("§6 -> §r")) {
-						nameEnd = siblingCnt - 1;
+					for (int i = nameStart; i <= nameEnd; i++) {
+						msg.getSiblings().get(i).getChatStyle()
+								.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
+						// .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 					}
-					siblingCnt++;
-				}
-				for (int i = nameStart; i <= nameEnd; i++) {
-					msg.getSiblings().get(i).getChatStyle()
-							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
-					// .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 				}
 			}
 
-			if (privateMessageSent.find()) {
+			if (privateMessageSent.find() && getSettings().isMsgDisplayNameClick()) {
 				String username = "/msg " + getSentPrivateMessageName(unformatted) + " ";
 				int siblingCnt = 0;
 				int nameStart = 0;

@@ -538,26 +538,29 @@ public class Helper {
 	}
 
 	public String getServerMessageName(String subServerName) {
-		String subServerNameLower = subServerName.toLowerCase();
-
-		String prefix = "GrieferGames.net";
-
-		Matcher matcher = subServerCityBuildRegex.matcher(subServerNameLower);
-		if (subServerName.equalsIgnoreCase("cb0")) {
-			return prefix + " - CityBuild Zero";
-		} else if (matcher.find()) {
-			String cbNum = matcher.group(1);
-			return prefix + " - CityBuild " + cbNum;
-		} else if (subServerName.equalsIgnoreCase("cbe")) {
-			return prefix + " - CityBuild Evil";
-		} else if (subServerName.equalsIgnoreCase("extreme") || subServerName.equalsIgnoreCase("nature")) {
-			return prefix + " - CityBuild " + subServerName;
-		} else if (subServerName.equalsIgnoreCase("lava") || subServerName.equalsIgnoreCase("wasser")) {
-			return prefix + " - Farmserver " + subServerName;
-		} else if (subServerName.equalsIgnoreCase("lobby") || subServerName.equalsIgnoreCase("portal")) {
+		String prefix = "GrieferGames";
+		if (subServerName == null || subServerName.trim().length() == 0 || subServerName.equalsIgnoreCase("lobby")
+				|| subServerName.equalsIgnoreCase("portal"))
 			return prefix;
+
+		String retSubServerName = subServerName.trim();
+
+		if (retSubServerName.equalsIgnoreCase("cb0")) {
+			retSubServerName = "CB Zero";
+		} else if (subServerName.equalsIgnoreCase("cbe")) {
+			retSubServerName = "CB Evil";
+		} else if (subServerName.equalsIgnoreCase("extreme") || subServerName.equalsIgnoreCase("nature")) {
+			retSubServerName = "CB " + subServerName;
+		} else if (subServerName.equalsIgnoreCase("lava") || subServerName.equalsIgnoreCase("wasser")) {
+			retSubServerName = "Farmserver " + subServerName;
+		} else {
+			Matcher matcher = subServerCityBuildRegex.matcher(retSubServerName.toLowerCase());
+			if (matcher.find()) {
+				String cbNum = matcher.group(1);
+				retSubServerName = "CB " + cbNum;
+			}
 		}
 
-		return prefix + " - " + subServerName;
+		return prefix + " " + retSubServerName;
 	}
 }
