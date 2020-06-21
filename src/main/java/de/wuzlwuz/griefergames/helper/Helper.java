@@ -49,7 +49,7 @@ public class Helper {
 	private static Pattern getBoosterDoneValidRegexp = Pattern
 			.compile("^\\[Booster\\] ([A-z]+\\-Booster|Erfahrungsbooster) ist jetzt wieder deaktiviert!$");
 	private static Pattern getBoosterMultiDoneValidRegexp = Pattern.compile(
-			"^\\[Booster\\] Der ([A-z]+\\-Booster|Erfahrungsbooster) \\(Stufe [2-6]\\) von ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\w{1,16}) ist abgelaufen.$");
+			"^\\[Booster\\] Der ([A-z]+\\-Booster|Erfahrungsbooster) \\(Stufe [1-6]\\) von ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\w{1,16}) ist abgelaufen.$");
 	private static Pattern getCurrentBoosters = Pattern.compile(
 			"^([A-z]+\\-Booster|Erfahrungsbooster) Multiplikator: ([0-9])x ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
 
