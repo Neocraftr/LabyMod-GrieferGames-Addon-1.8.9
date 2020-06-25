@@ -7,9 +7,9 @@ import net.labymod.servermanager.ChatDisplayAction;
 
 public class Vote extends Chat {
 	private static Pattern voteMsgHubRegexp = Pattern
-			.compile("^((\\u007E)?\\w{1,16}) hat f\\u00FCr unseren Server gevotet! /vote$");
+			.compile("^((\\u007E)?\\!?\\w{1,16}) hat f\\u00FCr unseren Server gevotet! /vote$");
 	private static Pattern voteMsgRegexp = Pattern
-			.compile("^((\\u007E)?\\w{1,16}) hat gevotet und erh\\u00E4lt ein tolles Geschenk! /vote$");
+			.compile("^((\\u007E)?\\!?\\w{1,16}) hat gevotet und erh\\u00E4lt ein tolles Geschenk! /vote$");
 
 	@Override
 	public String getName() {

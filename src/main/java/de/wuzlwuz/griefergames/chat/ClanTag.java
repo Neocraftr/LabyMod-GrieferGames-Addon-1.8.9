@@ -12,7 +12,7 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
 
 public class ClanTag extends Chat {
-	private static Pattern clanTagRegex = Pattern.compile("^\\[([^\\]]+)\\] [A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\w{1,16}");
+	private static Pattern clanTagRegex = Pattern.compile("^\\[([^\\]]+)\\] [A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}");
 
 	@Override
 	public String getName() {

@@ -9,7 +9,7 @@ import net.minecraft.util.IChatComponent;
 
 public class AntiMagicClanTag extends Chat {
 	private static Pattern antiMagicClanTagRegex = Pattern
-			.compile("^(\\[[^\\]]+\\] ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\w{1,16}))");
+			.compile("^(\\[[^\\]]+\\] ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}))");
 
 	@Override
 	public String getName() {
