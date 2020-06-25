@@ -26,6 +26,7 @@ import de.wuzlwuz.griefergames.chat.News;
 import de.wuzlwuz.griefergames.chat.Nickname;
 import de.wuzlwuz.griefergames.chat.Payment;
 import de.wuzlwuz.griefergames.chat.PlotChat;
+import de.wuzlwuz.griefergames.chat.PreventCommandFailure;
 import de.wuzlwuz.griefergames.chat.PrivateMessage;
 import de.wuzlwuz.griefergames.chat.Realname;
 import de.wuzlwuz.griefergames.chat.SupremeBlanks;
@@ -161,6 +162,7 @@ public class GrieferGamesServer extends Server {
 		new NicknameModule();
 
 		// add Chat Modules
+		getGG().addChatModule(new PreventCommandFailure());
 		getGG().addChatModule(new ClearChat());
 		getGG().addChatModule(new Blanks());
 		getGG().addChatModule(new SupremeBlanks());

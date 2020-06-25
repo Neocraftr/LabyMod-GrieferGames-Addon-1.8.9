@@ -12,7 +12,7 @@ import net.minecraft.util.IChatComponent;
 
 public class MobRemover extends Chat {
 	private static Pattern mobRemoverMessageRegex = Pattern
-			.compile("^\\[MobRemover\\] Achtung, in ([0-9]+) Minuten werden alle Tiere gel\u00f6scht.$");
+			.compile("^\\[MobRemover\\] Achtung, in ([0-9]+) Minuten? werden alle Tiere gel\u00f6scht.$");
 	private static Pattern mobRemoverDoneMessageRegex = Pattern
 			.compile("^\\[MobRemover\\] Es wurden ([0-9]+) Tiere entfernt.$");
 
