@@ -497,6 +497,12 @@ public class GrieferGamesServer extends Server {
 
 			setListenerLoaded(true);
 		}
+
+		if(getSettings().isModEnabled()) {
+			if(getSettings().isAutoPortl()) {
+				getMinecraft().getPlayer().sendChatMessage("/portal");
+			}
+		}
 	}
 
 	public Object modifyChatMessage(Object o) {

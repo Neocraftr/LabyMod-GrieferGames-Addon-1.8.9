@@ -73,6 +73,8 @@ public class ModSettings {
 
 	private boolean labyChatShowSubServerEnabled = false;
 
+	private boolean autoPortal = false;
+
 	private boolean vanishHelper = false;
 
 	private boolean checkPlotHelper = false;
@@ -435,6 +437,14 @@ public class ModSettings {
 		this.labyChatShowSubServerEnabled = labyChatShowSubServerEnabled;
 	}
 
+	public void setAutoPortal(boolean autoPortal) {
+		this.autoPortal = autoPortal;
+	}
+
+	public boolean isAutoPortl() {
+		return autoPortal;
+	}
+
 	public boolean isVanishHelper() {
 		return vanishHelper;
 	}
@@ -594,6 +604,9 @@ public class ModSettings {
 
 		if (getConfig().has("labyChatShowSubServerEnabled"))
 			setLabyChatShowSubServerEnabled(getConfig().get("labyChatShowSubServerEnabled").getAsBoolean());
+
+		if (getConfig().has("autoPortal"))
+			setAutoPortal(getConfig().get("autoPortal").getAsBoolean());
 
 		if (getConfig().has("vanishHelper"))
 			setVanishHelper(getConfig().get("vanishHelper").getAsBoolean());
@@ -1027,5 +1040,17 @@ public class ModSettings {
 					}
 				}, isLabyChatShowSubServerEnabled());
 		settings.add(labyChatShowSubServerEnabledBtn);
+
+		settings.add(new HeaderElement("Automatisationen"));
+		final BooleanElement autoPortalBtn = new BooleanElement("Portalraum beim Betreten",
+				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean autoPortal) {
+				setAutoPortal(autoPortal);
+				getConfig().addProperty("autoPortal", autoPortal);
+				saveConfig();
+			}
+		}, isAutoPortl());
+		settings.add(autoPortalBtn);
 	}
 }
