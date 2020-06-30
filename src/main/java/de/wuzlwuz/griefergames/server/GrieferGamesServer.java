@@ -38,12 +38,7 @@ import de.wuzlwuz.griefergames.helper.Helper;
 import de.wuzlwuz.griefergames.listener.OnTickListener;
 import de.wuzlwuz.griefergames.listener.PreRenderListener;
 import de.wuzlwuz.griefergames.listener.SubServerListener;
-import de.wuzlwuz.griefergames.modules.AuraModule;
-import de.wuzlwuz.griefergames.modules.BoosterModule;
-import de.wuzlwuz.griefergames.modules.FlyModule;
-import de.wuzlwuz.griefergames.modules.GodmodeModule;
-import de.wuzlwuz.griefergames.modules.NicknameModule;
-import de.wuzlwuz.griefergames.modules.VanishModule;
+import de.wuzlwuz.griefergames.modules.*;
 import de.wuzlwuz.griefergames.settings.ModSettings;
 import net.labymod.api.LabyModAPI;
 import net.labymod.api.events.MessageModifyChatEvent;
@@ -76,6 +71,7 @@ public class GrieferGamesServer extends Server {
 	private long nextLastMessageRequest = System.currentTimeMillis() + 1000L;
 	private long nextScoreboardRequest = System.currentTimeMillis() + (-1 * 1000L);
 	private long nextCheckFly = System.currentTimeMillis() + 1000L;
+	private long nextUpdateTimeToWait = System.currentTimeMillis() + 1000L;
 	private String lastMessage = "";
 	private String playerRank = "Spieler";
 	private boolean modulesLoaded = false;
@@ -160,6 +156,7 @@ public class GrieferGamesServer extends Server {
 		new BoosterModule();
 		new FlyModule();
 		new NicknameModule();
+		new DelayModule();
 
 		// add Chat Modules
 		getGG().addChatModule(new PreventCommandFailure());
@@ -231,6 +228,7 @@ public class GrieferGamesServer extends Server {
 					}
 				}
 				if (subServerName.equalsIgnoreCase("lobby")) {
+					getGG().setTimeToWait(0);
 					//getGG().setShowBoosterDummy(true);
 					boolean loadRank = loadPlayerRank();
 					if (!loadRank) {
@@ -262,7 +260,12 @@ public class GrieferGamesServer extends Server {
 						};
 						thread.start();
 					}
+				} else if (subServerName.equalsIgnoreCase("portal")) {
+					getGG().setTimeToWait(12);
+				} else if((subServerName.startsWith("CB") && !subServerName.equalsIgnoreCase("cb0") ) || subServerName.equalsIgnoreCase("skyblock")) {
+					getGG().setTimeToWait(15);
 				} else {
+					getGG().setTimeToWait(0);
 					// Minecraft.getMinecraft().entityRenderer.getMapItemRenderer().clearLoadedMaps();
 					//getGG().setShowBoosterDummy(false);
 				}
@@ -311,6 +314,14 @@ public class GrieferGamesServer extends Server {
 
 	public long getNextCheckFly() {
 		return this.nextCheckFly;
+	}
+
+	public void setNextUpdateTimeToWait(long nextUpdateTimeToWait) {
+		this.nextUpdateTimeToWait = nextUpdateTimeToWait;
+	}
+
+	public long getNextUpdateTimeToWait() {
+		return nextUpdateTimeToWait;
 	}
 
 	private boolean loadPlayerRank() {

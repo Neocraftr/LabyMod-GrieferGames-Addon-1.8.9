@@ -46,6 +46,7 @@ public class GrieferGames extends LabyModAddon {
 	private String nickname = "";
 	private String playerRank = "Spieler";
 	private boolean newsStart = false;
+	private int timeToWait = 0;
 
 	public static GrieferGames getGriefergames() {
 		return griefergames;
@@ -253,6 +254,14 @@ public class GrieferGames extends LabyModAddon {
 
 	public void setNewsStart(boolean newsStart) {
 		this.newsStart = newsStart;
+	}
+
+	public int getTimeToWait() {
+		return timeToWait;
+	}
+
+	public void setTimeToWait(int timeToWait) {
+		this.timeToWait = timeToWait;
 	}
 
 	private GrieferGamesServer ggserver;

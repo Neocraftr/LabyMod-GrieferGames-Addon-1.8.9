@@ -59,6 +59,12 @@ public class OnTickListener {
 				GrieferGames.getGriefergames()
 						.setFlyActive(LabyModCore.getMinecraft().getPlayer().capabilities.allowFlying);
 			}
+
+			if (System.currentTimeMillis() > GrieferGames.getGriefergames().getGGServer().getNextUpdateTimeToWait()
+					&& GrieferGames.getGriefergames().getTimeToWait() > 0) {
+				GrieferGames.getGriefergames().getGGServer().setNextUpdateTimeToWait(System.currentTimeMillis() + 1000L);
+				GrieferGames.getGriefergames().setTimeToWait(GrieferGames.getGriefergames().getTimeToWait() - 1);
+			}
 		}
 	}
 }
