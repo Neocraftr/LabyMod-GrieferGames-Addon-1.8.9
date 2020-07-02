@@ -227,6 +227,15 @@ public class GrieferGamesServer extends Server {
 						thread.start();
 					}
 				}
+
+				if(getHelper().doHaveToWaitAfterJoin(subServerName)) {
+					getGG().setTimeToWait(15);
+				} else if(subServerName.equalsIgnoreCase("portal")) {
+					getGG().setTimeToWait(12);
+				} else {
+					getGG().setTimeToWait(0);
+				}
+
 				if (subServerName.equalsIgnoreCase("lobby")) {
 					getGG().setTimeToWait(0);
 					//getGG().setShowBoosterDummy(true);
@@ -260,12 +269,7 @@ public class GrieferGamesServer extends Server {
 						};
 						thread.start();
 					}
-				} else if (subServerName.equalsIgnoreCase("portal")) {
-					getGG().setTimeToWait(12);
-				} else if((subServerName.startsWith("CB") && !subServerName.equalsIgnoreCase("cb0") ) || subServerName.equalsIgnoreCase("skyblock")) {
-					getGG().setTimeToWait(15);
 				} else {
-					getGG().setTimeToWait(0);
 					// Minecraft.getMinecraft().entityRenderer.getMapItemRenderer().clearLoadedMaps();
 					//getGG().setShowBoosterDummy(false);
 				}

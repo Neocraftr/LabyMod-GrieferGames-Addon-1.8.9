@@ -310,6 +310,12 @@ public class Helper {
 		return subServers.contains(subServer.toLowerCase());
 	}
 
+	public boolean doHaveToWaitAfterJoin(String subServer) {
+		if(subServer.startsWith("CB") && !subServer.equalsIgnoreCase("cb0")) return true;
+		List<String> subServers = Arrays.asList("skyblock", "lava", "wasser", "extreme", "evil", "nature");
+		return subServers.contains(subServer.toLowerCase());
+	}
+
 	public int isSwitcherDoneMsg(String unformatted, String formatted) {
 		if (unformatted.trim().length() <= 0)
 			return -1;
