@@ -656,7 +656,7 @@ public class ModSettings {
 		final DropDownMenu<EnumSounds> privateChatSoundDropDownMenu = new DropDownMenu<EnumSounds>(
 				"Private Nachricht Sound" /* Display name */, 0, 0, 0, 0).fill(EnumSounds.values());
 
-		DropDownElement<EnumSounds> privateChatSoundDropDown = new DropDownElement<EnumSounds>(
+		final DropDownElement<EnumSounds> privateChatSoundDropDown = new DropDownElement<EnumSounds>(
 				"Private Nachricht Sound", privateChatSoundDropDownMenu);
 
 		// Set selected entry
@@ -784,7 +784,7 @@ public class ModSettings {
 		final DropDownMenu<EnumRealnameShown> realnameDropDownMenu = new DropDownMenu<EnumRealnameShown>(
 				"Realname anzeigen" /* Display name */, 0, 0, 0, 0).fill(EnumRealnameShown.values());
 
-		DropDownElement<EnumRealnameShown> realnameDropDown = new DropDownElement<EnumRealnameShown>(
+		final DropDownElement<EnumRealnameShown> realnameDropDown = new DropDownElement<EnumRealnameShown>(
 				"Realname anzeigen", realnameDropDownMenu);
 
 		// Set selected entry
@@ -991,9 +991,9 @@ public class ModSettings {
 				}, isAMPEnabled());
 		settings.add(ampEnabledBtn);
 
-		String ampChatText = (getAMPChatReplacement().length() > 0) ? getAMPChatReplacement()
+		final String ampChatText = (getAMPChatReplacement().length() > 0) ? getAMPChatReplacement()
 				: getDefaultAMPChatReplacement();
-		StringElement chatReplacementInput = new StringElement("Chat Replacement",
+		final StringElement chatReplacementInput = new StringElement("Chat Replacement",
 				new ControlElement.IconData(Material.BOOK_AND_QUILL), ampChatText, new Consumer<String>() {
 					@Override
 					public void accept(String replacement) {
@@ -1004,9 +1004,9 @@ public class ModSettings {
 				});
 		settings.add(chatReplacementInput);
 
-		String ampTabListText = (getAMPTablistReplacement().length() > 0) ? getAMPTablistReplacement()
+		final String ampTabListText = (getAMPTablistReplacement().length() > 0) ? getAMPTablistReplacement()
 				: getDefaultAMPTablistReplacement();
-		StringElement tablistReplacementInput = new StringElement("TabList Replacement",
+		final StringElement tablistReplacementInput = new StringElement("TabList Replacement",
 				new ControlElement.IconData(Material.BOOK_AND_QUILL), ampTabListText, new Consumer<String>() {
 					@Override
 					public void accept(String replacement) {

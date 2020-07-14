@@ -51,25 +51,18 @@ public class GlobalMessage extends Chat {
 
 		int siblingCnt = 0;
 		int nameStart = 0;
-		int nameEnd = 0;
+		int nameEnd = 3;
 		for (IChatComponent msgs : msg.getSiblings()) {
-			siblingCnt++;
 			if (msgs.getUnformattedText().equals("] ") && nameStart == 0) {
 				nameStart = siblingCnt + 1;
 			}
 
-			if (getHelper().getDisplayName(msgs.getUnformattedText()).length() > 0) {
-				nameEnd = siblingCnt;
-			} else if (siblingCnt > 0 && getHelper()
-					.getDisplayName(
-							msg.getSiblings().get(siblingCnt - 1).getUnformattedText() + msgs.getUnformattedText())
-					.length() > 0) {
-				nameEnd = siblingCnt;
-				if (msgs.getUnformattedText().trim().equalsIgnoreCase("\u00BB")) {
-					nameEnd = siblingCnt - 1;
-				}
-				siblingCnt++;
+			if (msgs.getUnformattedText().trim().equalsIgnoreCase("\u00BB")
+					|| getHelper().getProperTextFormat(msgs.getFormattedText()).equalsIgnoreCase("§f §r")
+					&& nameEnd == 3) {
+				nameEnd = siblingCnt - 1;
 			}
+			siblingCnt++;
 		}
 
 		// String suggestMsgHoverTxt =
@@ -78,9 +71,9 @@ public class GlobalMessage extends Chat {
 		// IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") +
 		// suggestMsgHoverTxt);
 
-		msg.getSiblings().get(nameStart).getChatStyle()
-				.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
-		// .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+		if (nameEnd < nameStart) {
+			nameEnd = nameStart;
+		}
 
 		for (int i = nameStart; i <= nameEnd; i++) {
 			msg.getSiblings().get(i).getChatStyle()
