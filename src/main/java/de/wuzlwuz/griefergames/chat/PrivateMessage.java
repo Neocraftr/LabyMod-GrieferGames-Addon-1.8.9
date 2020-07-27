@@ -61,40 +61,60 @@ public class PrivateMessage extends Chat {
 		Matcher privateMessage = privateMessageRegex.matcher(unformatted);
 		Matcher privateMessageSent = privateMessageSentRegex.matcher(unformatted);
 
-		if (getSettings().isMsgDisplayNameClick() && doAction(unformatted, formatted)) {
+		if (doAction(unformatted, formatted)) {
 			if (privateMessage.find()) {
+				// String suggestMsgHoverTxt =
+				// LanguageManager.translateOrReturnKey("message_gg_suggestMsgHoverMsg",new
+				// Object[0]);
+				// IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") +
+				// suggestMsgHoverTxt);
 				if (getSettings().isPrivateChatSound()) {
 					LabyModCore.getMinecraft().playSound(new ResourceLocation(getSettings().getPrivateChatSoundPath()),
 							1.0F);
 				}
-				if (msg.getSiblings().size() > 5) {
-					String username = "/msg " + getPrivateMessageName(unformatted) + " ";
-					msg.getSiblings().get(1).getChatStyle()
-							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
-					msg.getSiblings().get(2).getChatStyle()
-							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
-					//if (getHelper().getProperTextFormat(msg.getSiblings().get(3).getFormattedText()).equals("§6] §r")) {
-						msg.getSiblings().get(3).getChatStyle()
-								.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
-					//}
 
-					return msg;
+				if (getSettings().isMsgDisplayNameClick()) {
+					String username = "/msg " + getPrivateMessageName(unformatted) + " ";
+					int siblingCnt = 0;
+					int nameStart = 0;
+					int nameEnd = 0;
+					for (IChatComponent msgs : msg.getSiblings()) {
+						if (nameStart == 0
+								&& getHelper().getProperTextFormat(msgs.getFormattedText()).contains("§6[§r")) {
+							nameStart = siblingCnt + 1;
+						}
+						if (nameEnd == 0
+								&& getHelper().getProperTextFormat(msgs.getFormattedText()).equals("§6 -> §r")) {
+							nameEnd = siblingCnt - 1;
+						}
+						siblingCnt++;
+					}
+					for (int i = nameStart; i <= nameEnd; i++) {
+						msg.getSiblings().get(i).getChatStyle()
+								.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
+						// .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+					}
 				}
 			}
 
-			if (privateMessageSent.find()) {
-				if (msg.getSiblings().size() > 5) {
-					String username = "/msg " + getSentPrivateMessageName(unformatted) + " ";
-					msg.getSiblings().get(3).getChatStyle()
+			if (privateMessageSent.find() && getSettings().isMsgDisplayNameClick()) {
+				String username = "/msg " + getSentPrivateMessageName(unformatted) + " ";
+				int siblingCnt = 0;
+				int nameStart = 0;
+				int nameEnd = 0;
+				for (IChatComponent msgs : msg.getSiblings()) {
+					if (nameStart == 0 && getHelper().getProperTextFormat(msgs.getFormattedText()).equals("§6 -> §r")) {
+						nameStart = siblingCnt + 1;
+					}
+					if (nameEnd == 0 && getHelper().getProperTextFormat(msgs.getFormattedText()).equals("§6] §r")) {
+						nameEnd = siblingCnt - 1;
+					}
+					siblingCnt++;
+				}
+				for (int i = nameStart; i <= nameEnd; i++) {
+					msg.getSiblings().get(i).getChatStyle()
 							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
-					msg.getSiblings().get(4).getChatStyle()
-							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
-					//if (getHelper().getProperTextFormat(msg.getSiblings().get(5).getFormattedText()).equals("§6] §r")) {
-						msg.getSiblings().get(5).getChatStyle()
-								.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
-					//}
-
-					return msg;
+					// .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 				}
 			}
 		}
