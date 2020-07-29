@@ -78,7 +78,7 @@ public class CheckPlot extends Chat {
 			if (unformatted.startsWith("===== CheckPlot-Anfragen")) {// check headline
 				setSecondChat(false);
 				return true;
-			} else if (unformatted.startsWith("= Seite") && propFormatted.indexOf("§6§l= Seite §r§e§l") >= 0) {// check
+			} else if (unformatted.startsWith("= Seite") && propFormatted.contains("§6§l= Seite §r§e§l")) {// check
 																												// curpage
 				setSecondChat(false);
 				return true;
@@ -91,101 +91,95 @@ public class CheckPlot extends Chat {
 			} else if (propFormatted.equalsIgnoreCase("§6Seite §r§6<-§r §6|§r §r§7->§r")) {// check paging
 				setSecondChat(false);
 				return true;
-			} else if (propFormatted.indexOf("§r§r§r §r§6[§eCheck§6]§r§r§r") >= 0) {// check entry
+			} else if (propFormatted.contains("§r§r§r §r§6[§eCheck§6]§r§r§r")) {// check entry
 				setSecondChat(false);
 				return true;
-			} else if (propFormatted.indexOf("§6[§causw\u00E4hlen§6]§r") >= 0) {// check refuse entry
+			} else if (propFormatted.contains("§6[§causw\u00E4hlen§6]§r")) {// check refuse entry
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§r§cDu stehst nicht auf diesem Grundst\u00FCck!§r") >= 0) {// check not on
+			} else if (propFormatted.contains("§r§cDu stehst nicht auf diesem Grundst\u00FCck!§r")) {// check not on
 																											// plot
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted
-					.indexOf("§r§cGrundst\u00FCcke dieses Spielers k\u00F6nnen nicht gel\u00F6scht werden.§r") >= 0) {
+			} else if (propFormatted.contains("§r§cGrundst\u00FCcke dieses Spielers k\u00F6nnen nicht gel\u00F6scht werden.§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§7Zuletzt online: §r§c") >= 0 && propFormatted.indexOf("§r§7Uhr") >= 0) {// check
+			} else if (propFormatted.contains("§7Zuletzt online: §r§c") && propFormatted.contains("§r§7Uhr")) {// check
 																														// last
 																														// seen
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§e[§r§2ANALYSE§r§e]§r Bewertet als") >= 0) {// check plot data
+			} else if (propFormatted.contains("§e[§r§2ANALYSE§r§e]§r Bewertet als")) {// check plot data
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§7Das Grundst\u00FCck ist ab dem §r§a") >= 0
-					&& (propFormatted.indexOf("§r§4UNBEBAUT §r§7ist!§r") >= 0
-							|| propFormatted.indexOf("§r§2BEBAUT §r§7ist!§r") >= 0)) {// check plot date
+			} else if (propFormatted.contains("§7Das Grundst\u00FCck ist ab dem §r§a")
+					&& (propFormatted.contains("§r§4UNBEBAUT §r§7ist!§r")
+							|| propFormatted.contains("§r§2BEBAUT §r§7ist!§r"))) {// check plot date
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf(
-					"§aDu kannst das Grundst\u00FCck jetzt l\u00F6schen. Bitte best\u00E4tige mit §r§2/checkplot confirm§r§a.§r") >= 0) {
+			} else if (propFormatted.contains("§aDu kannst das Grundst\u00FCck jetzt l\u00F6schen. Bitte best\u00E4tige mit §r§2/checkplot confirm§r§a.§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf(
-					"§7Bitte klicke auf den gew\u00FCnschten Ablehnungsgrund oder nutze §r§e/checkplot deny <RequestID> <Grund>§r§7.§r") >= 0) {
+			} else if (propFormatted.contains("§7Bitte klicke auf den gew\u00FCnschten Ablehnungsgrund oder nutze §r§e/checkplot deny <RequestID> <Grund>§r§7.§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§cDu musst dich auf einem Grundst\u00FCck befinden!§r") >= 0) {
+			} else if (propFormatted.contains("§cDu musst dich auf einem Grundst\u00FCck befinden!§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§aDer Antrag wurde angenommen.§r") >= 0) {
+			} else if (propFormatted.contains("§aDer Antrag wurde angenommen.§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted
-					.indexOf("§cDu hast die Anfrage f\u00FCr das Grundst\u00FCck abgelehnt. Grund:") >= 0) {
+			} else if (propFormatted.contains("§cDu hast die Anfrage f\u00FCr das Grundst\u00FCck abgelehnt. Grund:")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§cDer Spieler ist aktiv auf GrieferGames.§r") >= 0) {
+			} else if (propFormatted.contains("§cDer Spieler ist aktiv auf GrieferGames.§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§6ID") >= 0 && (propFormatted.indexOf("§r§eoffen §r") >= 0
-					|| propFormatted.indexOf("§r§4§labgelehnt: §r§4") >= 0
-					|| propFormatted.indexOf("§r§2angenommen§r§a") >= 0
-					|| propFormatted.indexOf("§aPlot wurde best\u00E4tigt.") >= 0
-					|| propFormatted.indexOf("§r§a§l\u00FCbergeben§r") >= 0)) {
+			} else if (propFormatted.contains("§6ID") && (propFormatted.contains("§r§eoffen §r")
+					|| propFormatted.contains("§r§4§labgelehnt: §r§4")
+					|| propFormatted.contains("§r§2angenommen§r§a")
+					|| propFormatted.contains("§aPlot wurde best\u00E4tigt.")
+					|| propFormatted.contains("§r§a§l\u00FCbergeben§r"))) {
 				setSecondChat(false);
 				return true;
-			} else if (propFormatted.indexOf("§6§lInformationen: §r§f§nhttp://plots.griefergames.net/§r§f§n") >= 0) {
+			} else if (propFormatted.contains("§6§lInformationen: §r§f§nhttp://plots.griefergames.net/§r§f§n")) {
 				setSecondChat(false);
 				return true;
-			} else if (propFormatted.indexOf("§cDu bist zu weit vom Grundst\u00FCck entfernt!§r") >= 0) {
+			} else if (propFormatted.contains("§cDu bist zu weit vom Grundst\u00FCck entfernt!§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§cDas Grundst\u00FCck befindet sich zu nah am Spawn!§r") >= 0) {
+			} else if (propFormatted.contains("§cDas Grundst\u00FCck befindet sich zu nah am Spawn!§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted
-					.indexOf("§cDu darfst den Befehl nicht so oft hintereinander ausf\u00FChren!§r") >= 0) {
+			} else if (propFormatted.contains("§cDu darfst den Befehl nicht so oft hintereinander ausf\u00FChren!§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§cDer Spieler ist unbekannt.§r") >= 0) {
+			} else if (propFormatted.contains("§cDer Spieler ist unbekannt.§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§cMerge-Grundst\u00FCcke k\u00F6nnen nicht beantragt werden.§r") >= 0) {
+			} else if (propFormatted.contains("§cMerge-Grundst\u00FCcke k\u00F6nnen nicht beantragt werden.§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§Das Grundst\u00FCcke wurde bereits beantragt.§r") >= 0) {
+			} else if (propFormatted.contains("§Das Grundst\u00FCcke wurde bereits beantragt.§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§cDer Spieler konnte nicht identifiziert werden.") >= 0) {
+			} else if (propFormatted.contains("§cDer Spieler konnte nicht identifiziert werden.")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf(
-					"§aDu kannst das Grundst\u00FCck jetzt l\u00F6schen. Bitte best\u00E4tige mit §r§2/checkplot confirm§r§a.§r") >= 0) {
+			} else if (propFormatted.contains("§aDu kannst das Grundst\u00FCck jetzt l\u00F6schen. Bitte best\u00E4tige mit §r§2/checkplot confirm§r§a.§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§aDas Grundst\u00FCck mit der ID") >= 0
-					&& propFormatted.indexOf("§r§awurde gel\u00F6scht!§r") >= 0) {
+			} else if (propFormatted.contains("§aDas Grundst\u00FCck mit der ID")
+					&& propFormatted.contains("§r§awurde gel\u00F6scht!§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§cDieses Grundst\u00FCck hat keinen Besitzer!§r") >= 0) {
+			} else if (propFormatted.contains("§cDieses Grundst\u00FCck hat keinen Besitzer!§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§cDer Antrag wurde nicht gefunden.§r") >= 0) {
+			} else if (propFormatted.contains("§cDer Antrag wurde nicht gefunden.§r")) {
 				setSecondChat(true);
 				return true;
-			} else if (propFormatted.indexOf("§7Das Grundst\u00FCck wird gepr\u00FCft") >= 0) {
+			} else if (propFormatted.contains("§7Das Grundst\u00FCck wird gepr\u00FCft")) {
 				setSecondChat(true);
 				return true;
 			}

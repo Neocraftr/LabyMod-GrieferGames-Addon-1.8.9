@@ -23,10 +23,7 @@ public class ClanTag extends Chat {
 	public boolean doAction(String unformatted, String formatted) {
 		Matcher clanTag = clanTagRegex.matcher(unformatted);
 
-		if (getSettings().isClanTagClick() && unformatted.trim().length() > 0 && clanTag.find())
-			return true;
-
-		return false;
+		return getSettings().isClanTagClick() && unformatted.trim().length() > 0 && clanTag.find();
 	}
 
 	@Override
@@ -49,13 +46,13 @@ public class ClanTag extends Chat {
 							.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, clanTag));
 
 					String clanTagClickHoverTxt = LanguageManager
-							.translateOrReturnKey("message_gg_clanTagClickHoverTxt", new Object[0]);
+							.translateOrReturnKey("message_gg_clanTagClickHoverTxt");
 					IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") + clanTagClickHoverTxt);
 
 					msgStyling.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 					component.setChatStyle(msgStyling);
 
-					clickClanTag = (component.getUnformattedText().indexOf("]") == -1);
+					clickClanTag = !component.getUnformattedText().contains("]");
 				}
 				newMsg.appendSibling(component);
 			}

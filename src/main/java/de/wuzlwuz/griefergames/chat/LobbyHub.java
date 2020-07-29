@@ -10,11 +10,8 @@ public class LobbyHub extends Chat {
 
 	@Override
 	public boolean doActionCommandMessage(String unformatted) {
-		if (getSettings().isClearMapCache() && (unformatted.toLowerCase().startsWith("/lobby")
-				|| unformatted.toLowerCase().startsWith("/hub") || unformatted.toLowerCase().startsWith("/server"))) {
-			return true;
-		}
-		return false;
+		return getSettings().isClearMapCache() && (unformatted.toLowerCase().startsWith("/lobby")
+				|| unformatted.toLowerCase().startsWith("/hub") || unformatted.toLowerCase().startsWith("/server"));
 	}
 
 	@Override

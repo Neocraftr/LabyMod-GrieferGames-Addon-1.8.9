@@ -33,7 +33,7 @@ import de.wuzlwuz.griefergames.chat.SupremeBlanks;
 import de.wuzlwuz.griefergames.chat.Teleport;
 import de.wuzlwuz.griefergames.chat.VanishHelper;
 import de.wuzlwuz.griefergames.chat.Vote;
-import de.wuzlwuz.griefergames.gui.vanishHelperGui;
+import de.wuzlwuz.griefergames.gui.VanishHelperGui;
 import de.wuzlwuz.griefergames.helper.Helper;
 import de.wuzlwuz.griefergames.listener.OnTickListener;
 import de.wuzlwuz.griefergames.listener.PreRenderListener;
@@ -209,7 +209,7 @@ public class GrieferGamesServer extends Server {
 					getGG().setBoosters(new ArrayList<Booster>());
 				} else {
 					if (getSettings().isVanishHelper() && getHelper().showVanishModule(getPlayerRank())) {
-						final vanishHelperGui vanishHelper = new vanishHelperGui();
+						final VanishHelperGui vanishHelper = new VanishHelperGui();
 						mc.displayGuiScreen(vanishHelper);
 						Thread thread = new Thread() {
 							public void run() {

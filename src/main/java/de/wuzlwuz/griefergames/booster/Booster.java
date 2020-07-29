@@ -220,7 +220,7 @@ public class Booster {
 
 		if (endDate != null) {
 			boolean additionTime = false;
-			Duration duration = Duration.between(curDateTime, curDateTime);
+			Duration duration = null;
 			if (endDate.isAfter(curDateTime)) {
 				duration = Duration.between(curDateTime, endDate);
 			} else {

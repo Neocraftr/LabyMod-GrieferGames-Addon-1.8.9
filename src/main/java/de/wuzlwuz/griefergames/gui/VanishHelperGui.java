@@ -4,7 +4,7 @@ import net.labymod.utils.ModColor;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class vanishHelperGui extends GuiScreen {
+public class VanishHelperGui extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		GlStateManager.pushMatrix();

@@ -73,7 +73,7 @@ public class BoosterModule extends Module {
 					LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow(name, x + 28, y - 1,
 							getColor("nameColor", DefaultValues.POTION_NAME_COLOR));
 
-					if (showCount && count > 0) {
+					if (showCount) {
 						LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow("x" + count.toString(),
 								x + (28 + stringWidth), y - 1, getColor("ampColor", new Color(85, 255, 255).getRGB()));
 					}
@@ -83,13 +83,13 @@ public class BoosterModule extends Module {
 				} else {
 					int stringWidth = 0;
 					String countStr = "x" + count.toString();
-					if (showCount && count > 0) {
+					if (showCount) {
 						stringWidth = LabyModCore.getMinecraft().getFontRenderer().getStringWidth(" " + countStr);
 					}
 					LabyMod.getInstance().getDrawUtils().drawRightStringWithShadow(name, rightX - (28 + stringWidth),
 							y - 1, getColor("nameColor", DefaultValues.POTION_NAME_COLOR));
 
-					if (showCount && count > 0) {
+					if (showCount) {
 						stringWidth = LabyModCore.getMinecraft().getFontRenderer().getStringWidth(countStr);
 						LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow("x" + count.toString(),
 								rightX - (28 + stringWidth), y - 1,

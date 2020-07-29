@@ -25,10 +25,7 @@ public class MobRemover extends Chat {
 	public boolean doAction(String unformatted, String formatted) {
 		Matcher mobRemoverMessage = mobRemoverMessageRegex.matcher(unformatted);
 		Matcher mobRemoverDoneMessage = mobRemoverDoneMessageRegex.matcher(unformatted);
-		if (unformatted.trim().length() > 0 && (mobRemoverMessage.find() || mobRemoverDoneMessage.find()))
-			return true;
-
-		return false;
+		return unformatted.trim().length() > 0 && (mobRemoverMessage.find() || mobRemoverDoneMessage.find());
 	}
 
 	@Override

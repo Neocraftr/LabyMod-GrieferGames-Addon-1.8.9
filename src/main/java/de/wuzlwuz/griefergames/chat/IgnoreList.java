@@ -19,10 +19,7 @@ public class IgnoreList extends Chat {
 	@Override
 	public boolean doAction(String unformatted, String formatted) {
 		Matcher ignoreList = ignoreListRegex.matcher(unformatted);
-		if (getSettings().isBetterIgnoreList() && ignoreList.find()) {
-			return true;
-		}
-		return false;
+		return getSettings().isBetterIgnoreList() && ignoreList.find();
 	}
 
 	@Override
@@ -37,16 +34,16 @@ public class IgnoreList extends Chat {
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
 		List<IChatComponent> ignoreList = msg.getSiblings();
 		if (ignoreList.size() == 2) {
-			ChatStyle ignoChatStyle = ignoreList.get(0).getChatStyle().createDeepCopy();
-			IChatComponent newMsg = new ChatComponentText("Ignoriert:").setChatStyle(ignoChatStyle);
+			ChatStyle ignoreChatStyle = ignoreList.get(0).getChatStyle().createDeepCopy();
+			IChatComponent newMsg = new ChatComponentText("Ignoriert:").setChatStyle(ignoreChatStyle);
 
 			String ignoredNames = ignoreList.get(1).getUnformattedText().trim();
 			String[] ignoredNamesArr = ignoredNames.split(" ");
-			for (String ignoName : ignoredNamesArr) {
+			for (String ignoreName : ignoredNamesArr) {
 				// newMsg.appendSibling(new ChatComponentText("\n"));
-				// newMsg.appendSibling(new ChatComponentText(ignoName).setChatStyle(new
+				// newMsg.appendSibling(new ChatComponentText(ignoreName).setChatStyle(new
 				// ChatStyle().setColor(EnumChatFormatting.WHITE)));
-				getApi().displayMessageInChat(ignoName);
+				getApi().displayMessageInChat(ignoreName);
 			}
 			msg = newMsg;
 		}

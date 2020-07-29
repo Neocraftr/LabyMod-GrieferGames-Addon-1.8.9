@@ -34,11 +34,8 @@ public class Bank extends Chat {
 		if (unformatted.trim().length() > 0 && (bankPayInMessage.find() || bankPayOutMessage.find()))
 			return true;
 
-		if (getSettings().isBankChatRight() && unformatted.trim().length() > 0
-				&& (bankBalanceMessage.find() || bankMessageOther.find()))
-			return true;
-
-		return false;
+		return getSettings().isBankChatRight() && unformatted.trim().length() > 0
+				&& (bankBalanceMessage.find() || bankMessageOther.find());
 	}
 
 	@Override
@@ -58,17 +55,13 @@ public class Bank extends Chat {
 					if (money > 0) {
 						DecimalFormat moneyFormat = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.ENGLISH);
 
-						String achievementTitle = LanguageManager.translateOrReturnKey("message_gg_moneyWithdrawn",
-								new Object[0]);
-						String achievementDesc = LanguageManager.translateOrReturnKey("message_gg_moneyWithdrawnBank",
-								new Object[0]);
+						String achievementTitle = LanguageManager.translateOrReturnKey("message_gg_moneyWithdrawn");
+						String achievementDesc = LanguageManager.translateOrReturnKey("message_gg_moneyWithdrawnBank");
 
 						bankPayInMessage = bankPayInMessageRegexp.matcher(unformatted);
 						if (bankPayInMessage.find()) {
-							achievementTitle = LanguageManager.translateOrReturnKey("message_gg_moneyDeposited",
-									new Object[0]);
-							achievementDesc = LanguageManager.translateOrReturnKey("message_gg_moneyDepositedBank",
-									new Object[0]);
+							achievementTitle = LanguageManager.translateOrReturnKey("message_gg_moneyDeposited");
+							achievementDesc = LanguageManager.translateOrReturnKey("message_gg_moneyDepositedBank");
 						}
 
 						achievementTitle = achievementTitle.replace("{money}", moneyFormat.format(money));

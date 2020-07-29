@@ -654,7 +654,7 @@ public class ModSettings {
 		settings.add(privateChatRightBtn);
 
 		final DropDownMenu<EnumSounds> privateChatSoundDropDownMenu = new DropDownMenu<EnumSounds>(
-				"Private Nachricht Sound" /* Display name */, 0, 0, 0, 0).fill(EnumSounds.values());
+				"Private Nachricht Sound", 0, 0, 0, 0).fill(EnumSounds.values());
 
 		final DropDownElement<EnumSounds> privateChatSoundDropDown = new DropDownElement<EnumSounds>(
 				"Private Nachricht Sound", privateChatSoundDropDownMenu);
@@ -782,7 +782,7 @@ public class ModSettings {
 
 		settings.add(new HeaderElement("Realname"));
 		final DropDownMenu<EnumRealnameShown> realnameDropDownMenu = new DropDownMenu<EnumRealnameShown>(
-				"Realname anzeigen" /* Display name */, 0, 0, 0, 0).fill(EnumRealnameShown.values());
+				"Realname anzeigen", 0, 0, 0, 0).fill(EnumRealnameShown.values());
 
 		final DropDownElement<EnumRealnameShown> realnameDropDown = new DropDownElement<EnumRealnameShown>(
 				"Realname anzeigen", realnameDropDownMenu);

@@ -18,11 +18,8 @@ public class ClearChat extends Chat {
 	@Override
 	public boolean doAction(String unformatted, String formatted) {
 		Matcher matcher = chatClearedRegex.matcher(unformatted);
-		if (getSettings().isCleanBlanks() && unformatted.trim().length() > 0 && matcher.find()
-				&& !getGG().getIsInTeam())
-			return true;
-
-		return false;
+		return getSettings().isCleanBlanks() && unformatted.trim().length() > 0 && matcher.find()
+				&& !getGG().getIsInTeam();
 	}
 
 	@Override

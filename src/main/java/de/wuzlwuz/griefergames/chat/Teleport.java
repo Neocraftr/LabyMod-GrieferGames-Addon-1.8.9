@@ -24,11 +24,8 @@ public class Teleport extends Chat {
 		Matcher tpaMesssage = tpaMesssageRegexp.matcher(unformatted);
 		Matcher tpahereMesssage = tpahereMesssageRegexp.matcher(unformatted);
 
-		if (getSettings().isMarkTPAMsg() && unformatted.trim().length() > 0
-				&& (tpaMesssage.find() || tpahereMesssage.find()))
-			return true;
-
-		return false;
+		return getSettings().isMarkTPAMsg() && unformatted.trim().length() > 0
+				&& (tpaMesssage.find() || tpahereMesssage.find());
 	}
 
 	@Override

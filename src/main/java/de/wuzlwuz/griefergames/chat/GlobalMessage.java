@@ -4,7 +4,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.labymod.core.LabyModCore;
+import net.labymod.main.lang.LanguageManager;
+import net.labymod.utils.ModColor;
 import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
 public class GlobalMessage extends Chat {
@@ -65,11 +69,9 @@ public class GlobalMessage extends Chat {
 			siblingCnt++;
 		}
 
-		// String suggestMsgHoverTxt =
-		// LanguageManager.translateOrReturnKey("message_gg_suggestMsgHoverMsg", new
-		// Object[0]);
-		// IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") +
-		// suggestMsgHoverTxt);
+		String suggestMsgHoverTxt =
+			LanguageManager.translateOrReturnKey("message_gg_suggestMsgHoverMsg");
+		IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") + suggestMsgHoverTxt);
 
 		if (nameEnd < nameStart) {
 			nameEnd = nameStart;
@@ -77,8 +79,8 @@ public class GlobalMessage extends Chat {
 
 		for (int i = nameStart; i <= nameEnd; i++) {
 			msg.getSiblings().get(i).getChatStyle()
-					.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
-			// .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+					.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username))
+					.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 		}
 
 		return msg;

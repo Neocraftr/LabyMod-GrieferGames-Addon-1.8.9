@@ -4,8 +4,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.labymod.core.LabyModCore;
+import net.labymod.main.lang.LanguageManager;
 import net.labymod.servermanager.ChatDisplayAction;
+import net.labymod.utils.ModColor;
 import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
 
@@ -25,11 +29,8 @@ public class PrivateMessage extends Chat {
 		Matcher privateMessage = privateMessageRegex.matcher(unformatted);
 		Matcher privateMessageSent = privateMessageSentRegex.matcher(unformatted);
 
-		if (getSettings().isPrivateChatRight() && unformatted.trim().length() > 0
-				&& (privateMessage.find() || privateMessageSent.find()))
-			return true;
-
-		return false;
+		return getSettings().isPrivateChatRight() && unformatted.trim().length() > 0
+				&& (privateMessage.find() || privateMessageSent.find());
 	}
 
 	@Override
@@ -62,12 +63,11 @@ public class PrivateMessage extends Chat {
 		Matcher privateMessageSent = privateMessageSentRegex.matcher(unformatted);
 
 		if (doAction(unformatted, formatted)) {
+			String suggestMsgHoverTxt =
+					LanguageManager.translateOrReturnKey("message_gg_suggestMsgHoverMsg");
+			IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") + suggestMsgHoverTxt);
+
 			if (privateMessage.find()) {
-				// String suggestMsgHoverTxt =
-				// LanguageManager.translateOrReturnKey("message_gg_suggestMsgHoverMsg",new
-				// Object[0]);
-				// IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") +
-				// suggestMsgHoverTxt);
 				if (getSettings().isPrivateChatSound()) {
 					LabyModCore.getMinecraft().playSound(new ResourceLocation(getSettings().getPrivateChatSoundPath()),
 							1.0F);
@@ -91,8 +91,8 @@ public class PrivateMessage extends Chat {
 					}
 					for (int i = nameStart; i <= nameEnd; i++) {
 						msg.getSiblings().get(i).getChatStyle()
-								.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
-						// .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+								.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username))
+								.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 					}
 				}
 			}
@@ -113,8 +113,8 @@ public class PrivateMessage extends Chat {
 				}
 				for (int i = nameStart; i <= nameEnd; i++) {
 					msg.getSiblings().get(i).getChatStyle()
-							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username));
-					// .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username))
+							.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 				}
 			}
 		}

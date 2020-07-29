@@ -10,12 +10,8 @@ public class SupremeBlanks extends Chat {
 
 	@Override
 	public boolean doAction(String unformatted, String formatted) {
-		if (getSettings().isCleanSupremeBlanks() && unformatted.trim().length() > 0
-				&& unformatted.trim().equals("\u00BB")) {
-			return true;
-		}
-
-		return false;
+		return getSettings().isCleanSupremeBlanks() && unformatted.trim().length() > 0
+				&& unformatted.trim().equals("\u00BB");
 	}
 
 	@Override

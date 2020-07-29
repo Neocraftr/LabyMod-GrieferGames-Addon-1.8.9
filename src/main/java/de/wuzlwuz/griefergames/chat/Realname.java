@@ -27,11 +27,7 @@ public class Realname extends Chat {
 	public boolean doAction(String unformatted, String formatted) {
 		Matcher realname = realnameRegex.matcher(unformatted);
 		Matcher realname2 = realnameRegex2.matcher(getHelper().getProperTextFormat(formatted));
-		if (getSettings().isRealnameRight() && unformatted.trim().length() > 0 && realname.find() && realname2.find()) {
-			return true;
-		}
-
-		return false;
+		return getSettings().isRealnameRight() && unformatted.trim().length() > 0 && realname.find() && realname2.find();
 	}
 
 	@Override

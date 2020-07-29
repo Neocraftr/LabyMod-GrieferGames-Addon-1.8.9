@@ -43,10 +43,7 @@ public class Payment extends Chat {
 
 		Matcher payedMoney = payedMoneyRegex.matcher(unformatted);
 		Matcher earnedMoney = earnedMoneyRegex.matcher(unformatted);
-		if (payedMoney.find() || earnedMoney.find()) {
-			return true;
-		}
-		return false;
+		return payedMoney.find() || earnedMoney.find();
 	}
 
 	@Override

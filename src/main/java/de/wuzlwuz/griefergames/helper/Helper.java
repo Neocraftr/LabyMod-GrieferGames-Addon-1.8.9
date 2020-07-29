@@ -3,6 +3,7 @@ package de.wuzlwuz.griefergames.helper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,9 +70,7 @@ public class Helper {
 
 		if (fMsg.contains("§3§lServer")) {
 			Matcher matcher = subServerNameRegex.matcher(fMsg);
-			if (matcher.find()) {
-				return true;
-			}
+			return matcher.find();
 		}
 
 		return false;
@@ -456,10 +455,10 @@ public class Helper {
 	}
 
 	public Filters.Filter getChatToolFilter(String name) {
-		List<Filter> ChatToolFilter = LabyMod.getInstance().getChatToolManager().getFilters();
+		List<Filter> chatToolFilter = LabyMod.getInstance().getChatToolManager().getFilters();
 
-		for (Filters.Filter component : ChatToolFilter) {
-			if (component.getFilterName() == name) {
+		for (Filters.Filter component : chatToolFilter) {
+			if (component.getFilterName().equals(name)) {
 				return component;
 			}
 		}
@@ -472,16 +471,16 @@ public class Helper {
 		Filter filter = new Filter(name, wordsContains, wordsNotContains, false, "", false, (short) 0, (short) 0,
 				(short) 0, false, false, false, "Global");
 
-		if (!ChatToolFilter.contains(filter)) {
-			ChatToolFilter.add(filter);
+		if (!chatToolFilter.contains(filter)) {
+			chatToolFilter.add(filter);
 		}
-		return ChatToolFilter.get(ChatToolFilter.indexOf(filter));
+		return chatToolFilter.get(chatToolFilter.indexOf(filter));
 	}
 
 	public void delChatToolFilter(String name) {
-		List<Filter> ChatToolFilter = LabyMod.getInstance().getChatToolManager().getFilters();
-		if (ChatToolFilter.contains(getChatToolFilter(name))) {
-			ChatToolFilter.remove(ChatToolFilter.indexOf(getChatToolFilter(name)));
+		List<Filter> chatToolFilter = LabyMod.getInstance().getChatToolManager().getFilters();
+		if (chatToolFilter.contains(getChatToolFilter(name))) {
+			chatToolFilter.remove(chatToolFilter.indexOf(getChatToolFilter(name)));
 		}
 	}
 
@@ -498,9 +497,7 @@ public class Helper {
 		String[] filterArr = getChatToolFilter(name).getWordsContains();
 		List<String> filterList = new ArrayList<String>(filterArr.length);
 
-		for (String filter : filterArr) {
-			filterList.add(filter);
-		}
+		Collections.addAll(filterList, filterArr);
 		return filterList;
 	}
 
@@ -508,9 +505,7 @@ public class Helper {
 		String[] filterArr = getChatToolFilter(name).getWordsContains();
 		List<String> filterList = new ArrayList<String>(filterArr.length + 1);
 
-		for (String filter : filterArr) {
-			filterList.add(filter);
-		}
+		Collections.addAll(filterList, filterArr);
 		filterList.add(filterText);
 
 		String filterArrNew[] = new String[filterList.size()];

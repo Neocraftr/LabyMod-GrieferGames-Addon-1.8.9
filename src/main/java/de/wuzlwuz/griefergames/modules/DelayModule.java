@@ -6,6 +6,7 @@ import net.labymod.ingamegui.moduletypes.SimpleModule;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement;
 import net.labymod.utils.Material;
+import net.minecraft.util.ResourceLocation;
 
 public class DelayModule extends SimpleModule {
     protected GrieferGames getGG() {
@@ -33,7 +34,7 @@ public class DelayModule extends SimpleModule {
 
     @Override
     public ControlElement.IconData getIconData() {
-        return new ControlElement.IconData(Material.WATCH);
+        return new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/module_delay.png"));
     }
 
     @Override

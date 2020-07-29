@@ -10,10 +10,7 @@ public class Blanks extends Chat {
 
 	@Override
 	public boolean doAction(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0 && getSettings().isCleanBlanks())
-			return true;
-
-		return false;
+		return unformatted.trim().length() <= 0 && getSettings().isCleanBlanks();
 	}
 
 	@Override
