@@ -1,8 +1,10 @@
 package de.wuzlwuz.griefergames.chat;
 
+import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
@@ -19,7 +21,7 @@ public class ChatTime extends Chat {
 
 	@Override
 	public boolean doAction(String unformatted, String formatted) {
-		return getSettings().isShowChatTime();
+		return getSettings().isShowChatTime() && !unformatted.trim().equals("");
 	}
 
 	@Override
@@ -39,17 +41,19 @@ public class ChatTime extends Chat {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 			String dateNowStr = LocalDateTime.now().format(formatter);
 
-			IChatComponent befTimeMsg = new ChatComponentText("[")
-					.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GOLD));
-			IChatComponent timeMsg = new ChatComponentText(dateNowStr)
-					.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
-			IChatComponent aftTimeMsg = new ChatComponentText("]")
-					.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GOLD));
+			IChatComponent timeMsg;
+			if(getSettings().isChatTimeShortFormat()) {
+				timeMsg = new ChatComponentText("§6[§fT§6]");
+				timeMsg.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(dateNowStr)));
+			} else {
+				timeMsg = new ChatComponentText("§6[§f"+dateNowStr+"§6]");
+			}
 
-			IChatComponent newMsg = new ChatComponentText("").appendSibling(befTimeMsg).appendSibling(timeMsg)
-					.appendSibling(aftTimeMsg).appendSibling(resetMsg).appendSibling(msg);
-
-			return newMsg;
+			if(getSettings().isChatTimeAfterMessage()) {
+				return new ChatComponentText("").appendSibling(msg).appendSibling(resetMsg).appendSibling(timeMsg);
+			} else {
+				return new ChatComponentText("").appendSibling(timeMsg).appendSibling(resetMsg).appendSibling(msg);
+			}
 		}
 
 		return super.modifyChatMessage(msg);

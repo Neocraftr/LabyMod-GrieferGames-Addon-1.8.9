@@ -489,13 +489,10 @@ public class GrieferGamesServer extends Server {
 						return false;
 
 					if (unformatted.startsWith("[SCAMMER] ")) {
-						String newFormatted = getHelper().getProperTextFormat(formatted);
-						newFormatted = formatted.replaceFirst("((§r)?§6\\[§r§([0-9]|[a-f])§lSCAMMER§r§6\\]§r§r)", "")
-								.trim();
+						String newFormatted = formatted.replaceFirst("((§r)?§6\\[§r§([0-9]|[a-f])§lSCAMMER§r§6\\]§r§r)", "").trim();
 						formatted = getHelper().getProperChatFormat(newFormatted);
 
-						String newUnformatted = unformatted;
-						newUnformatted = unformatted.replaceFirst("[SCAMMER]", "").trim();
+						String newUnformatted = unformatted.replaceFirst("\\[SCAMMER\\]", "").trim();
 						unformatted = newUnformatted;
 					}
 

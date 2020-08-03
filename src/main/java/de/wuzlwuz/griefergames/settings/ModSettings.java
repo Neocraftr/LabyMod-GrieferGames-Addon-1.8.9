@@ -23,6 +23,9 @@ public class ModSettings {
 	private boolean modEnabled = true;
 
 	private boolean showChatTime = false;
+	private boolean chatTimeShortFormat = true;
+	private boolean chatTimeAfterMessage = false;
+
 	private boolean privateChatRight = true;
 	private boolean plotChatRight = true;
 	private EnumSounds privateChatSound = EnumSounds.NONE;
@@ -109,6 +112,22 @@ public class ModSettings {
 
 	private void setShowChatTime(boolean showChatTime) {
 		this.showChatTime = showChatTime;
+	}
+
+	public boolean isChatTimeAfterMessage() {
+		return chatTimeAfterMessage;
+	}
+
+	public void setChatTimeAfterMessage(boolean chatTimeAfterMessage) {
+		this.chatTimeAfterMessage = chatTimeAfterMessage;
+	}
+
+	public boolean isChatTimeShortFormat() {
+		return chatTimeShortFormat;
+	}
+
+	public void setChatTimeShortFormat(boolean chatTimeShortFormat) {
+		this.chatTimeShortFormat = chatTimeShortFormat;
 	}
 
 	public boolean isPrivateChatRight() {
@@ -492,6 +511,12 @@ public class ModSettings {
 		if (getConfig().has("showChatTime"))
 			setShowChatTime(getConfig().get("showChatTime").getAsBoolean());
 
+		if (getConfig().has("chatTimeAfterMessage"))
+			setChatTimeAfterMessage(getConfig().get("chatTimeAfterMessage").getAsBoolean());
+
+		if (getConfig().has("chatTimeShortFormat"))
+			setChatTimeShortFormat(getConfig().get("chatTimeShortFormat").getAsBoolean());
+
 		if (getConfig().has("privateChatRight"))
 			setPrivateChatRight(getConfig().get("privateChatRight").getAsBoolean());
 
@@ -630,16 +655,6 @@ public class ModSettings {
 		settings.add(modEnabledBtn);
 
 		settings.add(new HeaderElement("Nachrichten"));
-		final BooleanElement showChatTimeBtn = new BooleanElement("Chatzeit anzeigen",
-				new ControlElement.IconData("labymod/textures/settings/modules/date.png"), new Consumer<Boolean>() {
-					@Override
-					public void accept(Boolean showChatTime) {
-						setShowChatTime(showChatTime);
-						getConfig().addProperty("showChatTime", showChatTime);
-						saveConfig();
-					}
-				}, isShowChatTime());
-		settings.add(showChatTimeBtn);
 
 		final BooleanElement privateChatRightBtn = new BooleanElement("Private Nachrichten 2. Chat",
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
@@ -686,7 +701,7 @@ public class ModSettings {
 		settings.add(plotChatRightBtn);
 
 		final BooleanElement msgDisplayNameClickBtn = new BooleanElement("Klicken zum antworten",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData("labymod/textures/settings/settings/chatshortcuts.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean msgDisplayNameClick) {
 						setMsgDisplayNameClick(msgDisplayNameClick);
@@ -697,7 +712,7 @@ public class ModSettings {
 		settings.add(msgDisplayNameClickBtn);
 
 		final BooleanElement clanTagClickBtn = new BooleanElement("Clan-Tag klicken f\u00fcr Info",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData("labymod/textures/settings/settings/chatshortcuts.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean clanTagClick) {
 						setClanTagClick(clanTagClick);
@@ -708,7 +723,7 @@ public class ModSettings {
 		settings.add(clanTagClickBtn);
 
 		final BooleanElement filterDuplicateMessagesBtn = new BooleanElement("Doppelte Nachrichten l\u00f6schen",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean filterDuplicateMessages) {
 						setFilterDuplicateMessages(filterDuplicateMessages);
@@ -719,7 +734,7 @@ public class ModSettings {
 		settings.add(filterDuplicateMessagesBtn);
 
 		final NumberElement filterDuplicateMessagesTimeNumber = new NumberElement("Zeitabstand doppelte Nachrichten",
-				new ControlElement.IconData("labymod/textures/settings/settings/autotext.png"),
+				new ControlElement.IconData(Material.WATCH),
 				getFilterDuplicateMessagesTime());
 		filterDuplicateMessagesTimeNumber.setMinValue(3);
 		filterDuplicateMessagesTimeNumber.setMaxValue(120);
@@ -734,7 +749,7 @@ public class ModSettings {
 		settings.add(filterDuplicateMessagesTimeNumber);
 
 		final BooleanElement preventCommandFailureBtn = new BooleanElement("Fehlerhaften Befehl blockieren",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean preventCommandFailure) {
 						setPreventCommandFailure(preventCommandFailure);
@@ -745,7 +760,7 @@ public class ModSettings {
 		settings.add(preventCommandFailureBtn);
 
 		final BooleanElement markTPAMsgBtn = new BooleanElement("TPA Nachrichten markieren",
-				new ControlElement.IconData("labymod/textures/settings/settings/autotext.png"),
+				new ControlElement.IconData("labymod/textures/settings/settings/second_chat.png"),
 				new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean markTPAMsg) {
@@ -757,7 +772,7 @@ public class ModSettings {
 		settings.add(markTPAMsgBtn);
 
 		final BooleanElement cleanVoteMsgBtn = new BooleanElement("Vote Nachrichten l\u00f6schen",
-				new ControlElement.IconData("labymod/textures/settings/settings/autotext.png"),
+				new ControlElement.IconData(Material.BARRIER),
 				new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean cleanVoteMsg) {
@@ -769,7 +784,7 @@ public class ModSettings {
 		settings.add(cleanVoteMsgBtn);
 
 		final BooleanElement cleanNewsMsgBtn = new BooleanElement("News Nachrichten l\u00f6schen",
-				new ControlElement.IconData("labymod/textures/settings/settings/autotext.png"),
+				new ControlElement.IconData(Material.BARRIER),
 				new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean cleanNewsMsg) {
@@ -779,6 +794,40 @@ public class ModSettings {
 					}
 				}, isCleanNewsMsg());
 		settings.add(cleanNewsMsgBtn);
+
+		settings.add(new HeaderElement("Chatzeit"));
+		final BooleanElement showChatTimeBtn = new BooleanElement("Chatzeit anzeigen",
+				new ControlElement.IconData(Material.WATCH), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean showChatTime) {
+				setShowChatTime(showChatTime);
+				getConfig().addProperty("showChatTime", showChatTime);
+				saveConfig();
+			}
+		}, isShowChatTime());
+		settings.add(showChatTimeBtn);
+
+		final BooleanElement chatTimeShortFormatBtn = new BooleanElement("Kurze version",
+				new ControlElement.IconData(Material.WATCH), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean shortVersion) {
+				setChatTimeShortFormat(shortVersion);
+				getConfig().addProperty("chatTimeShortFormat", shortVersion);
+				saveConfig();
+			}
+		}, isChatTimeShortFormat());
+		settings.add(chatTimeShortFormatBtn);
+
+		final BooleanElement chatTimeAfterMessageBtn = new BooleanElement("Nach der Nachricht anzeigen",
+				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean afterMessage) {
+				setChatTimeAfterMessage(afterMessage);
+				getConfig().addProperty("chatTimeAfterMessage", afterMessage);
+				saveConfig();
+			}
+		}, isChatTimeAfterMessage());
+		settings.add(chatTimeAfterMessageBtn);
 
 		settings.add(new HeaderElement("Realname"));
 		final DropDownMenu<EnumRealnameShown> realnameDropDownMenu = new DropDownMenu<EnumRealnameShown>(
@@ -803,7 +852,7 @@ public class ModSettings {
 
 		settings.add(new HeaderElement("Leerzeilen"));
 		final BooleanElement cleanBlanksBtn = new BooleanElement("Leerzeilen l\u00f6schen",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean cleanBlanks) {
 						setCleanBlanks(cleanBlanks);
@@ -814,7 +863,7 @@ public class ModSettings {
 		settings.add(cleanBlanksBtn);
 
 		final BooleanElement cleanSupremeBlanksBtn = new BooleanElement("Supreme Leerzeilen l\u00f6schen",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean cleanSupremeBlanks) {
 						setCleanSupremeBlanks(cleanSupremeBlanks);
@@ -838,7 +887,7 @@ public class ModSettings {
 		settings.add(payChatRightBtn);
 
 		final BooleanElement payAchievementBtn = new BooleanElement("Bezahlung Fortschrittsmeldung",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData(Material.BOOK), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean payAchievement) {
 						setPayAchievement(payAchievement);
@@ -849,7 +898,7 @@ public class ModSettings {
 		settings.add(payAchievementBtn);
 
 		final BooleanElement payMarkerBtn = new BooleanElement("Bezahlung markieren",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData("labymod/textures/settings/settings/second_chat.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean payMarker) {
 						setPayMarker(payMarker);
@@ -860,7 +909,7 @@ public class ModSettings {
 		settings.add(payMarkerBtn);
 
 		final BooleanElement payHoverBtn = new BooleanElement("Bezahlung hover",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData("labymod/textures/settings/settings/bettershaderselection.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean payHover) {
 						setPayHover(payHover);
@@ -884,7 +933,7 @@ public class ModSettings {
 		settings.add(bankChatRightBtn);
 
 		final BooleanElement bankAchievementBtn = new BooleanElement("Bank Fortschrittsmeldung",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData(Material.BOOK), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean bankAchievement) {
 						setBankAchievement(bankAchievement);
@@ -908,7 +957,7 @@ public class ModSettings {
 		settings.add(itemRemoverChatRightBtn);
 
 		final BooleanElement itemRemoverLastTimeHoverBtn = new BooleanElement("Itemremover Zeitstempel hover",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData(Material.WATCH), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean itemRemoverLastTimeHover) {
 						setItemRemoverLastTimeHover(itemRemoverLastTimeHover);
@@ -932,7 +981,7 @@ public class ModSettings {
 		settings.add(mobRemoverChatRightBtn);
 
 		final BooleanElement mobRemoverLastTimeHoverBtn = new BooleanElement("Mobremover Zeitstempel hover",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData(Material.WATCH), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean mobRemoverLastTimeHover) {
 						setMobRemoverLastTimeHover(mobRemoverLastTimeHover);
@@ -944,7 +993,7 @@ public class ModSettings {
 
 		settings.add(new HeaderElement("Ignorierte Spieler"));
 		final BooleanElement betterIgnoreListBtn = new BooleanElement("verbesserte Ignorierliste",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData("labymod/textures/settings/settings/publicserverlist.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean betterIgnoreList) {
 						setBetterIgnoreList(betterIgnoreList);
@@ -956,7 +1005,7 @@ public class ModSettings {
 
 		settings.add(new HeaderElement("Karten"));
 		final BooleanElement clearMapCacheBtn = new BooleanElement("Cache automatisch leeren",
-				new ControlElement.IconData("labymod/textures/settings/settings/directconnectinfo.png"),
+				new ControlElement.IconData(Material.EMPTY_MAP),
 				new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean clearMapCache) {
@@ -969,7 +1018,7 @@ public class ModSettings {
 
 		settings.add(new HeaderElement("Auto Update Booster Status"));
 		final BooleanElement updateBoosterStateBtn = new BooleanElement("Enabled",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData("labymod/textures/settings/settings/serverlistliveview.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean updateBoosterState) {
 						setUpdateBoosterState(updateBoosterState);
@@ -980,8 +1029,8 @@ public class ModSettings {
 		settings.add(updateBoosterStateBtn);
 
 		settings.add(new HeaderElement("AntiMagicPrefix"));
-		final BooleanElement ampEnabledBtn = new BooleanElement("Enabled", new ControlElement.IconData(Material.LEVER),
-				new Consumer<Boolean>() {
+		final BooleanElement ampEnabledBtn = new BooleanElement("Enabled",
+				new ControlElement.IconData("labymod/textures/settings/settings/particlefix.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean ampEnabled) {
 						setAMPEnabled(ampEnabled);
@@ -1019,7 +1068,7 @@ public class ModSettings {
 
 		settings.add(new HeaderElement("AntiMagicClanTag"));
 		final BooleanElement ampClanEnabledBtn = new BooleanElement("Enabled",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData("labymod/textures/settings/settings/particlefix.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean ampClanEnabled) {
 						setAMPClanEnabled(ampClanEnabled);
@@ -1031,7 +1080,7 @@ public class ModSettings {
 
 		settings.add(new HeaderElement("LabyChat"));
 		final BooleanElement labyChatShowSubServerEnabledBtn = new BooleanElement("Spielmodus teilen",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData("labymod/textures/settings/settings/motd.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean labyChatShowSubServerEnabled) {
 						setLabyChatShowSubServerEnabled(labyChatShowSubServerEnabled);
@@ -1043,7 +1092,7 @@ public class ModSettings {
 
 		settings.add(new HeaderElement("Automatisationen"));
 		final BooleanElement autoPortalBtn = new BooleanElement("Portalraum beim Betreten",
-				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
+				new ControlElement.IconData("labymod/textures/chat/autotext.png"), new Consumer<Boolean>() {
 			@Override
 			public void accept(Boolean autoPortal) {
 				setAutoPortal(autoPortal);
