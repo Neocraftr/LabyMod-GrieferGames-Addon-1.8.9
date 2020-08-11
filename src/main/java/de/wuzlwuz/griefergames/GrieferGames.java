@@ -2,7 +2,6 @@ package de.wuzlwuz.griefergames;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +46,7 @@ public class GrieferGames extends LabyModAddon {
 	private String playerRank = "Spieler";
 	private boolean newsStart = false;
 	private int timeToWait = 0;
+	private double income;
 
 	public static GrieferGames getGriefergames() {
 		return griefergames;
@@ -262,6 +262,14 @@ public class GrieferGames extends LabyModAddon {
 
 	public void setTimeToWait(int timeToWait) {
 		this.timeToWait = timeToWait;
+	}
+
+	public double getIncome() {
+		return income;
+	}
+
+	public void setIncome(double income) {
+		this.income = income;
 	}
 
 	private GrieferGamesServer ggserver;

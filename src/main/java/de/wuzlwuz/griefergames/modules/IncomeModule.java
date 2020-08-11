@@ -5,35 +5,38 @@ import net.labymod.ingamegui.ModuleCategory;
 import net.labymod.ingamegui.moduletypes.SimpleModule;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement;
-import net.minecraft.util.ResourceLocation;
 
-public class DelayModule extends SimpleModule {
+public class IncomeModule extends SimpleModule {
     protected GrieferGames getGG() {
         return GrieferGames.getGriefergames();
     }
 
-    public DelayModule() {
+    public IncomeModule() {
         getGG().getApi().registerModule(this);
     }
 
     @Override
     public String getDisplayName() {
-        return LanguageManager.translateOrReturnKey("module_gg_delay_displayName");
+        return LanguageManager.translateOrReturnKey("module_gg_income_displayName");
     }
 
     @Override
     public String getDisplayValue() {
-        return getGG().getTimeToWait()+"s";
+        if(getGG().getIncome() >= 0) {
+            return getGG().getIncome()+"$";
+        } else {
+            return "§c"+getGG().getIncome()+"$";
+        }
     }
 
     @Override
     public String getDefaultValue() {
-        return "?";
+        return "0$";
     }
 
     @Override
     public ControlElement.IconData getIconData() {
-        return new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/module_delay.png"));
+        return new ControlElement.IconData("griefergames/textures/icons/module_income.png");
     }
 
     @Override
@@ -43,17 +46,17 @@ public class DelayModule extends SimpleModule {
 
     @Override
     public String getSettingName() {
-        return "gg_delay";
+        return "gg_income";
     }
 
     @Override
     public String getDescription() {
-        return LanguageManager.translateOrReturnKey("module_gg_delay_description");
+        return LanguageManager.translateOrReturnKey("module_gg_income_description");
     }
 
     @Override
     public boolean isShown() {
-        return getGG().isShowModules() && getGG().getTimeToWait() != 0;
+        return getGG().isShowModules() && getGG().getIncome() != 0;
     }
 
     @Override
@@ -63,6 +66,6 @@ public class DelayModule extends SimpleModule {
 
     @Override
     public int getSortingId() {
-        return 60;
+        return 70;
     }
 }

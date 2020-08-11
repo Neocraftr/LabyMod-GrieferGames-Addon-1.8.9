@@ -11,6 +11,7 @@ import com.mojang.authlib.GameProfile;
 import net.labymod.main.LabyMod;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.servermanager.ChatDisplayAction;
+import net.labymod.utils.ModColor;
 import net.labymod.utils.UUIDFetcher;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
@@ -37,18 +38,27 @@ public class Payment extends Chat {
 		if (!getHelper().getProperTextFormat(formatted).contains("§r§f §r§ahat dir $")) {
 			Matcher matcher = getMoneyValidRegex.matcher(unformatted);
 			if (matcher.find()) {
+				getGG().setIncome(getGG().getIncome() + getMoneyPay(unformatted));
 				return true;
 			}
 		}
 
 		Matcher payedMoney = payedMoneyRegex.matcher(unformatted);
 		Matcher earnedMoney = earnedMoneyRegex.matcher(unformatted);
-		return payedMoney.find() || earnedMoney.find();
+		if(payedMoney.find()) {
+			getGG().setIncome(getGG().getIncome() - getMoneyPay(unformatted));
+			return true;
+		}
+		if(earnedMoney.find()) {
+			getGG().setIncome(getGG().getIncome() + getMoneyPay(unformatted));
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		return (doAction(unformatted, formatted) && getSettings().isPayChatRight());
+		return doAction(unformatted, formatted) && getSettings().isPayChatRight();
 	}
 
 	@Override
@@ -123,6 +133,12 @@ public class Payment extends Chat {
 	public boolean doActionCommandMessage(String unformatted) {
 		if (unformatted.toLowerCase().startsWith("/pay") && unformatted.toLowerCase().contains(",")) {
 			getMC().getPlayer().sendChatMessage(unformatted.replace(",", "."));
+			return true;
+		}
+
+		if(unformatted.toLowerCase().startsWith("/resetincome")) {
+			getGG().setIncome(0);
+			getGG().getApi().displayMessageInChat(ModColor.GREEN+LanguageManager.translateOrReturnKey("message_gg_income_reset"));
 			return true;
 		}
 		return false;

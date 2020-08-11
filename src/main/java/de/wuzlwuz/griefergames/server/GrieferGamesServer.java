@@ -157,6 +157,7 @@ public class GrieferGamesServer extends Server {
 		new FlyModule();
 		new NicknameModule();
 		new DelayModule();
+		new IncomeModule();
 
 		// add Chat Modules
 		getGG().addChatModule(new PreventCommandFailure());
