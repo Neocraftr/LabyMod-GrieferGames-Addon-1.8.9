@@ -1,5 +1,6 @@
 package de.wuzlwuz.griefergames.chat;
 
+import net.labymod.main.lang.LanguageManager;
 import net.labymod.utils.ModColor;
 import net.minecraft.util.IChatComponent;
 
@@ -25,7 +26,7 @@ public class PreventCommandFailure extends Chat {
 			if (unformatted.length() > 1 && unformatted.startsWith("7")
 					&& (!unformatted.equalsIgnoreCase(getLastCommand()))) {
 
-				getApi().displayMessageInChat(ModColor.RED + "Hast du dich vertippt? Wenn nicht, sende es nochmal!");
+				getApi().displayMessageInChat(ModColor.RED + LanguageManager.translateOrReturnKey("message_gg_incorrectCommandMessage"));
 
 				setLastCommand(unformatted);
 				return true;

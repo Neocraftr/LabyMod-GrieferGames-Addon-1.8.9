@@ -12,6 +12,7 @@ import java.util.Properties;
 import de.wuzlwuz.griefergames.booster.Booster;
 import de.wuzlwuz.griefergames.chat.Chat;
 import de.wuzlwuz.griefergames.chatMenu.TeamMenu;
+import de.wuzlwuz.griefergames.enums.EnumLanguages;
 import de.wuzlwuz.griefergames.helper.Helper;
 import de.wuzlwuz.griefergames.server.GrieferGamesServer;
 import de.wuzlwuz.griefergames.settings.ModSettings;
@@ -28,6 +29,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GrieferGames extends LabyModAddon {
 	private static GrieferGames griefergames;
+	private Runnable continueEnable;
 	private static ModSettings settings;
 	private String serverIp = "";
 	private String secondServerIp = "";
@@ -54,6 +56,14 @@ public class GrieferGames extends LabyModAddon {
 
 	private static void setGriefergames(GrieferGames griefergames) {
 		GrieferGames.griefergames = griefergames;
+	}
+
+	private Runnable getContinueEnable() {
+		return continueEnable;
+	}
+
+	private void setContinueEnable(Runnable continueEnable) {
+		this.continueEnable = continueEnable;
 	}
 
 	public static ModSettings getSettings() {
@@ -284,13 +294,12 @@ public class GrieferGames extends LabyModAddon {
 
 	@Override
 	public void onEnable() {
-		System.out.println("[GrieferGames] enabled.");
+		// save instance
+		setGriefergames(this);
+
 		// set ip
 		setServerIp("griefergames.net");
 		setSecondServerIp("griefergames.de");
-
-		// save instance
-		setGriefergames(this);
 
 		// setup helper
 		setHelper(new Helper());
@@ -298,32 +307,46 @@ public class GrieferGames extends LabyModAddon {
 		// load settings
 		setSettings(new ModSettings());
 
-		// extend translations
-		loadTranslations();
-
-		// set module category
-		setModuleCategory(new ModuleCategory(LanguageManager.translateOrReturnKey("modules_category_gg"),
-				true, new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/icon.png"))));
-
-		setGGServer(new GrieferGamesServer(Minecraft.getMinecraft()));
-
-		// set server support
-		getApi().registerServerSupport(this, getGGServer());
-
-		// show / hide gg modules
-		getApi().getEventManager().registerOnJoin(new Consumer<ServerData>() {
+		// wait for settings to be loaded
+		setContinueEnable(new Runnable() {
 			@Override
-			public void accept(ServerData serverData) {
-				boolean showModules = (serverData.getIp().toLowerCase().contains(getServerIp())
-						|| serverData.getIp().toLowerCase().contains(getSecondServerIp()));
-				setShowModules(showModules);
+			public void run() {
+				// extend translations
+				if(getSettings().getLanguage() == EnumLanguages.GAMELANGUAGE) {
+					loadTranslations(null);
+				} else {
+					loadTranslations(getSettings().getLanguage().name());
+				}
+
+				// set module category
+				setModuleCategory(new ModuleCategory(LanguageManager.translateOrReturnKey("modules_category_gg"),
+						true, new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/icon.png"))));
+
+				setGGServer(new GrieferGamesServer(Minecraft.getMinecraft()));
+
+				// set server support
+				getApi().registerServerSupport(getGriefergames(), getGGServer());
+
+				// show / hide gg modules
+				getApi().getEventManager().registerOnJoin(new Consumer<ServerData>() {
+					@Override
+					public void accept(ServerData serverData) {
+						boolean showModules = (serverData.getIp().toLowerCase().contains(getServerIp())
+								|| serverData.getIp().toLowerCase().contains(getSecondServerIp()));
+						setShowModules(showModules);
+					}
+				});
+
+				System.out.println("[GrieferGames] enabled.");
 			}
 		});
 	}
 
-	private void loadTranslations() {
-		List<String> items = Arrays.asList(LanguageManager.getLanguage().getName().split("_"));
-		String lang = items.get(items.size() - 1).toUpperCase();
+	public void loadTranslations(String lang) {
+		if(lang == null) {
+			List<String> items = Arrays.asList(LanguageManager.getLanguage().getName().split("_"));
+			lang = items.get(0).toUpperCase();
+		}
 		try {
 			Properties prop = new Properties();
 			boolean found = false;
@@ -344,7 +367,6 @@ public class GrieferGames extends LabyModAddon {
 				reader.close();
 				found = true;
 
-				@SuppressWarnings("unchecked")
 				Enumeration<String> enums = (Enumeration<String>) prop.propertyNames();
 				while (enums.hasMoreElements()) {
 					String key = enums.nextElement();
@@ -371,6 +393,7 @@ public class GrieferGames extends LabyModAddon {
 	@Override
 	public void loadConfig() {
 		getSettings().loadConfig();
+		getContinueEnable().run();
 	}
 
 	@Override

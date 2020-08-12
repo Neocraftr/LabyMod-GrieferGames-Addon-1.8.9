@@ -5,10 +5,12 @@ import java.util.List;
 import com.google.gson.JsonObject;
 
 import de.wuzlwuz.griefergames.GrieferGames;
+import de.wuzlwuz.griefergames.enums.EnumLanguages;
 import de.wuzlwuz.griefergames.enums.EnumRealnameShown;
 import de.wuzlwuz.griefergames.enums.EnumSounds;
 import net.labymod.gui.elements.DropDownMenu;
 import net.labymod.main.LabyMod;
+import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.BooleanElement;
 import net.labymod.settings.elements.ControlElement;
 import net.labymod.settings.elements.DropDownElement;
@@ -18,9 +20,12 @@ import net.labymod.settings.elements.SettingsElement;
 import net.labymod.settings.elements.StringElement;
 import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
+import org.apache.commons.codec.language.bm.Lang;
 
 public class ModSettings {
 	private boolean modEnabled = true;
+
+	private EnumLanguages language = EnumLanguages.GAMELANGUAGE;
 
 	private boolean showChatTime = false;
 	private boolean chatTimeShortFormat = true;
@@ -104,6 +109,14 @@ public class ModSettings {
 
 	private void setModEnabled(boolean modEnabled) {
 		this.modEnabled = modEnabled;
+	}
+
+	public EnumLanguages getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(EnumLanguages language) {
+		this.language = language;
 	}
 
 	public boolean isShowChatTime() {
@@ -508,6 +521,14 @@ public class ModSettings {
 		if (getConfig().has("modEnabled"))
 			setModEnabled(getConfig().get("modEnabled").getAsBoolean());
 
+		if (getConfig().has("language")) {
+			for (EnumLanguages language : EnumLanguages.values()) {
+				if (language.name().equalsIgnoreCase(getConfig().get("language").getAsString())) {
+					setLanguage(language);
+				}
+			}
+		}
+
 		if (getConfig().has("showChatTime"))
 			setShowChatTime(getConfig().get("showChatTime").getAsBoolean());
 
@@ -521,7 +542,6 @@ public class ModSettings {
 			setPrivateChatRight(getConfig().get("privateChatRight").getAsBoolean());
 
 		if (getConfig().has("privateChatSound")) {
-			setPrivateChatSound(EnumSounds.NONE);
 			for (EnumSounds sound : EnumSounds.values()) {
 				if (sound.name().equalsIgnoreCase(getConfig().get("privateChatSound").getAsString())) {
 					setPrivateChatSound(sound);
@@ -569,7 +589,6 @@ public class ModSettings {
 			setPlotChatRight(getConfig().get("plotChatRight").getAsBoolean());
 
 		if (getConfig().has("realname")) {
-			setRealname(EnumRealnameShown.DEFAULT);
 			for (EnumRealnameShown enumRealname : EnumRealnameShown.values()) {
 				if (enumRealname.name().equalsIgnoreCase(getConfig().get("realname").getAsString())) {
 					setRealname(enumRealname);
@@ -641,9 +660,9 @@ public class ModSettings {
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
-		settings.add(new HeaderElement("Allgemein"));
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_general")));
 
-		final BooleanElement modEnabledBtn = new BooleanElement("Addon Enabled",
+		final BooleanElement modEnabledBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_addonEnabled"),
 				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean modEnabled) {
@@ -654,9 +673,28 @@ public class ModSettings {
 				}, isModEnabled());
 		settings.add(modEnabledBtn);
 
-		settings.add(new HeaderElement("Nachrichten"));
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_language")));
+		final DropDownMenu<EnumLanguages> languageDropDownMenu = new DropDownMenu<EnumLanguages>(
+				LanguageManager.translateOrReturnKey("settings_gg_addonLanguage"), 0, 0, 0, 0).fill(EnumLanguages.values());
 
-		final BooleanElement privateChatRightBtn = new BooleanElement("Private Nachrichten 2. Chat",
+		final DropDownElement<EnumLanguages> languageDropDown = new DropDownElement<EnumLanguages>(
+				LanguageManager.translateOrReturnKey("settings_gg_addonLanguage"), languageDropDownMenu);
+
+		languageDropDownMenu.setSelected(getLanguage());
+
+		languageDropDown.setChangeListener(new Consumer<EnumLanguages>() {
+			@Override
+			public void accept(EnumLanguages language) {
+				setLanguage(language);
+				getConfig().addProperty("language", language.name());
+				saveConfig();
+			}
+		});
+		settings.add(languageDropDown);
+
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_messages")));
+
+		final BooleanElement privateChatRightBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_privateChatRight"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
@@ -669,10 +707,10 @@ public class ModSettings {
 		settings.add(privateChatRightBtn);
 
 		final DropDownMenu<EnumSounds> privateChatSoundDropDownMenu = new DropDownMenu<EnumSounds>(
-				"Private Nachricht Sound", 0, 0, 0, 0).fill(EnumSounds.values());
+				LanguageManager.translateOrReturnKey("settings_gg_privateMessageSound"), 0, 0, 0, 0).fill(EnumSounds.values());
 
 		final DropDownElement<EnumSounds> privateChatSoundDropDown = new DropDownElement<EnumSounds>(
-				"Private Nachricht Sound", privateChatSoundDropDownMenu);
+				LanguageManager.translateOrReturnKey("settings_gg_privateMessageSound"), privateChatSoundDropDownMenu);
 
 		// Set selected entry
 		privateChatSoundDropDownMenu.setSelected(getPrivateChatSound());
@@ -688,7 +726,7 @@ public class ModSettings {
 		});
 		settings.add(privateChatSoundDropDown);
 
-		final BooleanElement plotChatRightBtn = new BooleanElement("Plot Chat 2. Chat",
+		final BooleanElement plotChatRightBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_plotChatRight"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
@@ -700,7 +738,7 @@ public class ModSettings {
 				}, isPlotChatRight());
 		settings.add(plotChatRightBtn);
 
-		final BooleanElement msgDisplayNameClickBtn = new BooleanElement("Klicken zum antworten",
+		final BooleanElement msgDisplayNameClickBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_clickToAnswer"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatshortcuts.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean msgDisplayNameClick) {
@@ -711,7 +749,7 @@ public class ModSettings {
 				}, isMsgDisplayNameClick());
 		settings.add(msgDisplayNameClickBtn);
 
-		final BooleanElement clanTagClickBtn = new BooleanElement("Clan-Tag klicken f\u00fcr Info",
+		final BooleanElement clanTagClickBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_clickClanTag"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatshortcuts.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean clanTagClick) {
@@ -722,7 +760,7 @@ public class ModSettings {
 				}, isClanTagClick());
 		settings.add(clanTagClickBtn);
 
-		final BooleanElement filterDuplicateMessagesBtn = new BooleanElement("Doppelte Nachrichten l\u00f6schen",
+		final BooleanElement filterDuplicateMessagesBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_filterDuplicateMessages"),
 				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean filterDuplicateMessages) {
@@ -733,7 +771,7 @@ public class ModSettings {
 				}, isFilterDuplicateMessages());
 		settings.add(filterDuplicateMessagesBtn);
 
-		final NumberElement filterDuplicateMessagesTimeNumber = new NumberElement("Zeitabstand doppelte Nachrichten",
+		final NumberElement filterDuplicateMessagesTimeNumber = new NumberElement(LanguageManager.translateOrReturnKey("settings_gg_filterDuplicateMessagesTime"),
 				new ControlElement.IconData(Material.WATCH),
 				getFilterDuplicateMessagesTime());
 		filterDuplicateMessagesTimeNumber.setMinValue(3);
@@ -748,7 +786,7 @@ public class ModSettings {
 		});
 		settings.add(filterDuplicateMessagesTimeNumber);
 
-		final BooleanElement preventCommandFailureBtn = new BooleanElement("Fehlerhaften Befehl blockieren",
+		final BooleanElement preventCommandFailureBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_blockIncorrectCommands"),
 				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean preventCommandFailure) {
@@ -759,7 +797,7 @@ public class ModSettings {
 				}, isPreventCommandFailure());
 		settings.add(preventCommandFailureBtn);
 
-		final BooleanElement markTPAMsgBtn = new BooleanElement("TPA Nachrichten markieren",
+		final BooleanElement markTPAMsgBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_highlightTpaMessages"),
 				new ControlElement.IconData("labymod/textures/settings/settings/second_chat.png"),
 				new Consumer<Boolean>() {
 					@Override
@@ -771,7 +809,7 @@ public class ModSettings {
 				}, isMarkTPAMsg());
 		settings.add(markTPAMsgBtn);
 
-		final BooleanElement cleanVoteMsgBtn = new BooleanElement("Vote Nachrichten l\u00f6schen",
+		final BooleanElement cleanVoteMsgBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_deleteVoteMessages"),
 				new ControlElement.IconData(Material.BARRIER),
 				new Consumer<Boolean>() {
 					@Override
@@ -783,7 +821,7 @@ public class ModSettings {
 				}, isCleanVoteMsg());
 		settings.add(cleanVoteMsgBtn);
 
-		final BooleanElement cleanNewsMsgBtn = new BooleanElement("News Nachrichten l\u00f6schen",
+		final BooleanElement cleanNewsMsgBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_deleteNewsMessages"),
 				new ControlElement.IconData(Material.BARRIER),
 				new Consumer<Boolean>() {
 					@Override
@@ -795,8 +833,8 @@ public class ModSettings {
 				}, isCleanNewsMsg());
 		settings.add(cleanNewsMsgBtn);
 
-		settings.add(new HeaderElement("Chatzeit"));
-		final BooleanElement showChatTimeBtn = new BooleanElement("Chatzeit anzeigen",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_chattime")));
+		final BooleanElement showChatTimeBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_displayChatTime"),
 				new ControlElement.IconData(Material.WATCH), new Consumer<Boolean>() {
 			@Override
 			public void accept(Boolean showChatTime) {
@@ -807,7 +845,7 @@ public class ModSettings {
 		}, isShowChatTime());
 		settings.add(showChatTimeBtn);
 
-		final BooleanElement chatTimeShortFormatBtn = new BooleanElement("Kurze version",
+		final BooleanElement chatTimeShortFormatBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_chatTimeShortVersion"),
 				new ControlElement.IconData(Material.WATCH), new Consumer<Boolean>() {
 			@Override
 			public void accept(Boolean shortVersion) {
@@ -818,7 +856,7 @@ public class ModSettings {
 		}, isChatTimeShortFormat());
 		settings.add(chatTimeShortFormatBtn);
 
-		final BooleanElement chatTimeAfterMessageBtn = new BooleanElement("Nach der Nachricht anzeigen",
+		final BooleanElement chatTimeAfterMessageBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_chatTimeAfterMessage"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"), new Consumer<Boolean>() {
 			@Override
 			public void accept(Boolean afterMessage) {
@@ -829,12 +867,12 @@ public class ModSettings {
 		}, isChatTimeAfterMessage());
 		settings.add(chatTimeAfterMessageBtn);
 
-		settings.add(new HeaderElement("Realname"));
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_realname")));
 		final DropDownMenu<EnumRealnameShown> realnameDropDownMenu = new DropDownMenu<EnumRealnameShown>(
-				"Realname anzeigen", 0, 0, 0, 0).fill(EnumRealnameShown.values());
+				LanguageManager.translateOrReturnKey("settings_gg_showRealname"), 0, 0, 0, 0).fill(EnumRealnameShown.values());
 
 		final DropDownElement<EnumRealnameShown> realnameDropDown = new DropDownElement<EnumRealnameShown>(
-				"Realname anzeigen", realnameDropDownMenu);
+				LanguageManager.translateOrReturnKey("settings_gg_showRealname"), realnameDropDownMenu);
 
 		// Set selected entry
 		realnameDropDownMenu.setSelected(getRealname());
@@ -850,8 +888,8 @@ public class ModSettings {
 		});
 		settings.add(realnameDropDown);
 
-		settings.add(new HeaderElement("Leerzeilen"));
-		final BooleanElement cleanBlanksBtn = new BooleanElement("Leerzeilen l\u00f6schen",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_blankLines")));
+		final BooleanElement cleanBlanksBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_cleanBlanks"),
 				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean cleanBlanks) {
@@ -862,7 +900,7 @@ public class ModSettings {
 				}, isCleanBlanks());
 		settings.add(cleanBlanksBtn);
 
-		final BooleanElement cleanSupremeBlanksBtn = new BooleanElement("Supreme Leerzeilen l\u00f6schen",
+		final BooleanElement cleanSupremeBlanksBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_cleanSupremeBlanks"),
 				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean cleanSupremeBlanks) {
@@ -873,8 +911,8 @@ public class ModSettings {
 				}, isCleanSupremeBlanks());
 		settings.add(cleanSupremeBlanksBtn);
 
-		settings.add(new HeaderElement("Bezahlung / Zahlung"));
-		final BooleanElement payChatRightBtn = new BooleanElement("Bezahlung 2. Chat",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_payment")));
+		final BooleanElement payChatRightBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_payChatRight"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
@@ -886,7 +924,7 @@ public class ModSettings {
 				}, isPayChatRight());
 		settings.add(payChatRightBtn);
 
-		final BooleanElement payAchievementBtn = new BooleanElement("Bezahlung Fortschrittsmeldung",
+		final BooleanElement payAchievementBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_payAchievement"),
 				new ControlElement.IconData(Material.BOOK), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean payAchievement) {
@@ -897,7 +935,7 @@ public class ModSettings {
 				}, isPayAchievement());
 		settings.add(payAchievementBtn);
 
-		final BooleanElement payMarkerBtn = new BooleanElement("Bezahlung markieren",
+		final BooleanElement payMarkerBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_payHighlight"),
 				new ControlElement.IconData("labymod/textures/settings/settings/second_chat.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean payMarker) {
@@ -908,7 +946,7 @@ public class ModSettings {
 				}, isPayMarker());
 		settings.add(payMarkerBtn);
 
-		final BooleanElement payHoverBtn = new BooleanElement("Bezahlung hover",
+		final BooleanElement payHoverBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_payHover"),
 				new ControlElement.IconData("labymod/textures/settings/settings/bettershaderselection.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean payHover) {
@@ -919,8 +957,8 @@ public class ModSettings {
 				}, isPayHover());
 		settings.add(payHoverBtn);
 
-		settings.add(new HeaderElement("Bank"));
-		final BooleanElement bankChatRightBtn = new BooleanElement("Bank 2. Chat",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_bank")));
+		final BooleanElement bankChatRightBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_bankChatRight"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
@@ -932,7 +970,7 @@ public class ModSettings {
 				}, isBankChatRight());
 		settings.add(bankChatRightBtn);
 
-		final BooleanElement bankAchievementBtn = new BooleanElement("Bank Fortschrittsmeldung",
+		final BooleanElement bankAchievementBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_bankAchievement"),
 				new ControlElement.IconData(Material.BOOK), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean bankAchievement) {
@@ -943,8 +981,8 @@ public class ModSettings {
 				}, isBankAchievement());
 		settings.add(bankAchievementBtn);
 
-		settings.add(new HeaderElement("ItemRemover"));
-		final BooleanElement itemRemoverChatRightBtn = new BooleanElement("ItemRemover 2. Chat",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_clearlag")));
+		final BooleanElement itemRemoverChatRightBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_clearlagChatRight"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
@@ -956,7 +994,7 @@ public class ModSettings {
 				}, isItemRemoverChatRight());
 		settings.add(itemRemoverChatRightBtn);
 
-		final BooleanElement itemRemoverLastTimeHoverBtn = new BooleanElement("Itemremover Zeitstempel hover",
+		final BooleanElement itemRemoverLastTimeHoverBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_clearlagTimeHover"),
 				new ControlElement.IconData(Material.WATCH), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean itemRemoverLastTimeHover) {
@@ -967,8 +1005,8 @@ public class ModSettings {
 				}, isItemRemoverLastTimeHover());
 		settings.add(itemRemoverLastTimeHoverBtn);
 
-		settings.add(new HeaderElement("MobRemover"));
-		final BooleanElement mobRemoverChatRightBtn = new BooleanElement("Mobremover 2. Chat",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_mobremover")));
+		final BooleanElement mobRemoverChatRightBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_mobRemoverChatRight"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
@@ -980,7 +1018,7 @@ public class ModSettings {
 				}, isMobRemoverChatRight());
 		settings.add(mobRemoverChatRightBtn);
 
-		final BooleanElement mobRemoverLastTimeHoverBtn = new BooleanElement("Mobremover Zeitstempel hover",
+		final BooleanElement mobRemoverLastTimeHoverBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_mobRemoverTimeHover"),
 				new ControlElement.IconData(Material.WATCH), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean mobRemoverLastTimeHover) {
@@ -991,8 +1029,8 @@ public class ModSettings {
 				}, isMobRemoverLastTimeHover());
 		settings.add(mobRemoverLastTimeHoverBtn);
 
-		settings.add(new HeaderElement("Ignorierte Spieler"));
-		final BooleanElement betterIgnoreListBtn = new BooleanElement("verbesserte Ignorierliste",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_ignoredPlayers")));
+		final BooleanElement betterIgnoreListBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_betterIgnoreList"),
 				new ControlElement.IconData("labymod/textures/settings/settings/publicserverlist.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean betterIgnoreList) {
@@ -1003,8 +1041,8 @@ public class ModSettings {
 				}, isBetterIgnoreList());
 		settings.add(betterIgnoreListBtn);
 
-		settings.add(new HeaderElement("Karten"));
-		final BooleanElement clearMapCacheBtn = new BooleanElement("Cache automatisch leeren",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_maps")));
+		final BooleanElement clearMapCacheBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_clearMapCache"),
 				new ControlElement.IconData(Material.EMPTY_MAP),
 				new Consumer<Boolean>() {
 					@Override
@@ -1016,8 +1054,8 @@ public class ModSettings {
 				}, isClearMapCache());
 		settings.add(clearMapCacheBtn);
 
-		settings.add(new HeaderElement("Auto Update Booster Status"));
-		final BooleanElement updateBoosterStateBtn = new BooleanElement("Enabled",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_updateboosterstatus")));
+		final BooleanElement updateBoosterStateBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_updateBoosterStatusEnabled"),
 				new ControlElement.IconData("labymod/textures/settings/settings/serverlistliveview.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean updateBoosterState) {
@@ -1028,8 +1066,8 @@ public class ModSettings {
 				}, isUpdateBoosterState());
 		settings.add(updateBoosterStateBtn);
 
-		settings.add(new HeaderElement("AntiMagicPrefix"));
-		final BooleanElement ampEnabledBtn = new BooleanElement("Enabled",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_antimagicprefix")));
+		final BooleanElement ampEnabledBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_antiMagicPrefixEnabled"),
 				new ControlElement.IconData("labymod/textures/settings/settings/particlefix.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean ampEnabled) {
@@ -1042,7 +1080,7 @@ public class ModSettings {
 
 		final String ampChatText = (getAMPChatReplacement().length() > 0) ? getAMPChatReplacement()
 				: getDefaultAMPChatReplacement();
-		final StringElement chatReplacementInput = new StringElement("Chat Replacement",
+		final StringElement chatReplacementInput = new StringElement(LanguageManager.translateOrReturnKey("settings_gg_antiMagicPrefixChatReplacement"),
 				new ControlElement.IconData(Material.BOOK_AND_QUILL), ampChatText, new Consumer<String>() {
 					@Override
 					public void accept(String replacement) {
@@ -1055,7 +1093,7 @@ public class ModSettings {
 
 		final String ampTabListText = (getAMPTablistReplacement().length() > 0) ? getAMPTablistReplacement()
 				: getDefaultAMPTablistReplacement();
-		final StringElement tablistReplacementInput = new StringElement("TabList Replacement",
+		final StringElement tablistReplacementInput = new StringElement(LanguageManager.translateOrReturnKey("settings_gg_antiMagicPrefixTablistReplacement"),
 				new ControlElement.IconData(Material.BOOK_AND_QUILL), ampTabListText, new Consumer<String>() {
 					@Override
 					public void accept(String replacement) {
@@ -1066,8 +1104,8 @@ public class ModSettings {
 				});
 		settings.add(tablistReplacementInput);
 
-		settings.add(new HeaderElement("AntiMagicClanTag"));
-		final BooleanElement ampClanEnabledBtn = new BooleanElement("Enabled",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_antimagicclantag")));
+		final BooleanElement ampClanEnabledBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_antiMagicClanTagEnabled"),
 				new ControlElement.IconData("labymod/textures/settings/settings/particlefix.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean ampClanEnabled) {
@@ -1078,8 +1116,8 @@ public class ModSettings {
 				}, isAMPClanEnabled());
 		settings.add(ampClanEnabledBtn);
 
-		settings.add(new HeaderElement("LabyChat"));
-		final BooleanElement labyChatShowSubServerEnabledBtn = new BooleanElement("Spielmodus teilen",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_labychat")));
+		final BooleanElement labyChatShowSubServerEnabledBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_labyChatEnabled"),
 				new ControlElement.IconData("labymod/textures/settings/settings/motd.png"), new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean labyChatShowSubServerEnabled) {
@@ -1090,8 +1128,8 @@ public class ModSettings {
 				}, isLabyChatShowSubServerEnabled());
 		settings.add(labyChatShowSubServerEnabledBtn);
 
-		settings.add(new HeaderElement("Automatisationen"));
-		final BooleanElement autoPortalBtn = new BooleanElement("Portalraum beim Betreten",
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_automatisations")));
+		final BooleanElement autoPortalBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_portalOnJoin"),
 				new ControlElement.IconData("labymod/textures/chat/autotext.png"), new Consumer<Boolean>() {
 			@Override
 			public void accept(Boolean autoPortal) {

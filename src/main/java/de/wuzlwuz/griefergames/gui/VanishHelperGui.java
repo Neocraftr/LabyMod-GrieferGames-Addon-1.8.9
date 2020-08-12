@@ -1,5 +1,6 @@
 package de.wuzlwuz.griefergames.gui;
 
+import net.labymod.main.lang.LanguageManager;
 import net.labymod.utils.ModColor;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,7 +16,7 @@ public class VanishHelperGui extends GuiScreen {
 
 		GlStateManager.scale(2F, 2F, 2F);
 
-		this.drawCenteredString(this.fontRendererObj, ModColor.RED + "Achtung, du bist im Vanish!", overlayWidth,
+		this.drawCenteredString(this.fontRendererObj, ModColor.RED + LanguageManager.translateOrReturnKey("message_gg_vanishWMessage"), overlayWidth,
 				overlayHeight, 16777215);
 
 		GlStateManager.popMatrix();
