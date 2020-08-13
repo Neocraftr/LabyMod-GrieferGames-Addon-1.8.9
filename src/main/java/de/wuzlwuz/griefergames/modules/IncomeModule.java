@@ -56,7 +56,7 @@ public class IncomeModule extends SimpleModule {
 
     @Override
     public boolean isShown() {
-        return getGG().isShowModules() && getGG().getIncome() != 0;
+        return GrieferGames.getSettings().isModEnabled() && getGG().isShowModules() && getGG().getIncome() != 0;
     }
 
     @Override

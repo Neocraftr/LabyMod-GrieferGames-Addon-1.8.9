@@ -57,7 +57,7 @@ public class NicknameModule extends SimpleModule {
 
 	@Override
 	public boolean isShown() {
-		return getGG().isShowModules();
+		return GrieferGames.getSettings().isModEnabled() && getGG().isShowModules();
 	}
 
 	@Override
