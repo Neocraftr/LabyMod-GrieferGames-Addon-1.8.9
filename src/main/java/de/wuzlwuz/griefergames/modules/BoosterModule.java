@@ -68,6 +68,15 @@ public class BoosterModule extends Module {
 			boolean showCount = booster.getShowCount();
 
 			if (count > 0) {
+				int durationColor = getColor("durationColor", DefaultValues.POTION_DURATION_COLOR);
+				if(booster.doHighlightDuration()) {
+					if(durationColor == new Color(255, 85, 85).getRGB()) {
+						durationColor = new Color(255, 255, 255).getRGB();
+					} else {
+						durationColor = new Color(255, 85, 85).getRGB();
+					}
+				}
+
 				if (rightX == -1) {
 					int stringWidth = LabyModCore.getMinecraft().getFontRenderer().getStringWidth(name + " ");
 					LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow(name, x + 28, y - 1,
@@ -79,7 +88,7 @@ public class BoosterModule extends Module {
 					}
 
 					LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow(booster.getDurationString(),
-							x + 28, y + 9, getColor("durationColor", DefaultValues.POTION_DURATION_COLOR));
+							x + 28, y + 9, durationColor);
 				} else {
 					int stringWidth = 0;
 					String countStr = "x" + count.toString();
@@ -97,7 +106,7 @@ public class BoosterModule extends Module {
 					}
 
 					LabyMod.getInstance().getDrawUtils().drawRightStringWithShadow(booster.getDurationString(),
-							rightX - 28, y + 9, getColor("durationColor", DefaultValues.POTION_DURATION_COLOR));
+							rightX - 28, y + 9, durationColor);
 				}
 
 				Minecraft.getMinecraft().getTextureManager()

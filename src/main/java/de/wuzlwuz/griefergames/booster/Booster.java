@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.wuzlwuz.griefergames.GrieferGames;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement.IconData;
 import net.labymod.utils.Material;
@@ -19,6 +20,8 @@ public class Booster {
 	private int iconIndex = 0;
 	private boolean showCount = true;
 	private boolean resetEndDates = false;
+	private boolean HighlightDuration = false;
+	private long nextDurationBlink = 0;
 
 	Booster(String name, String type, int count, LocalDateTime endDate, IconData icon, int iconIndex,
 			boolean showCount) {
@@ -213,6 +216,22 @@ public class Booster {
 		this.resetEndDates = resetEndDates;
 	}
 
+	private boolean isHighlightDuration() {
+		return HighlightDuration;
+	}
+
+	private void setHighlightDuration(boolean HighlightDuration) {
+		this.HighlightDuration = HighlightDuration;
+	}
+
+	private long getNextDurationBlink() {
+		return nextDurationBlink;
+	}
+
+	private void setNextDurationBlink(long nextDuratopnBlink) {
+		this.nextDurationBlink = nextDuratopnBlink;
+	}
+
 	public String getDurationString() {
 		LocalDateTime curDateTime = LocalDateTime.now();
 		String ret = LanguageManager.translateOrReturnKey("gg_on");
@@ -263,5 +282,26 @@ public class Booster {
 		}
 
 		return ret;
+	}
+
+	public boolean doHighlightDuration() {
+		LocalDateTime curDateTime = LocalDateTime.now();
+		LocalDateTime endDate = getEndDate(0);
+
+		if(endDate == null) return false;
+
+		Duration duration = null;
+		if (endDate.isAfter(curDateTime)) {
+			duration = Duration.between(curDateTime, endDate);
+		} else {
+			return false;
+		}
+
+		if (System.currentTimeMillis() > getNextDurationBlink() && duration.getSeconds() <= 30) {
+			setNextDurationBlink(System.currentTimeMillis() + 500L);
+			setHighlightDuration(!isHighlightDuration());
+		}
+
+		return isHighlightDuration();
 	}
 }
