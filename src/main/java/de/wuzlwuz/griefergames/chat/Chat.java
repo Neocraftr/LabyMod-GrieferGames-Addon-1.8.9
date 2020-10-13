@@ -9,7 +9,7 @@ import net.labymod.core.MinecraftAdapter;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.minecraft.util.IChatComponent;
 
-public class Chat {
+public abstract class Chat {
 	protected GrieferGames getGG() {
 		return GrieferGames.getGriefergames();
 	}

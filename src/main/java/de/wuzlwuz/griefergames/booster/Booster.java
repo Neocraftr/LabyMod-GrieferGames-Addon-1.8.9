@@ -293,11 +293,11 @@ public class Booster {
 		Duration duration = null;
 		if (endDate.isAfter(curDateTime)) {
 			duration = Duration.between(curDateTime, endDate);
-		} else {
-			return false;
-		}
+		} else return false;
 
-		if (System.currentTimeMillis() > getNextDurationBlink() && duration.getSeconds() <= 30) {
+		if(duration.getSeconds() > 30) return false;
+
+		if (System.currentTimeMillis() > getNextDurationBlink()) {
 			setNextDurationBlink(System.currentTimeMillis() + 500L);
 			setHighlightDuration(!isHighlightDuration());
 		}

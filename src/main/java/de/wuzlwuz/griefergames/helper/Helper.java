@@ -46,13 +46,13 @@ public class Helper {
 	private static Pattern auraRegex2 = Pattern.compile("^Deine Aura ist jetzt deaktiviert.$");
 
 	private static Pattern getBoosterValidRegexp = Pattern.compile(
-			"^\\[Booster\\] ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster|Erfahrungsbooster) f\\u00FCr ([0-9]+) Minuten aktiviert!$");
+			"^\\[Booster\\] ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster) f\\u00FCr ([0-9]+) Minuten aktiviert.$");
 	private static Pattern getBoosterDoneValidRegexp = Pattern
-			.compile("^\\[Booster\\] ([A-z]+\\-Booster|Erfahrungsbooster) ist jetzt wieder deaktiviert!$");
+			.compile("^\\[Booster\\] ([A-z]+\\-Booster) ist jetzt wieder deaktiviert!$");
 	private static Pattern getBoosterMultiDoneValidRegexp = Pattern.compile(
 			"^\\[Booster\\] Der ([A-z]+\\-Booster|Erfahrungsbooster) \\(Stufe [1-6]\\) von ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) ist abgelaufen.$");
 	private static Pattern getCurrentBoosters = Pattern.compile(
-			"^([A-z]+\\-Booster|Erfahrungsbooster) Multiplikator: ([0-9])x ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
+			"^([A-z]+\\-Booster): ([0-9])x Multiplikator ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
 
 	private static Pattern switcherRegexp = Pattern.compile("^\\[Switcher\\] Daten heruntergeladen!$");
 
@@ -82,7 +82,7 @@ public class Helper {
 
 		String fMsg = getProperTextFormat(formatted);
 
-		if (fMsg.contains("§r§cist jetzt wieder deaktiviert!§r")) {
+		if (fMsg.contains("§r§cist jetzt wieder deaktiviert.§r")) {
 
 			Matcher matcher = getBoosterDoneValidRegexp.matcher(unformatted.trim());
 			if (matcher.find()) {
@@ -93,7 +93,7 @@ public class Helper {
 				if (boosterName.equalsIgnoreCase("fly-booster")) {
 					GrieferGames.getGriefergames().boosterDone("fly");
 					validBooster = true;
-				} else if (boosterName.equalsIgnoreCase("drop-booster")) {
+				} else if (boosterName.equalsIgnoreCase("drops-booster")) {
 					GrieferGames.getGriefergames().boosterDone("drop");
 					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("break-booster")) {
@@ -102,7 +102,7 @@ public class Helper {
 				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
 					GrieferGames.getGriefergames().boosterDone("mob");
 					validBooster = true;
-				} else if (boosterName.equalsIgnoreCase("erfahrungsbooster")) {
+				} else if (boosterName.equalsIgnoreCase("erfahrung-booster")) {
 					GrieferGames.getGriefergames().boosterDone("xp");
 					validBooster = true;
 				}
@@ -134,7 +134,7 @@ public class Helper {
 				if (boosterName.equalsIgnoreCase("fly-booster")) {
 					GrieferGames.getGriefergames().boosterDone("fly");
 					validBooster = true;
-				} else if (boosterName.equalsIgnoreCase("drop-booster")) {
+				} else if (boosterName.equalsIgnoreCase("drops-booster")) {
 					GrieferGames.getGriefergames().boosterDone("drop");
 					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("break-booster")) {
@@ -143,7 +143,7 @@ public class Helper {
 				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
 					GrieferGames.getGriefergames().boosterDone("mob");
 					validBooster = true;
-				} else if (boosterName.equalsIgnoreCase("erfahrungsbooster")) {
+				} else if (boosterName.equalsIgnoreCase("erfahrung-booster")) {
 					GrieferGames.getGriefergames().boosterDone("xp");
 					validBooster = true;
 				}
@@ -184,7 +184,7 @@ public class Helper {
 				if (boosterName.equalsIgnoreCase("fly-booster")) {
 					booster = new FlyBooster(-1, LocalDateTime.now().plusMinutes(minutes));
 					validBooster = true;
-				} else if (boosterName.equalsIgnoreCase("drop-booster")) {
+				} else if (boosterName.equalsIgnoreCase("drops-booster")) {
 					booster = new DropBooster(-1, LocalDateTime.now().plusMinutes(minutes));
 					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("break-booster")) {
@@ -193,7 +193,7 @@ public class Helper {
 				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
 					booster = new MobBooster(-1, LocalDateTime.now().plusMinutes(minutes));
 					validBooster = true;
-				} else if (boosterName.equalsIgnoreCase("erfahrungsbooster")) {
+				} else if (boosterName.equalsIgnoreCase("erfahrung-booster")) {
 					booster = new ExperienceBooster(-1, LocalDateTime.now().plusMinutes(minutes));
 					validBooster = true;
 				}
