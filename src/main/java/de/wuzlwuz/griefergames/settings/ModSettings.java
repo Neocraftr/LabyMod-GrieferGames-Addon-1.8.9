@@ -35,7 +35,7 @@ public class ModSettings {
 	private boolean plotChatRight = true;
 	private EnumSounds privateChatSound = EnumSounds.NONE;
 	private EnumRealnameShown realname = EnumRealnameShown.DEFAULT;
-	// private boolean realnameClick = false;
+	private boolean realnameClick = false;
 	private boolean msgDisplayNameClick = false;
 	private boolean clanTagClick = false;
 	private boolean filterDuplicateMessages = false;
@@ -204,12 +204,11 @@ public class ModSettings {
 		return this.realname.equals(EnumRealnameShown.BOTH);
 	}
 
-	/*
-	 * private void setRealnameClick(boolean realnameClick) { this.realnameClick =
-	 * realnameClick; }
-	 * 
-	 * public boolean isRealnameClick() { return this.realnameClick; }
-	 */
+	private void setRealnameClick(boolean realnameClick) {
+		this.realnameClick = realnameClick;
+	}
+
+	public boolean isRealnameClick() { return this.realnameClick; }
 
 	private void setRealname(EnumRealnameShown realname) {
 		this.realname = realname;
@@ -596,10 +595,8 @@ public class ModSettings {
 			}
 		}
 
-		/*
-		 * if (getConfig().has("realnameClick"))
-		 * setRealnameClick(getConfig().get("realnameClick").getAsBoolean());
-		 */
+		if (getConfig().has("realnameClick"))
+			setRealnameClick(getConfig().get("realnameClick").getAsBoolean());
 
 		if (getConfig().has("itemRemoverChatRight"))
 			setItemRemoverChatRight(getConfig().get("itemRemoverChatRight").getAsBoolean());
@@ -887,6 +884,17 @@ public class ModSettings {
 			}
 		});
 		settings.add(realnameDropDown);
+
+		final BooleanElement realnameClickBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_clickClanTag"),
+				new ControlElement.IconData("labymod/textures/settings/settings/chatshortcuts.png"), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean realnameClick) {
+				setRealnameClick(realnameClick);
+				getConfig().addProperty("realnameClick", realnameClick);
+				saveConfig();
+			}
+		}, isRealnameClick());
+		settings.add(realnameClickBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_blankLines")));
 		final BooleanElement cleanBlanksBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_cleanBlanks"),
