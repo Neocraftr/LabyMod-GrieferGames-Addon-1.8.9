@@ -420,7 +420,7 @@ public class Helper {
 			if (boosterName.equalsIgnoreCase("fly-booster")) {
 				booster = new FlyBooster(multi);
 				validBooster = true;
-			} else if (boosterName.equalsIgnoreCase("drop-booster")) {
+			} else if (boosterName.equalsIgnoreCase("drops-booster")) {
 				booster = new DropBooster(multi);
 				validBooster = true;
 			} else if (boosterName.equalsIgnoreCase("break-booster")) {
@@ -429,7 +429,7 @@ public class Helper {
 			} else if (boosterName.equalsIgnoreCase("mob-booster")) {
 				booster = new MobBooster(multi);
 				validBooster = true;
-			} else if (boosterName.equalsIgnoreCase("erfahrungsbooster")) {
+			} else if (boosterName.equalsIgnoreCase("erfahrung-booster")) {
 				booster = new ExperienceBooster(multi);
 				validBooster = true;
 			}
