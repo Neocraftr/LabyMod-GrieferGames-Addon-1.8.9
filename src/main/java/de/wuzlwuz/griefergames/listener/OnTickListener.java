@@ -5,6 +5,10 @@ import java.util.List;
 
 import de.wuzlwuz.griefergames.GrieferGames;
 import net.labymod.core.LabyModCore;
+import net.minecraft.client.Minecraft;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerChest;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
@@ -64,6 +68,17 @@ public class OnTickListener {
 					&& GrieferGames.getGriefergames().getTimeToWait() > 0) {
 				GrieferGames.getGriefergames().getGGServer().setNextUpdateTimeToWait(System.currentTimeMillis() + 1000L);
 				GrieferGames.getGriefergames().setTimeToWait(GrieferGames.getGriefergames().getTimeToWait() - 1);
+			}
+
+			if(GrieferGames.getSettings().isHideBoosterMenu()) {
+				Container cont = Minecraft.getMinecraft().thePlayer.openContainer;
+				if(cont instanceof ContainerChest) {
+					ContainerChest chest = (ContainerChest) cont;
+					IInventory inv = chest.getLowerChestInventory();
+					if(inv.getName().equals("§6Booster - Übersicht")) {
+						Minecraft.getMinecraft().thePlayer.closeScreen();
+					}
+				}
 			}
 		}
 	}

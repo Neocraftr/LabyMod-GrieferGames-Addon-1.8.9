@@ -83,6 +83,8 @@ public class ModSettings {
 
 	private boolean autoPortal = false;
 
+	private boolean hideBoosterMenu = false;
+
 	private boolean vanishHelper = false;
 
 	private boolean checkPlotHelper = false;
@@ -477,6 +479,14 @@ public class ModSettings {
 		return autoPortal;
 	}
 
+	public void setHideBoosterMenu(boolean hideBoosterMenu) {
+		this.hideBoosterMenu = hideBoosterMenu;
+	}
+
+	public boolean isHideBoosterMenu() {
+		return hideBoosterMenu;
+	}
+
 	public boolean isVanishHelper() {
 		return vanishHelper;
 	}
@@ -651,6 +661,9 @@ public class ModSettings {
 
 		if (getConfig().has("autoPortal"))
 			setAutoPortal(getConfig().get("autoPortal").getAsBoolean());
+
+		if (getConfig().has("hideBoosterMenu"))
+			setHideBoosterMenu(getConfig().get("hideBoosterMenu").getAsBoolean());
 
 		if (getConfig().has("vanishHelper"))
 			setVanishHelper(getConfig().get("vanishHelper").getAsBoolean());
@@ -1139,5 +1152,16 @@ public class ModSettings {
 			}
 		}, isAutoPortl());
 		settings.add(autoPortalBtn);
+
+		final BooleanElement hodeBoosterMenuBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_hideBoosterMenu"),
+				new ControlElement.IconData("labymod/textures/chat/autotext.png"), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean hideMenu) {
+				setHideBoosterMenu(hideMenu);
+				getConfig().addProperty("hideBoosterMenu", hideMenu);
+				saveConfig();
+			}
+		}, isHideBoosterMenu());
+		settings.add(hodeBoosterMenuBtn);
 	}
 }
