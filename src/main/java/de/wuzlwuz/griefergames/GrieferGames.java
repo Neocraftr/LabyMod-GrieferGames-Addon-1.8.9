@@ -16,6 +16,8 @@ import de.wuzlwuz.griefergames.enums.EnumLanguages;
 import de.wuzlwuz.griefergames.helper.Helper;
 import de.wuzlwuz.griefergames.server.GrieferGamesServer;
 import de.wuzlwuz.griefergames.settings.ModSettings;
+import de.wuzlwuz.griefergames.utils.Updater;
+import net.labymod.addon.AddonLoader;
 import net.labymod.api.LabyModAddon;
 import net.labymod.core.LabyModCore;
 import net.labymod.ingamegui.ModuleCategory;
@@ -28,9 +30,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
 public class GrieferGames extends LabyModAddon {
+	public static final String PREFIX = "§8[§6GrieferGames-Addon§8] §r";
+	public static final String VERSION = "8.0.0";
+
 	private static GrieferGames griefergames;
 	private Runnable continueEnable;
 	private static ModSettings settings;
+	private Updater updater;
 	private String serverIp = "";
 	private String secondServerIp = "";
 	private boolean showModules = false;
@@ -68,6 +74,14 @@ public class GrieferGames extends LabyModAddon {
 
 	public static ModSettings getSettings() {
 		return settings;
+	}
+
+	public Updater getUpdater() {
+		return updater;
+	}
+
+	public void setUpdater(Updater updater) {
+		this.updater = updater;
 	}
 
 	private static void setSettings(ModSettings settings) {
@@ -297,6 +311,9 @@ public class GrieferGames extends LabyModAddon {
 		// save instance
 		setGriefergames(this);
 
+		// init updater
+		setUpdater(new Updater());
+
 		// set ip
 		setServerIp("griefergames.net");
 		setSecondServerIp("griefergames.de");
@@ -311,6 +328,8 @@ public class GrieferGames extends LabyModAddon {
 		setContinueEnable(new Runnable() {
 			@Override
 			public void run() {
+				getUpdater().setAddonJar(AddonLoader.getFiles().get(about.uuid));
+
 				// extend translations
 				if(getSettings().getLanguage() == EnumLanguages.GAMELANGUAGE) {
 					loadTranslations(null);

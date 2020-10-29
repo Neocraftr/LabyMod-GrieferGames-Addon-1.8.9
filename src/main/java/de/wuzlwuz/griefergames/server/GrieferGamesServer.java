@@ -252,12 +252,7 @@ public class GrieferGamesServer extends Server {
 											Thread.sleep(500);
 											boolean loadRank3rd = loadPlayerRank();
 											if (!loadRank3rd) {
-												getApi().displayMessageInChat(ModColor.DARK_GRAY + "[" + ModColor.GOLD
-														+ "FEHLER" + ModColor.DARK_GRAY + "] " + ModColor.RED
-														+ "Ihr Rang konnte " + ModColor.UNDERLINE + "nicht"
-														+ ModColor.RESET + ModColor.RED
-														+ " geladen werden, bitte Verbinden Sie sich erneut!");
-
+												getApi().displayMessageInChat(GrieferGames.PREFIX+"§4FEHLER: §cIhr Rang konnte nicht ermittelt werden, bitte Verbinden Sie sich erneut.");
 											}
 										} catch (Exception e) {
 											e.printStackTrace();

@@ -85,6 +85,8 @@ public class ModSettings {
 
 	private boolean hideBoosterMenu = false;
 
+	private boolean autoUpdate = true;
+
 	private boolean vanishHelper = false;
 
 	private boolean checkPlotHelper = false;
@@ -487,6 +489,14 @@ public class ModSettings {
 		return hideBoosterMenu;
 	}
 
+	public void setAutoUpdate(boolean autoUpdate) {
+		this.autoUpdate = autoUpdate;
+	}
+
+	public boolean isAutoUpdate() {
+		return autoUpdate;
+	}
+
 	public boolean isVanishHelper() {
 		return vanishHelper;
 	}
@@ -665,6 +675,9 @@ public class ModSettings {
 		if (getConfig().has("hideBoosterMenu"))
 			setHideBoosterMenu(getConfig().get("hideBoosterMenu").getAsBoolean());
 
+		if (getConfig().has("autoUpdate"))
+			setAutoUpdate(getConfig().get("autoUpdate").getAsBoolean());
+
 		if (getConfig().has("vanishHelper"))
 			setVanishHelper(getConfig().get("vanishHelper").getAsBoolean());
 
@@ -685,6 +698,17 @@ public class ModSettings {
 					}
 				}, isModEnabled());
 		settings.add(modEnabledBtn);
+
+		final BooleanElement autoUpdateBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_autoUpdate"),
+				new ControlElement.IconData("labymod/textures/settings/settings/serverlistliveview.png"), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean autoUpdate) {
+				setModEnabled(autoUpdate);
+				getConfig().addProperty("autoUpdate", autoUpdate);
+				saveConfig();
+			}
+		}, isAutoUpdate());
+		settings.add(autoUpdateBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_language")));
 		final DropDownMenu<EnumLanguages> languageDropDownMenu = new DropDownMenu<EnumLanguages>(
