@@ -703,7 +703,7 @@ public class ModSettings {
 				new ControlElement.IconData("labymod/textures/settings/settings/serverlistliveview.png"), new Consumer<Boolean>() {
 			@Override
 			public void accept(Boolean autoUpdate) {
-				setModEnabled(autoUpdate);
+				setAutoUpdate(autoUpdate);
 				getConfig().addProperty("autoUpdate", autoUpdate);
 				saveConfig();
 			}
