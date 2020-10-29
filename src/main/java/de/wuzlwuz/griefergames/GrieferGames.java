@@ -31,7 +31,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GrieferGames extends LabyModAddon {
 	public static final String PREFIX = "§8[§6GrieferGames-Addon§8] §r";
-	public static final String VERSION = "1.0.0";
+	public static final String VERSION = "1.0.1";
 
 	private static GrieferGames griefergames;
 	private Runnable continueEnable;
