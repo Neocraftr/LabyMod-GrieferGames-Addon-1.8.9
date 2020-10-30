@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import de.wuzlwuz.griefergames.GrieferGames;
+import net.labymod.main.lang.LanguageManager;
 import net.labymod.utils.Consumer;
 import net.labymod.utils.ServerData;
 import org.apache.commons.io.FileUtils;
@@ -32,14 +33,18 @@ public class Updater {
             @Override
             public void accept(ServerData serverData) {
                 if(updateAvailable) {
+                    String msg = GrieferGames.PREFIX+"§3";
                     if(GrieferGames.getSettings().isAutoUpdate()) {
                         if(!canDoUpdate()) {
-                            GrieferGames.getGriefergames().getApi().displayMessageInChat(GrieferGames.PREFIX+"§3Das Addon konnte nicht auf Version §ev"+latestVersion
-                                    +" §3aktualisiert werden. Manueller Download: §e"+downloadUrl);
+                            msg += LanguageManager.translateOrReturnKey("message_gg_updateFailed");
+                        } else {
+                            msg += LanguageManager.translateOrReturnKey("message_gg_updateReady");
                         }
                     } else {
-                        GrieferGames.getGriefergames().getApi().displayMessageInChat(GrieferGames.PREFIX+"§3Neues Update auf Version §ev"+latestVersion+" §3verfügbar. Download: §e"+downloadUrl);
+                        msg += LanguageManager.translateOrReturnKey("message_gg_updateAvailable");
                     }
+                    msg = msg.replace("${version}", "§ev"+latestVersion+"§3").replace("${dl_link}", "§e"+downloadUrl+"§3");
+                    GrieferGames.getGriefergames().getApi().displayMessageInChat(msg);
                 }
             }
         });
