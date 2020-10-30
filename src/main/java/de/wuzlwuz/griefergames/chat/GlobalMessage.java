@@ -25,16 +25,10 @@ public class GlobalMessage extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
-		return !getUserFromGlobalMessage(unformatted).equalsIgnoreCase(LabyModCore.getMinecraft().getPlayer().getName().trim());
-	}
-
-	@Override
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
 		String unformatted = msg.getUnformattedText();
-		String formatted = msg.getFormattedText();
 
-		return (getSettings().isMsgDisplayNameClick() && doAction(unformatted, formatted));
+		return !getUserFromGlobalMessage(unformatted).equalsIgnoreCase(LabyModCore.getMinecraft().getPlayer().getName().trim());
 	}
 
 	@Override

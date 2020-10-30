@@ -17,7 +17,7 @@ public class Vote extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
+	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
 		Matcher matcher = voteMsgHubRegexp.matcher(unformatted);
 		Matcher matcher2 = voteMsgRegexp.matcher(unformatted);
 		return getSettings().isMobRemoverChatRight() && unformatted.trim().length() > 0
@@ -25,15 +25,7 @@ public class Vote extends Chat {
 	}
 
 	@Override
-	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		return (doAction(unformatted, formatted));
-	}
-
-	@Override
 	public ChatDisplayAction handleChatMessage(String unformatted, String formatted) {
-		if (doAction(unformatted, formatted)) {
-			return ChatDisplayAction.HIDE;
-		}
-		return super.handleChatMessage(unformatted, formatted);
+		return ChatDisplayAction.HIDE;
 	}
 }

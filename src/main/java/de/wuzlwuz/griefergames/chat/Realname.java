@@ -24,27 +24,19 @@ public class Realname extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
+	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
 		Matcher realname = realnameRegex.matcher(unformatted);
 		Matcher realname2 = realnameRegex2.matcher(getHelper().getProperTextFormat(formatted));
 		return getSettings().isRealnameRight() && unformatted.trim().length() > 0 && realname.find() && realname2.find();
 	}
 
 	@Override
-	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		return (doAction(unformatted, formatted));
-	}
-
-	@Override
 	public ChatDisplayAction handleChatMessage(String unformatted, String formatted) {
-		if (doAction(unformatted, formatted)) {
-			if (getSettings().isRealnameBoth()) {
-				getApi().displayMessageInChat("${{dup}}" + formatted);
-			}
-
-			return ChatDisplayAction.SWAP;
+		if (getSettings().isRealnameBoth()) {
+			getApi().displayMessageInChat("${{dup}}" + formatted);
 		}
-		return super.handleChatMessage(unformatted, formatted);
+
+		return ChatDisplayAction.SWAP;
 	}
 
 	@Override
@@ -52,7 +44,7 @@ public class Realname extends Chat {
 		String unformatted = msg.getUnformattedText();
 
 		Matcher realname = realnameDupRegex.matcher(unformatted);
-		return (realname.find());
+		return realname.find();
 	}
 
 	@Override

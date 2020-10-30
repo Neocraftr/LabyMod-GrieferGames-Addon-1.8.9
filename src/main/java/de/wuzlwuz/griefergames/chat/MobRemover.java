@@ -22,15 +22,12 @@ public class MobRemover extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
+	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
+		if(!getSettings().isMobRemoverChatRight()) return false;
+
 		Matcher mobRemoverMessage = mobRemoverMessageRegex.matcher(unformatted);
 		Matcher mobRemoverDoneMessage = mobRemoverDoneMessageRegex.matcher(unformatted);
 		return unformatted.trim().length() > 0 && (mobRemoverMessage.find() || mobRemoverDoneMessage.find());
-	}
-
-	@Override
-	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		return (doAction(unformatted, formatted) && getSettings().isMobRemoverChatRight());
 	}
 
 	@Override
@@ -44,10 +41,7 @@ public class MobRemover extends Chat {
 
 	@Override
 	public ChatDisplayAction handleChatMessage(String unformatted, String formatted) {
-		if (doAction(unformatted, formatted)) {
-			return ChatDisplayAction.SWAP;
-		}
-		return super.handleChatMessage(unformatted, formatted);
+		return ChatDisplayAction.SWAP;
 	}
 
 	@Override
@@ -59,6 +53,6 @@ public class MobRemover extends Chat {
 			IChatComponent hoverText = new ChatComponentText(dateNowStr);
 			msg.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 		}
-		return super.modifyChatMessage(msg);
+		return msg;
 	}
 }

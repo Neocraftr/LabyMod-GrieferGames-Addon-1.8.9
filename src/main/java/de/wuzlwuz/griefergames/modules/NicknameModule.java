@@ -8,7 +8,7 @@ import net.labymod.settings.elements.ControlElement;
 import net.minecraft.util.ResourceLocation;
 
 public class NicknameModule extends SimpleModule {
-	protected GrieferGames getGG() {
+	private GrieferGames getGG() {
 		return GrieferGames.getGriefergames();
 	}
 

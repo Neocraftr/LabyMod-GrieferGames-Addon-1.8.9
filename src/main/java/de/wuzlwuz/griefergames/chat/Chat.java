@@ -1,12 +1,11 @@
 package de.wuzlwuz.griefergames.chat;
 
 import de.wuzlwuz.griefergames.GrieferGames;
-import de.wuzlwuz.griefergames.helper.Helper;
+import de.wuzlwuz.griefergames.utils.Helper;
 import de.wuzlwuz.griefergames.settings.ModSettings;
 import net.labymod.api.LabyModAPI;
-import net.labymod.core.LabyModCore;
-import net.labymod.core.MinecraftAdapter;
 import net.labymod.servermanager.ChatDisplayAction;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.IChatComponent;
 
 public abstract class Chat {
@@ -26,17 +25,11 @@ public abstract class Chat {
 		return GrieferGames.getSettings();
 	}
 
-	protected MinecraftAdapter getMC() {
-		return LabyModCore.getMinecraft();
+	protected Minecraft getMC() {
+		return Minecraft.getMinecraft();
 	}
 
-	public String getName() {
-		return "chat";
-	}
-
-	public boolean doAction(String unformatted, String formatted) {
-		return false;
-	}
+	public abstract String getName();
 
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
 		return false;

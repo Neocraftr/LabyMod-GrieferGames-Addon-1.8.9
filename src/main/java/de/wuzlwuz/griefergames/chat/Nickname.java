@@ -15,7 +15,7 @@ public class Nickname extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
+	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
 		if (unformatted.trim().length() > 0) {
 			Matcher nicknameMsg = nicknameMsgRegex.matcher(unformatted);
 			if (nicknameMsg.find()) {
@@ -26,11 +26,6 @@ public class Nickname extends Chat {
 		}
 
 		return false;
-	}
-
-	@Override
-	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		return doAction(unformatted, formatted);
 	}
 
 	/*

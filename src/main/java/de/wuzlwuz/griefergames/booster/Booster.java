@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.wuzlwuz.griefergames.GrieferGames;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement.IconData;
 import net.labymod.utils.Material;
@@ -14,116 +13,111 @@ public class Booster {
 	private String name;
 	private int count = 0;
 	private List<LocalDateTime> endDates = new ArrayList<LocalDateTime>();
-	private String username;
 	private String type;
 	private IconData icon = new IconData(Material.BARRIER);
 	private int iconIndex = 0;
 	private boolean showCount = true;
 	private boolean resetEndDates = false;
-	private boolean HighlightDuration = false;
+	private boolean highlightDuration = false;
 	private long nextDurationBlink = 0;
 
 	Booster(String name, String type, int count, LocalDateTime endDate, IconData icon, int iconIndex,
 			boolean showCount) {
-		setName(name);
-		setType(type);
-		setCount(count);
-		addEndDates(endDate);
-		setIcon(icon);
-		setIconIndex(iconIndex);
-		setShowCount(showCount);
+		this.name = name;
+		this.type = type;
+		this.count = count;
+		endDates.add(endDate);
+		this.icon = icon;
+		this.iconIndex = iconIndex;
+		this.showCount = showCount;
 	}
 
 	Booster(String name, String type, int count, LocalDateTime endDate, boolean showCount) {
-		setName(name);
-		setType(type);
-		setCount(count);
-		addEndDates(endDate);
-		setShowCount(showCount);
+		this.name = name;
+		this.type = type;
+		this.count = count;
+		endDates.add(endDate);
+		this.showCount = showCount;
 	}
 
 	Booster(String name, String type, int count, IconData icon, int iconIndex, boolean showCount) {
-		setName(name);
-		setType(type);
-		setCount(count);
-		setIcon(icon);
-		setIconIndex(iconIndex);
-		setShowCount(showCount);
+		this.name = name;
+		this.type = type;
+		this.count = count;
+		this.icon = icon;
+		this.iconIndex = iconIndex;
+		this.showCount = showCount;
 	}
 
 	Booster(String name, String type, int count, boolean showCount) {
-		setName(name);
-		setType(type);
-		setCount(count);
-		setShowCount(showCount);
+		this.name = name;
+		this.type = type;
+		this.count = count;
+		this.showCount = showCount;
 	}
 
 	Booster(String name, String type, IconData icon, int iconIndex, boolean showCount) {
-		setName(name);
-		setType(type);
+		this.name = name;
+		this.type = type;
 		setCount(0);
-		setIcon(icon);
-		setIconIndex(iconIndex);
-		setShowCount(showCount);
+		this.icon = icon;
+		this.iconIndex = iconIndex;
+		this.showCount = showCount;
 	}
 
 	Booster(String name, String type, boolean showCount) {
-		setName(name);
-		setType(type);
+		this.name = name;
+		this.type = type;
 		setCount(0);
-		setShowCount(showCount);
+		this.showCount = showCount;
 	}
 
 	Booster(String name, String type, int count, LocalDateTime endDate, IconData icon, int iconIndex) {
-		setName(name);
-		setType(type);
-		setCount(count);
-		addEndDates(endDate);
-		setIcon(icon);
-		setIconIndex(iconIndex);
+		this.name = name;
+		this.type = type;
+		this.count = count;
+		endDates.add(endDate);
+		this.icon = icon;
+		this.iconIndex = iconIndex;
 	}
 
 	Booster(String name, String type, int count, LocalDateTime endDate) {
-		setName(name);
-		setType(type);
-		setCount(count);
-		addEndDates(endDate);
+		this.name = name;
+		this.type = type;
+		this.count = count;
+		endDates.add(endDate);
 	}
 
 	Booster(String name, String type, int count, IconData icon, int iconIndex) {
-		setName(name);
-		setType(type);
-		setCount(count);
-		setIcon(icon);
-		setIconIndex(iconIndex);
+		this.name = name;
+		this.type = type;
+		this.count = count;
+		this.icon = icon;
+		this.iconIndex = iconIndex;
 	}
 
 	Booster(String name, String type, int count) {
-		setName(name);
-		setType(type);
-		setCount(count);
+		this.name = name;
+		this.type = type;
+		this.count = count;
 	}
 
 	Booster(String name, String type, IconData icon, int iconIndex) {
-		setName(name);
-		setType(type);
+		this.name = name;
+		this.type = type;
 		setCount(0);
-		setIcon(icon);
-		setIconIndex(iconIndex);
+		this.icon = icon;
+		this.iconIndex = iconIndex;
 	}
 
 	Booster(String name, String type) {
-		setName(name);
-		setType(type);
+		this.name = name;
+		this.type = type;
 		setCount(0);
 	}
 
 	public String getName() {
 		return name;
-	}
-
-	private void setName(String name) {
-		this.name = name;
 	}
 
 	public int getCount() {
@@ -168,36 +162,12 @@ public class Booster {
 		this.endDates.add(endDate);
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
 	public String getType() {
 		return type;
 	}
 
-	private void setType(String type) {
-		this.type = type;
-	}
-
-	public IconData getIcon() {
-		return icon;
-	}
-
-	private void setIcon(IconData icon) {
-		this.icon = icon;
-	}
-
 	public int getIconIndex() {
 		return iconIndex;
-	}
-
-	public void setIconIndex(int iconIndex) {
-		this.iconIndex = iconIndex;
 	}
 
 	public boolean getShowCount() {
@@ -214,22 +184,6 @@ public class Booster {
 
 	public void setResetEndDates(boolean resetEndDates) {
 		this.resetEndDates = resetEndDates;
-	}
-
-	private boolean isHighlightDuration() {
-		return HighlightDuration;
-	}
-
-	private void setHighlightDuration(boolean HighlightDuration) {
-		this.HighlightDuration = HighlightDuration;
-	}
-
-	private long getNextDurationBlink() {
-		return nextDurationBlink;
-	}
-
-	private void setNextDurationBlink(long nextDuratopnBlink) {
-		this.nextDurationBlink = nextDuratopnBlink;
 	}
 
 	public String getDurationString() {
@@ -297,11 +251,11 @@ public class Booster {
 
 		if(duration.getSeconds() > 30) return false;
 
-		if (System.currentTimeMillis() > getNextDurationBlink()) {
-			setNextDurationBlink(System.currentTimeMillis() + 500L);
-			setHighlightDuration(!isHighlightDuration());
+		if (System.currentTimeMillis() > nextDurationBlink) {
+			nextDurationBlink = System.currentTimeMillis() + 500L;
+			highlightDuration = !highlightDuration;
 		}
 
-		return isHighlightDuration();
+		return highlightDuration;
 	}
 }

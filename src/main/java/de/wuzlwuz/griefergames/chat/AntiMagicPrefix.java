@@ -16,7 +16,10 @@ public class AntiMagicPrefix extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
+	public boolean doActionModifyChatMessage(IChatComponent msg) {
+		String unformatted = msg.getUnformattedText();
+		String formatted = msg.getFormattedText();
+
 		String oldMessage = getHelper().getProperTextFormat(formatted);
 
 		Matcher antiMagicPrefix = antiMagicPrefixRegex.matcher(unformatted);
@@ -26,55 +29,43 @@ public class AntiMagicPrefix extends Chat {
 	}
 
 	@Override
-	public boolean doActionModifyChatMessage(IChatComponent msg) {
-		String unformatted = msg.getUnformattedText();
-		String formatted = msg.getFormattedText();
-
-		return doAction(unformatted, formatted);
-	}
-
-	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		if (doActionModifyChatMessage(msg)) {
-			IChatComponent newMsg = new ChatComponentText("");
-			for(int i=0; i<msg.getSiblings().size(); i++) {
-				if(i+2 < msg.getSiblings().size()) {
-					String messageToCheck = msg.getSiblings().get(i).getUnformattedText()+msg.getSiblings().get(i+1).getUnformattedText()+msg.getSiblings().get(i+2).getUnformattedText();
-					Matcher antiMagicPrefix = antiMagicPrefixRegex.matcher(messageToCheck);
-					if (msg.getSiblings().get(i).getChatStyle().getObfuscated() && antiMagicPrefix.find()) {
-						ChatStyle msgStyling = msg.getSiblings().get(i).getChatStyle().createDeepCopy().setObfuscated(false);
+		IChatComponent newMsg = new ChatComponentText("");
+		for(int i=0; i<msg.getSiblings().size(); i++) {
+			if(i+2 < msg.getSiblings().size()) {
+				String messageToCheck = msg.getSiblings().get(i).getUnformattedText()+msg.getSiblings().get(i+1).getUnformattedText()+msg.getSiblings().get(i+2).getUnformattedText();
+				Matcher antiMagicPrefix = antiMagicPrefixRegex.matcher(messageToCheck);
+				if (msg.getSiblings().get(i).getChatStyle().getObfuscated() && antiMagicPrefix.find()) {
+					ChatStyle msgStyling = msg.getSiblings().get(i).getChatStyle().createDeepCopy().setObfuscated(false);
 
-						String chatRepText = getSettings().getAMPChatReplacement();
+					String chatRepText = getSettings().getAMPChatReplacement();
 
-						if (!chatRepText.contains("%CLEAN%")) {
-							chatRepText = getSettings().getDefaultAMPChatReplacement();
-						}
-
-						chatRepText = chatRepText.replaceAll("%CLEAN%", msg.getSiblings().get(i).getUnformattedText());
-						chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
-
-						// Rank
-						newMsg.appendSibling(
-								new ChatComponentText(chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
-										.setChatStyle(msgStyling));
-						// Separator: ┃
-						newMsg.appendSibling(msg.getSiblings().get(i+1));
-
-						// Name
-						ChatStyle msgStyling2 = msg.getSiblings().get(i+2).getChatStyle().createDeepCopy().setObfuscated(false);
-						newMsg.appendSibling(new ChatComponentText(msg.getSiblings().get(i+2).getUnformattedText()).setChatStyle(msgStyling2));
-
-						i += 2;
-					} else {
-						newMsg.appendSibling(msg.getSiblings().get(i));
+					if (!chatRepText.contains("%CLEAN%")) {
+						chatRepText = getSettings().getDefaultAMPChatReplacement();
 					}
+
+					chatRepText = chatRepText.replaceAll("%CLEAN%", msg.getSiblings().get(i).getUnformattedText());
+					chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
+
+					// Rank
+					newMsg.appendSibling(
+							new ChatComponentText(chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
+									.setChatStyle(msgStyling));
+					// Separator: ┃
+					newMsg.appendSibling(msg.getSiblings().get(i+1));
+
+					// Name
+					ChatStyle msgStyling2 = msg.getSiblings().get(i+2).getChatStyle().createDeepCopy().setObfuscated(false);
+					newMsg.appendSibling(new ChatComponentText(msg.getSiblings().get(i+2).getUnformattedText()).setChatStyle(msgStyling2));
+
+					i += 2;
 				} else {
 					newMsg.appendSibling(msg.getSiblings().get(i));
 				}
+			} else {
+				newMsg.appendSibling(msg.getSiblings().get(i));
 			}
-			return newMsg;
 		}
-
-		return msg;
+		return newMsg;
 	}
 }

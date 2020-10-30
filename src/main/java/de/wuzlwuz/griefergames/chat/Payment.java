@@ -34,7 +34,9 @@ public class Payment extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
+	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
+		if(!getSettings().isPayChatRight()) return false;
+
 		if (!getHelper().getProperTextFormat(formatted).contains("§r§f §r§ahat dir $")) {
 			Matcher matcher = getMoneyValidRegex.matcher(unformatted);
 			if (matcher.find()) {
@@ -54,11 +56,6 @@ public class Payment extends Chat {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		return doAction(unformatted, formatted) && getSettings().isPayChatRight();
 	}
 
 	@Override
@@ -132,7 +129,7 @@ public class Payment extends Chat {
 	@Override
 	public boolean doActionCommandMessage(String unformatted) {
 		if (unformatted.toLowerCase().startsWith("/pay") && unformatted.toLowerCase().contains(",")) {
-			getMC().getPlayer().sendChatMessage(unformatted.replace(",", "."));
+			getMC().thePlayer.sendChatMessage(unformatted.replace(",", "."));
 			return true;
 		}
 

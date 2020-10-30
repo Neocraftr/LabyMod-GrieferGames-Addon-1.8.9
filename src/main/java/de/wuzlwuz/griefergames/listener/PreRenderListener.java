@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import de.wuzlwuz.griefergames.GrieferGames;
 import net.labymod.core.LabyModCore;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.scoreboard.ScoreObjective;
@@ -20,8 +21,8 @@ public class PreRenderListener {
 
 	@SubscribeEvent
 	public void onPreRender(RenderGameOverlayEvent event) {
-		if (GrieferGames.getGriefergames().getGGServer().getMC().gameSettings.keyBindPlayerList.isKeyDown()
-				&& !GrieferGames.getGriefergames().getGGServer().getMC().isIntegratedServerRunning()
+		if (Minecraft.getMinecraft().gameSettings.keyBindPlayerList.isKeyDown()
+				&& !Minecraft.getMinecraft().isIntegratedServerRunning()
 				&& GrieferGames.getSettings().isAMPEnabled()) {
 
 			ScoreObjective scoreobjective = LabyModCore.getMinecraft().getWorld().getScoreboard()

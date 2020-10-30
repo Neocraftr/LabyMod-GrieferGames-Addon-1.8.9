@@ -7,7 +7,6 @@ import java.util.List;
 import com.google.gson.JsonObject;
 
 import de.wuzlwuz.griefergames.GrieferGames;
-import de.wuzlwuz.griefergames.booster.Booster;
 import de.wuzlwuz.griefergames.chat.AntiMagicClanTag;
 import de.wuzlwuz.griefergames.chat.AntiMagicPrefix;
 import de.wuzlwuz.griefergames.chat.Bank;
@@ -34,7 +33,7 @@ import de.wuzlwuz.griefergames.chat.Teleport;
 import de.wuzlwuz.griefergames.chat.VanishHelper;
 import de.wuzlwuz.griefergames.chat.Vote;
 import de.wuzlwuz.griefergames.gui.VanishHelperGui;
-import de.wuzlwuz.griefergames.helper.Helper;
+import de.wuzlwuz.griefergames.utils.Helper;
 import de.wuzlwuz.griefergames.listener.OnTickListener;
 import de.wuzlwuz.griefergames.listener.PreRenderListener;
 import de.wuzlwuz.griefergames.listener.SubServerListener;
@@ -46,13 +45,12 @@ import net.labymod.api.events.MessageReceiveEvent;
 import net.labymod.api.events.MessageSendEvent;
 import net.labymod.api.events.TabListEvent;
 import net.labymod.core.LabyModCore;
-import net.labymod.core.MinecraftAdapter;
 import net.labymod.ingamegui.ModuleCategoryRegistry;
 import net.labymod.main.LabyMod;
+import net.labymod.main.lang.LanguageManager;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.labymod.servermanager.Server;
 import net.labymod.settings.elements.SettingsElement;
-import net.labymod.utils.ModColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -65,44 +63,33 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class GrieferGamesServer extends Server {
 	private List<SubServerListener> subServerListener = new ArrayList<SubServerListener>();
-	private Minecraft mc;
-	private LabyModAPI api;
 	private String subServer = "";
 	private long nextLastMessageRequest = System.currentTimeMillis() + 1000L;
 	private long nextScoreboardRequest = System.currentTimeMillis() + (-1 * 1000L);
 	private long nextCheckFly = System.currentTimeMillis() + 1000L;
 	private long nextUpdateTimeToWait = System.currentTimeMillis() + 1000L;
 	private String lastMessage = "";
-	private String playerRank = "Spieler";
 	private boolean modulesLoaded = false;
 	private boolean listenerLoaded = false;
 
-	protected GrieferGames getGG() {
+	private GrieferGames getGG() {
 		return GrieferGames.getGriefergames();
 	}
 
-	protected ModSettings getSettings() {
+	private ModSettings getSettings() {
 		return GrieferGames.getSettings();
 	}
 
-	protected Helper getHelper() {
+	private Helper getHelper() {
 		return GrieferGames.getGriefergames().getHelper();
 	}
 
-	public Minecraft getMC() {
-		return mc;
+	private LabyModAPI getApi() {
+		return GrieferGames.getGriefergames().getApi();
 	}
 
-	private void setMC(Minecraft mc) {
-		this.mc = mc;
-	}
-
-	public MinecraftAdapter getMinecraft() {
-		return LabyModCore.getMinecraft();
-	}
-
-	public LabyModAPI getApi() {
-		return api;
+	private Minecraft getMC() {
+		return Minecraft.getMinecraft();
 	}
 
 	public void addSubServerListener(SubServerListener ssl) {
@@ -110,46 +97,13 @@ public class GrieferGamesServer extends Server {
 			subServerListener.add(ssl);
 		}
 	}
-
 	public List<SubServerListener> getSubServerListener() {
 		return subServerListener;
 	}
 
-	private void setApi(LabyModAPI api) {
-		this.api = api;
-	}
-
-	public String getPlayerRank() {
-		return playerRank;
-	}
-
-	public void setPlayerRank(String playerRank) {
-		GrieferGames.getGriefergames().setPlayerRank(playerRank);
-		this.playerRank = playerRank;
-	}
-
-	private void setModulesLoaded(boolean modulesLoaded) {
-		this.modulesLoaded = modulesLoaded;
-	}
-
-	public boolean getModulesLoaded() {
-		return this.modulesLoaded;
-	}
-
-	private void setListenerLoaded(boolean listenerLoaded) {
-		this.listenerLoaded = listenerLoaded;
-	}
-
-	public boolean getListenerLoaded() {
-		return this.listenerLoaded;
-	}
-
-	public GrieferGamesServer(Minecraft minecraft) {
-		super("GrieferGames", GrieferGames.getGriefergames().getServerIp(),
-				GrieferGames.getGriefergames().getSecondServerIp());
-
-		setMC(minecraft);
-		setApi(getGG().getApi());
+	public GrieferGamesServer() {
+		super("GrieferGames", GrieferGames.SERVER_IP,
+				GrieferGames.SECOND_SERVER_IP);
 
 		ModuleCategoryRegistry.loadCategory(getGG().getModuleCategory());
 
@@ -191,33 +145,22 @@ public class GrieferGamesServer extends Server {
 				getGG().setNickname("");
 				getGG().setNewsStart(false);
 
-				JsonObject serverMessage = new JsonObject();
-				serverMessage.addProperty("show_gamemode", false);
-				serverMessage.addProperty("gamemode_name", "");
-
-				if (getSettings().isLabyChatShowSubServerEnabled()) {
-					String LabyConnectString = getHelper().getServerMessageName(subServerName);
-
-					if (LabyConnectString != null && LabyConnectString.trim().length() > 0) {
-						serverMessage.addProperty("show_gamemode", true);
-						serverMessage.addProperty("gamemode_name", LabyConnectString);
-					}
+				if(getSettings().isLabyChatShowSubServerEnabled()) {
+					getGG().getHelper().updateLabyChatSubServer(subServerName);
 				}
 
-				LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
-
 				if (getHelper().doResetBoosterBySubserver(subServerName)) {
-					getGG().setBoosters(new ArrayList<Booster>());
+					getGG().getBoosters().clear();
 				} else {
-					if (getSettings().isVanishHelper() && getHelper().showVanishModule(getPlayerRank())) {
+					if (getSettings().isVanishHelper() && getHelper().showVanishModule(getGG().getPlayerRank())) {
 						final VanishHelperGui vanishHelper = new VanishHelperGui();
-						mc.displayGuiScreen(vanishHelper);
+						getMC().displayGuiScreen(vanishHelper);
 						Thread thread = new Thread() {
 							public void run() {
 								try {
 									Thread.sleep(3000);
-									if (mc.currentScreen != null && mc.currentScreen.equals(vanishHelper)) {
-										mc.displayGuiScreen(null);
+									if (getMC().currentScreen != null && getMC().currentScreen.equals(vanishHelper)) {
+										getMC().displayGuiScreen(null);
 									}
 								} catch (Exception e) {
 									System.err.println(e);
@@ -240,22 +183,16 @@ public class GrieferGamesServer extends Server {
 				if (subServerName.equalsIgnoreCase("lobby")) {
 					getGG().setTimeToWait(0);
 					//getGG().setShowBoosterDummy(true);
-					boolean loadRank = loadPlayerRank();
-					if (!loadRank) {
+					if (!loadPlayerRank()) {
 						Thread thread = new Thread() {
 							public void run() {
 								try {
 									Thread.sleep(500);
-									boolean loadRank2nd = loadPlayerRank();
-									if (!loadRank2nd) {
-										try {
-											Thread.sleep(500);
-											boolean loadRank3rd = loadPlayerRank();
-											if (!loadRank3rd) {
-												getApi().displayMessageInChat(GrieferGames.PREFIX+"§4FEHLER: §cIhr Rang konnte nicht ermittelt werden, bitte Verbinden Sie sich erneut.");
-											}
-										} catch (Exception e) {
-											e.printStackTrace();
+									if (!loadPlayerRank()) {
+										Thread.sleep(500);
+										if (!loadPlayerRank()) {
+											getApi().displayMessageInChat(GrieferGames.PREFIX+"§4"+ LanguageManager.translateOrReturnKey("message_gg_error")+
+													": §c"+LanguageManager.translateOrReturnKey("message_gg_rankError"));
 										}
 									}
 								} catch (Exception e) {
@@ -271,7 +208,7 @@ public class GrieferGamesServer extends Server {
 				}
 
 				getGG().setGodActive(false);
-				getGG().setVanishActive(getHelper().vanishDefaultState(getPlayerRank()));
+				getGG().setVanishActive(getHelper().vanishDefaultState(getGG().getPlayerRank()));
 			}
 		});
 	}
@@ -279,7 +216,6 @@ public class GrieferGamesServer extends Server {
 	public String getSubServer() {
 		return subServer;
 	}
-
 	public void setSubServer(String subServer) {
 		this.subServer = subServer.trim();
 	}
@@ -340,8 +276,8 @@ public class GrieferGamesServer extends Server {
 					if (accountName.length() > 0 && accountName
 							.equalsIgnoreCase(getHelper().getPlayerName(tabListName.getUnformattedText()).trim())) {
 
-						setPlayerRank(getHelper().getPlayerRank(tabListName.getUnformattedText().trim()));
-						getGG().setIsInTeam(getHelper().isInTeam(getPlayerRank()));
+						getGG().setPlayerRank(getHelper().getPlayerRank(tabListName.getUnformattedText().trim()));
+						getGG().setIsInTeam(getHelper().isInTeam(getGG().getPlayerRank()));
 					}
 				}
 				/*
@@ -352,16 +288,16 @@ public class GrieferGamesServer extends Server {
 				 * getGG().setIsInTeam(getHelper().isInTeam(getPlayerRank())); }
 				 */
 			}
-			if (!getModulesLoaded()) {
-				setModulesLoaded(true);
+			if (!modulesLoaded) {
+				modulesLoaded = true;
 
-				if (getHelper().showGodModule(getPlayerRank())) {
+				if (getHelper().showGodModule(getGG().getPlayerRank())) {
 					new GodmodeModule();
 				}
-				if (getHelper().showAuraModule(getPlayerRank())) {
+				if (getHelper().showAuraModule(getGG().getPlayerRank())) {
 					new AuraModule();
 				}
-				if (getHelper().showVanishModule(getPlayerRank())) {
+				if (getHelper().showVanishModule(getGG().getPlayerRank())) {
 					new VanishModule();
 				}
 			}
@@ -399,8 +335,8 @@ public class GrieferGamesServer extends Server {
 				getHelper().checkCurrentBoosters(unformatted, formatted);
 
 				if (getSettings().isUpdateBoosterState() && getHelper().isSwitcherDoneMsg(unformatted, formatted) > 0) {
-					getGG().setBoosters(new ArrayList<Booster>());
-					getMinecraft().getPlayer().sendChatMessage("/booster");
+					getGG().getBoosters().clear();
+					Minecraft.getMinecraft().thePlayer.sendChatMessage("/booster");
 				}
 
 				int status = getHelper().isVanishMessage(unformatted, formatted);
@@ -428,26 +364,21 @@ public class GrieferGamesServer extends Server {
 	}
 
 	@Override
-	public void fillSubSettings(List<SettingsElement> settings) {
-
-	}
+	public void fillSubSettings(List<SettingsElement> settings) {}
 
 	@Override
-	public void handlePluginMessage(String channelName, PacketBuffer packetBuffer) throws Exception {
-
-	}
+	public void handlePluginMessage(String channelName, PacketBuffer packetBuffer) throws Exception {}
 
 	@Override
-	public void handleTabInfoMessage(TabListEvent.Type tabInfoType, String formatted, String clean) throws Exception {
-
-	}
+	public void handleTabInfoMessage(TabListEvent.Type tabInfoType, String formatted, String clean) throws Exception {}
 
 	@Override
 	public void onJoin(ServerData serverData) {
-		setSubServer("");
+		subServer = "";
 		getGG().setNickname("");
+		getGG().setShowModules(true);
 
-		if (!getListenerLoaded()) {
+		if (!listenerLoaded) {
 			this.getApi().getEventManager().register(new MessageModifyChatEvent() {
 
 				@Override
@@ -503,13 +434,11 @@ public class GrieferGamesServer extends Server {
 				}
 			});
 
-			setListenerLoaded(true);
+			listenerLoaded = true;
 		}
 
-		if(getSettings().isModEnabled()) {
-			if(getSettings().isAutoPortl()) {
-				getMinecraft().getPlayer().sendChatMessage("/portal");
-			}
+		if(getSettings().isModEnabled() && getSettings().isAutoPortl()) {
+			Minecraft.getMinecraft().thePlayer.sendChatMessage("/portal");
 		}
 	}
 

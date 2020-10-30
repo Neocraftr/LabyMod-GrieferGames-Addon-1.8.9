@@ -21,16 +21,14 @@ public class ItemRemover extends Chat {
 		return "itemRemover";
 	}
 
-	@Override
-	public boolean doAction(String unformatted, String formatted) {
-		Matcher itemRemoverMessage = itemRemoverMessageRegex.matcher(unformatted);
-		Matcher itemRemoverDoneMessage = itemRemoverDoneMessageRegex.matcher(unformatted);
-		return unformatted.trim().length() > 0 && (itemRemoverMessage.find() || itemRemoverDoneMessage.find());
-	}
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		return (doAction(unformatted, formatted) && getSettings().isItemRemoverChatRight());
+		if(!getSettings().isItemRemoverChatRight()) return false;
+
+		Matcher itemRemoverMessage = itemRemoverMessageRegex.matcher(unformatted);
+		Matcher itemRemoverDoneMessage = itemRemoverDoneMessageRegex.matcher(unformatted);
+		return unformatted.trim().length() > 0 && (itemRemoverMessage.find() || itemRemoverDoneMessage.find());
 	}
 
 	@Override
@@ -39,15 +37,12 @@ public class ItemRemover extends Chat {
 
 		Matcher itemRemoverDoneMessage = itemRemoverDoneMessageRegex.matcher(unformatted);
 
-		return (itemRemoverDoneMessage.find());
+		return itemRemoverDoneMessage.find();
 	}
 
 	@Override
 	public ChatDisplayAction handleChatMessage(String unformatted, String formatted) {
-		if (doAction(unformatted, formatted)) {
-			return ChatDisplayAction.SWAP;
-		}
-		return super.handleChatMessage(unformatted, formatted);
+		return ChatDisplayAction.SWAP;
 	}
 
 	@Override
@@ -59,6 +54,6 @@ public class ItemRemover extends Chat {
 			IChatComponent hoverText = new ChatComponentText(dateNowStr);
 			msg.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 		}
-		return super.modifyChatMessage(msg);
+		return msg;
 	}
 }

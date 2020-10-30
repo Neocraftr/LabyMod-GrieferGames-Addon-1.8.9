@@ -1,7 +1,6 @@
 package de.wuzlwuz.griefergames.chat;
 
 import de.wuzlwuz.griefergames.chatMenu.TeamMenu;
-import net.minecraft.util.IChatComponent;
 
 public class VanishHelper extends Chat {
 	@Override
@@ -27,11 +26,6 @@ public class VanishHelper extends Chat {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public boolean doActionModifyChatMessage(IChatComponent msg) {
-		return super.doActionModifyChatMessage(msg);
 	}
 
 	@Override

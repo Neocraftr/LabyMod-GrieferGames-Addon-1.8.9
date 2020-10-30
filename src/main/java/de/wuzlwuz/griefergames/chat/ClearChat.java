@@ -16,25 +16,17 @@ public class ClearChat extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
-		Matcher matcher = chatClearedRegex.matcher(unformatted);
-		return getSettings().isCleanBlanks() && unformatted.trim().length() > 0 && matcher.find()
-				&& !getGG().getIsInTeam();
-	}
-
-	@Override
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
 		String unformatted = msg.getUnformattedText();
-		String formatted = msg.getFormattedText();
 
-		return doAction(unformatted, formatted);
+		Matcher matcher = chatClearedRegex.matcher(unformatted);
+		return getSettings().isCleanBlanks() && unformatted.trim().length() > 0 && matcher.find() && !getGG().getIsInTeam();
 	}
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		IChatComponent newMsg = new ChatComponentText("\n\n");
-		newMsg.appendSibling(msg);
+		msg.getSiblings().add(0, new ChatComponentText("\n\n"));
 
-		return super.modifyChatMessage(newMsg);
+		return msg;
 	}
 }

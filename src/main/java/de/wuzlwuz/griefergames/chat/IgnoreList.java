@@ -17,17 +17,11 @@ public class IgnoreList extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
-		Matcher ignoreList = ignoreListRegex.matcher(unformatted);
-		return getSettings().isBetterIgnoreList() && ignoreList.find();
-	}
-
-	@Override
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
 		String unformatted = msg.getUnformattedText();
-		String formatted = msg.getFormattedText();
 
-		return doAction(unformatted, formatted);
+		Matcher ignoreList = ignoreListRegex.matcher(unformatted);
+		return getSettings().isBetterIgnoreList() && ignoreList.find();
 	}
 
 	@Override

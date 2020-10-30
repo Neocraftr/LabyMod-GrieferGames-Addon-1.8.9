@@ -30,7 +30,7 @@ import net.minecraft.util.ResourceLocation;
 public class BoosterModule extends Module {
 	private List<Booster> dummyBooster = new ArrayList<Booster>();
 
-	protected GrieferGames getGG() {
+	private GrieferGames getGG() {
 		return GrieferGames.getGriefergames();
 	}
 

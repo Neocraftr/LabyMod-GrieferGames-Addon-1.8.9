@@ -1,4 +1,4 @@
-package de.wuzlwuz.griefergames.helper;
+package de.wuzlwuz.griefergames.utils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.JsonObject;
 import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.booster.Booster;
 import de.wuzlwuz.griefergames.booster.BreakBooster;
@@ -20,41 +21,37 @@ import net.labymod.ingamechat.tools.filter.Filters.Filter;
 import net.labymod.main.LabyMod;
 
 public class Helper {
-	public Helper() {
-		// do nothing ;)
-	}
+	private Pattern subServerNameRegex = Pattern.compile("§3§lServer\\:?$");
+	private Pattern subServerCityBuildRegex = Pattern.compile("^cb([0-9]+)$");
+	private Pattern displayNameRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}))");
 
-	private static Pattern subServerNameRegex = Pattern.compile("§3§lServer\\:?$");
-	private static Pattern subServerCityBuildRegex = Pattern.compile("^cb([0-9]+)$");
-	private static Pattern displayNameRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}))");
+	private Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})");
+	private Pattern playerNameRankRegex2 = Pattern.compile("([0-9]+)([A-Za-z\\-]+\\+?)"); // Don't know what that is for
 
-	private static Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})");
-	private static Pattern playerNameRankRegex2 = Pattern.compile("([0-9]+)([A-Za-z\\-]+\\+?)"); // Don't know what that is for
-
-	private static Pattern portalRoomRegex = Pattern
+	private Pattern portalRoomRegex = Pattern
 			.compile("^\\[GrieferGames\\] Du bist im Portalraum. Wähle deinen Citybuild aus.$");
 
-	private static Pattern vanishRegex = Pattern
+	private Pattern vanishRegex = Pattern
 			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) : aktiviert$");
-	private static Pattern vanishRegex2 = Pattern
+	private Pattern vanishRegex2 = Pattern
 			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) : deaktiviert$");
 
-	private static Pattern godmodeRegex = Pattern.compile("^Unsterblichkeit aktiviert.$");
-	private static Pattern godmodeRegex2 = Pattern.compile("^Unsterblichkeit deaktiviert.$");
+	private Pattern godmodeRegex = Pattern.compile("^Unsterblichkeit aktiviert.$");
+	private Pattern godmodeRegex2 = Pattern.compile("^Unsterblichkeit deaktiviert.$");
 
-	private static Pattern auraRegex = Pattern.compile("^Deine Aura wurde aktiviert!$");
-	private static Pattern auraRegex2 = Pattern.compile("^Deine Aura ist jetzt deaktiviert.$");
+	private Pattern auraRegex = Pattern.compile("^Deine Aura wurde aktiviert!$");
+	private Pattern auraRegex2 = Pattern.compile("^Deine Aura ist jetzt deaktiviert.$");
 
-	private static Pattern getBoosterValidRegexp = Pattern.compile(
+	private Pattern getBoosterValidRegexp = Pattern.compile(
 			"^\\[Booster\\] ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster) f\\u00FCr ([0-9]+) Minuten aktiviert.$");
-	private static Pattern getBoosterDoneValidRegexp = Pattern
+	private Pattern getBoosterDoneValidRegexp = Pattern
 			.compile("^\\[Booster\\] Der ([A-z]+\\-Booster) ist jetzt wieder deaktiviert.$");
-	private static Pattern getBoosterMultiDoneValidRegexp = Pattern.compile(
+	private Pattern getBoosterMultiDoneValidRegexp = Pattern.compile(
 			"^\\[Booster\\] Der ([A-z]+\\-Booster) \\(Stufe [1-6]\\) von ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) ist abgelaufen.$");
-	private static Pattern getCurrentBoosters = Pattern.compile(
+	private Pattern getCurrentBoosters = Pattern.compile(
 			"^([A-z]+\\-Booster): ([0-9])x Multiplikator ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
 
-	private static Pattern switcherRegexp = Pattern.compile("^\\[Switcher\\] Daten heruntergeladen!$");
+	private Pattern switcherRegexp = Pattern.compile("^\\[Switcher\\] Daten heruntergeladen!$");
 
 	public String getProperTextFormat(String formatted) {
 		return formatted.replaceAll("\u00A7", "§");
@@ -563,5 +560,22 @@ public class Helper {
 		}
 
 		return prefix + " " + retSubServerName;
+	}
+
+	public void updateLabyChatSubServer(String subServerName) {
+		JsonObject serverMessage = new JsonObject();
+
+		if(!subServerName.equals("reset")) {
+			String labyConnectString = GrieferGames.getGriefergames().getHelper().getServerMessageName(subServerName);
+
+			if (labyConnectString != null && labyConnectString.trim().length() > 0) {
+				serverMessage.addProperty("show_gamemode", true);
+				serverMessage.addProperty("gamemode_name", labyConnectString);
+			}
+		} else {
+			serverMessage.addProperty("show_gamemode", false);
+			serverMessage.addProperty("gamemode_name", "");
+		}
+		LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
 	}
 }

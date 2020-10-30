@@ -91,84 +91,47 @@ public class ModSettings {
 
 	private boolean checkPlotHelper = false;
 
-	protected GrieferGames getGG() {
+	private GrieferGames getGG() {
 		return GrieferGames.getGriefergames();
 	}
 
-	protected JsonObject getConfig() {
+	private JsonObject getConfig() {
 		return getGG().getConfig();
 	}
-
-	protected void saveConfig() {
+	private void saveConfig() {
 		getGG().saveConfig();
-	}
-
-	public ModSettings() {
-		// constructor
 	}
 
 	public boolean isModEnabled() {
 		return this.modEnabled;
 	}
 
-	private void setModEnabled(boolean modEnabled) {
-		this.modEnabled = modEnabled;
-	}
-
 	public EnumLanguages getLanguage() {
 		return language;
-	}
-
-	public void setLanguage(EnumLanguages language) {
-		this.language = language;
 	}
 
 	public boolean isShowChatTime() {
 		return this.showChatTime;
 	}
 
-	private void setShowChatTime(boolean showChatTime) {
-		this.showChatTime = showChatTime;
-	}
-
 	public boolean isChatTimeAfterMessage() {
 		return chatTimeAfterMessage;
-	}
-
-	public void setChatTimeAfterMessage(boolean chatTimeAfterMessage) {
-		this.chatTimeAfterMessage = chatTimeAfterMessage;
 	}
 
 	public boolean isChatTimeShortFormat() {
 		return chatTimeShortFormat;
 	}
 
-	public void setChatTimeShortFormat(boolean chatTimeShortFormat) {
-		this.chatTimeShortFormat = chatTimeShortFormat;
-	}
-
 	public boolean isPrivateChatRight() {
 		return this.privateChatRight;
-	}
-
-	private void setPrivateChatRight(boolean privateChatRight) {
-		this.privateChatRight = privateChatRight;
 	}
 
 	public boolean isPlotChatRight() {
 		return this.plotChatRight;
 	}
 
-	private void setPlotChatRight(boolean plotChatRight) {
-		this.plotChatRight = plotChatRight;
-	}
-
 	public EnumSounds getPrivateChatSound() {
 		return this.privateChatSound;
-	}
-
-	private void setPrivateChatSound(EnumSounds privateChatSound) {
-		this.privateChatSound = privateChatSound;
 	}
 
 	public boolean isPrivateChatSound() {
@@ -215,282 +178,132 @@ public class ModSettings {
 	 * public boolean isRealnameClick() { return this.realnameClick; }
 	 */
 
-	private void setRealname(EnumRealnameShown realname) {
-		this.realname = realname;
-	}
-
 	public boolean isMsgDisplayNameClick() {
 		return this.msgDisplayNameClick;
-	}
-
-	private void setMsgDisplayNameClick(boolean msgDisplayNameClick) {
-		this.msgDisplayNameClick = msgDisplayNameClick;
 	}
 
 	public boolean isClanTagClick() {
 		return this.clanTagClick;
 	}
 
-	private void setClanTagClick(boolean clanTagClick) {
-		this.clanTagClick = clanTagClick;
-	}
-
 	public boolean isPreventCommandFailure() {
 		return this.preventCommandFailure;
-	}
-
-	private void setPreventCommandFailure(boolean preventCommandFailure) {
-		this.preventCommandFailure = preventCommandFailure;
 	}
 
 	public boolean isFilterDuplicateMessages() {
 		return this.filterDuplicateMessages;
 	}
 
-	private void setFilterDuplicateMessages(boolean filterDuplicateMessages) {
-		this.filterDuplicateMessages = filterDuplicateMessages;
-	}
-
 	public Integer getFilterDuplicateMessagesTime() {
 		return filterDuplicateMessagesTime;
-	}
-
-	public void setFilterDuplicateMessagesTime(Integer filterDuplicateMessagesTime) {
-		this.filterDuplicateMessagesTime = filterDuplicateMessagesTime;
 	}
 
 	public boolean isCleanBlanks() {
 		return this.cleanBlanks;
 	}
 
-	private void setCleanBlanks(boolean cleanBlanks) {
-		this.cleanBlanks = cleanBlanks;
-	}
-
 	public boolean isCleanSupremeBlanks() {
 		return this.cleanSupremeBlanks;
-	}
-
-	private void setCleanSupremeBlanks(boolean cleanSupremeBlanks) {
-		this.cleanSupremeBlanks = cleanSupremeBlanks;
 	}
 
 	public boolean isPayChatRight() {
 		return this.payChatRight;
 	}
 
-	private void setPayChatRight(boolean payChatRight) {
-		this.payChatRight = payChatRight;
-	}
-
 	public boolean isPayAchievement() {
 		return this.payAchievement;
-	}
-
-	private void setPayAchievement(boolean payAchievement) {
-		this.payAchievement = payAchievement;
 	}
 
 	public boolean isPayMarker() {
 		return this.payMarker;
 	}
 
-	private void setPayMarker(boolean payMarker) {
-		this.payMarker = payMarker;
-	}
-
 	public boolean isPayHover() {
 		return this.payHover;
-	}
-
-	private void setPayHover(boolean payHover) {
-		this.payHover = payHover;
 	}
 
 	public boolean isBankChatRight() {
 		return this.bankChatRight;
 	}
 
-	private void setBankChatRight(boolean bankChatRight) {
-		this.bankChatRight = bankChatRight;
-	}
-
 	public boolean isBankAchievement() {
 		return this.bankAchievement;
-	}
-
-	private void setBankAchievement(boolean bankAchievement) {
-		this.bankAchievement = bankAchievement;
 	}
 
 	public boolean isItemRemoverChatRight() {
 		return this.itemRemoverChatRight;
 	}
 
-	private void setItemRemoverChatRight(boolean itemRemoverChatRight) {
-		this.itemRemoverChatRight = itemRemoverChatRight;
-	}
-
 	public boolean isItemRemoverLastTimeHover() {
 		return this.itemRemoverLastTimeHover;
-	}
-
-	private void setItemRemoverLastTimeHover(boolean itemRemoverLastTimeHover) {
-		this.itemRemoverLastTimeHover = itemRemoverLastTimeHover;
 	}
 
 	public boolean isMobRemoverChatRight() {
 		return this.mobRemoverChatRight;
 	}
 
-	private void setMobRemoverChatRight(boolean mobRemoverChatRight) {
-		this.mobRemoverChatRight = mobRemoverChatRight;
-	}
-
 	public boolean isMobRemoverLastTimeHover() {
 		return this.mobRemoverLastTimeHover;
-	}
-
-	private void setMobRemoverLastTimeHover(boolean mobRemoverLastTimeHover) {
-		this.mobRemoverLastTimeHover = mobRemoverLastTimeHover;
 	}
 
 	public boolean isBetterIgnoreList() {
 		return this.betterIgnoreList;
 	}
 
-	private void setBetterIgnoreList(boolean betterIgnoreList) {
-		this.betterIgnoreList = betterIgnoreList;
-	}
-
 	public boolean isAMPEnabled() {
 		return this.ampEnabled;
-	}
-
-	private void setAMPEnabled(boolean ampEnabled) {
-		this.ampEnabled = ampEnabled;
 	}
 
 	public boolean isAMPClanEnabled() {
 		return this.ampClanEnabled;
 	}
 
-	private void setAMPClanEnabled(boolean ampClanEnabled) {
-		this.ampClanEnabled = ampClanEnabled;
-	}
-
 	public String getAMPChatReplacement() {
 		return ampChatReplacement;
-	}
-
-	private void setAMPChatReplacement(String ampChatReplacement) {
-		this.ampChatReplacement = ampChatReplacement;
 	}
 
 	public String getDefaultAMPChatReplacement() {
 		return defaultAMPChatReplacement;
 	}
 
-	public void setDefaultAMPChatReplacement(String defaultAMPChatReplacement) {
-		this.defaultAMPChatReplacement = defaultAMPChatReplacement;
-	}
-
 	public String getAMPTablistReplacement() {
 		return ampTablistReplacement;
-	}
-
-	private void setAMPTablistReplacement(String ampTablistReplacement) {
-		this.ampTablistReplacement = ampTablistReplacement;
 	}
 
 	public String getDefaultAMPTablistReplacement() {
 		return defaultAMPTablistReplacement;
 	}
 
-	public void setDefaultAMPTablistReplacement(String defaultAMPTablistReplacement) {
-		this.defaultAMPTablistReplacement = defaultAMPTablistReplacement;
-	}
-
 	public boolean isMarkTPAMsg() {
 		return markTPAMsg;
-	}
-
-	public void setMarkTPAMsg(boolean markTPAMsg) {
-		this.markTPAMsg = markTPAMsg;
 	}
 
 	public boolean isCleanVoteMsg() {
 		return cleanVoteMsg;
 	}
 
-	public void setCleanVoteMsg(boolean cleanVoteMsg) {
-		this.cleanVoteMsg = cleanVoteMsg;
-	}
-
 	public boolean isCleanNewsMsg() {
 		return cleanNewsMsg;
-	}
-
-	public void setCleanNewsMsg(boolean cleanNewsMsg) {
-		this.cleanNewsMsg = cleanNewsMsg;
 	}
 
 	public boolean isUpdateBoosterState() {
 		return updateBoosterState;
 	}
 
-	public void setUpdateBoosterState(boolean updateBoosterState) {
-		this.updateBoosterState = updateBoosterState;
-	}
-
 	public boolean isClearMapCache() {
 		return clearMapCache;
-	}
-
-	public void setClearMapCache(boolean clearMapCache) {
-		this.clearMapCache = clearMapCache;
 	}
 
 	public boolean isLabyChatShowSubServerEnabled() {
 		return labyChatShowSubServerEnabled;
 	}
 
-	public void setLabyChatShowSubServerEnabled(boolean labyChatShowSubServerEnabled) {
-		JsonObject serverMessage = new JsonObject();
-		serverMessage.addProperty("show_gamemode", false);
-		serverMessage.addProperty("gamemode_name", "");
-
-		if (labyChatShowSubServerEnabled) {
-			String LabyConnectString = getGG().getHelper().getServerMessageName("lobby");
-
-			if (LabyConnectString != null && LabyConnectString.trim().length() > 0) {
-				serverMessage.addProperty("show_gamemode", true);
-				serverMessage.addProperty("gamemode_name", LabyConnectString);
-			}
-		}
-		LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
-
-		this.labyChatShowSubServerEnabled = labyChatShowSubServerEnabled;
-	}
-
-	public void setAutoPortal(boolean autoPortal) {
-		this.autoPortal = autoPortal;
-	}
-
 	public boolean isAutoPortl() {
 		return autoPortal;
 	}
 
-	public void setHideBoosterMenu(boolean hideBoosterMenu) {
-		this.hideBoosterMenu = hideBoosterMenu;
-	}
-
 	public boolean isHideBoosterMenu() {
 		return hideBoosterMenu;
-	}
-
-	public void setAutoUpdate(boolean autoUpdate) {
-		this.autoUpdate = autoUpdate;
 	}
 
 	public boolean isAutoUpdate() {
@@ -500,19 +313,14 @@ public class ModSettings {
 	public boolean isVanishHelper() {
 		return vanishHelper;
 	}
-
-	public void setVanishHelper(boolean vanishHelper) {
-		this.vanishHelper = vanishHelper;
-	}
-
 	public void deactivateVanishHelper() {
-		setVanishHelper(false);
+		vanishHelper = false;
 		getConfig().addProperty("vanishHelper", false);
 		saveConfig();
 	}
 
 	public void activateVanishHelper() {
-		setVanishHelper(true);
+		vanishHelper = true;
 		getConfig().addProperty("vanishHelper", true);
 		saveConfig();
 	}
@@ -521,97 +329,93 @@ public class ModSettings {
 		return checkPlotHelper;
 	}
 
-	public void setCheckPlotHelper(boolean checkPlotHelper) {
-		this.checkPlotHelper = checkPlotHelper;
-	}
-
 	public void deactivateCheckPlotHelper() {
-		setCheckPlotHelper(false);
+		checkPlotHelper = false;
 		getConfig().addProperty("checkPlotHelper", false);
 		saveConfig();
 	}
 
 	public void activateCheckPlotHelper() {
-		setCheckPlotHelper(true);
+		checkPlotHelper = true;
 		getConfig().addProperty("checkPlotHelper", true);
 		saveConfig();
 	}
 
 	public void loadConfig() {
 		if (getConfig().has("modEnabled"))
-			setModEnabled(getConfig().get("modEnabled").getAsBoolean());
+			modEnabled = getConfig().get("modEnabled").getAsBoolean();
 
 		if (getConfig().has("language")) {
-			for (EnumLanguages language : EnumLanguages.values()) {
-				if (language.name().equalsIgnoreCase(getConfig().get("language").getAsString())) {
-					setLanguage(language);
+			for (EnumLanguages enumLanguage : EnumLanguages.values()) {
+				if (enumLanguage.name().equalsIgnoreCase(getConfig().get("language").getAsString())) {
+					language = enumLanguage;
 				}
 			}
 		}
 
 		if (getConfig().has("showChatTime"))
-			setShowChatTime(getConfig().get("showChatTime").getAsBoolean());
+			showChatTime = getConfig().get("showChatTime").getAsBoolean();
 
 		if (getConfig().has("chatTimeAfterMessage"))
-			setChatTimeAfterMessage(getConfig().get("chatTimeAfterMessage").getAsBoolean());
+			chatTimeAfterMessage = getConfig().get("chatTimeAfterMessage").getAsBoolean();
 
 		if (getConfig().has("chatTimeShortFormat"))
-			setChatTimeShortFormat(getConfig().get("chatTimeShortFormat").getAsBoolean());
+			chatTimeShortFormat = getConfig().get("chatTimeShortFormat").getAsBoolean();
 
 		if (getConfig().has("privateChatRight"))
-			setPrivateChatRight(getConfig().get("privateChatRight").getAsBoolean());
+			privateChatRight = getConfig().get("privateChatRight").getAsBoolean();
 
 		if (getConfig().has("privateChatSound")) {
 			for (EnumSounds sound : EnumSounds.values()) {
 				if (sound.name().equalsIgnoreCase(getConfig().get("privateChatSound").getAsString())) {
-					setPrivateChatSound(sound);
+					privateChatSound = sound;
 				}
 			}
 		}
 
 		if (getConfig().has("msgDisplayNameClick"))
-			setMsgDisplayNameClick(getConfig().get("msgDisplayNameClick").getAsBoolean());
+			msgDisplayNameClick = getConfig().get("msgDisplayNameClick").getAsBoolean();
 
 		if (getConfig().has("clanTagClick"))
-			setClanTagClick(getConfig().get("clanTagClick").getAsBoolean());
+			clanTagClick = getConfig().get("clanTagClick").getAsBoolean();
 
 		if (getConfig().has("filterDuplicateMessages"))
-			setFilterDuplicateMessages(getConfig().get("filterDuplicateMessages").getAsBoolean());
+			filterDuplicateMessages = getConfig().get("filterDuplicateMessages").getAsBoolean();
 
 		if (getConfig().has("filterDuplicateMessagesTime"))
-			setFilterDuplicateMessagesTime(getConfig().get("filterDuplicateMessagesTime").getAsInt());
+			 filterDuplicateMessagesTime = getConfig().get("filterDuplicateMessagesTime").getAsInt();
 
 		if (getConfig().has("cleanBlanks"))
-			setCleanBlanks(getConfig().get("cleanBlanks").getAsBoolean());
+			cleanBlanks = getConfig().get("cleanBlanks").getAsBoolean();
 
 		if (getConfig().has("cleanSupremeBlanks"))
-			setCleanSupremeBlanks(getConfig().get("cleanSupremeBlanks").getAsBoolean());
+			cleanSupremeBlanks = getConfig().get("cleanSupremeBlanks").getAsBoolean();
 
 		if (getConfig().has("payChatRight"))
-			setPayChatRight(getConfig().get("payChatRight").getAsBoolean());
+			payChatRight = getConfig().get("payChatRight").getAsBoolean();
 
 		if (getConfig().has("payAchievement"))
-			setPayAchievement(getConfig().get("payAchievement").getAsBoolean());
+			payAchievement = getConfig().get("payAchievement").getAsBoolean();
 
 		if (getConfig().has("payMarker"))
-			setPayMarker(getConfig().get("payMarker").getAsBoolean());
+			payMarker = getConfig().get("payMarker").getAsBoolean();
 
 		if (getConfig().has("payHover"))
-			setPayHover(getConfig().get("payHover").getAsBoolean());
+			payHover = getConfig().get("payHover").getAsBoolean();
 
 		if (getConfig().has("bankChatRight"))
-			setBankChatRight(getConfig().get("bankChatRight").getAsBoolean());
+			bankChatRight = getConfig().get("bankChatRight").getAsBoolean();
 
 		if (getConfig().has("bankAchievement"))
-			setBankAchievement(getConfig().get("bankAchievement").getAsBoolean());
+			bankAchievement = getConfig().get("bankAchievement").getAsBoolean();
 
 		if (getConfig().has("plotChatRight"))
-			setPlotChatRight(getConfig().get("plotChatRight").getAsBoolean());
+			plotChatRight = getConfig().get("plotChatRight").getAsBoolean();
 
 		if (getConfig().has("realname")) {
 			for (EnumRealnameShown enumRealname : EnumRealnameShown.values()) {
 				if (enumRealname.name().equalsIgnoreCase(getConfig().get("realname").getAsString())) {
-					setRealname(enumRealname);
+					realname = enumRealname;
 				}
 			}
 		}
@@ -622,67 +426,67 @@ public class ModSettings {
 		 */
 
 		if (getConfig().has("itemRemoverChatRight"))
-			setItemRemoverChatRight(getConfig().get("itemRemoverChatRight").getAsBoolean());
+			itemRemoverChatRight = getConfig().get("itemRemoverChatRight").getAsBoolean();
 
 		if (getConfig().has("itemRemoverLastTimeHover"))
-			setItemRemoverLastTimeHover(getConfig().get("itemRemoverLastTimeHover").getAsBoolean());
+			itemRemoverLastTimeHover = getConfig().get("itemRemoverLastTimeHover").getAsBoolean();
 
 		if (getConfig().has("mobRemoverChatRight"))
-			setMobRemoverChatRight(getConfig().get("mobRemoverChatRight").getAsBoolean());
+			mobRemoverChatRight = getConfig().get("mobRemoverChatRight").getAsBoolean();
 
 		if (getConfig().has("mobRemoverLastTimeHover"))
-			setMobRemoverLastTimeHover(getConfig().get("mobRemoverLastTimeHover").getAsBoolean());
+			mobRemoverLastTimeHover = getConfig().get("mobRemoverLastTimeHover").getAsBoolean();
 
 		if (getConfig().has("betterIgnoreList"))
-			setBetterIgnoreList(getConfig().get("betterIgnoreList").getAsBoolean());
+			betterIgnoreList = getConfig().get("betterIgnoreList").getAsBoolean();
 
 		if (getConfig().has("ampEnabled"))
-			setAMPEnabled(getConfig().get("ampEnabled").getAsBoolean());
+			ampEnabled = getConfig().get("ampEnabled").getAsBoolean();
 
 		if (getConfig().has("ampClanEnabled"))
-			setAMPClanEnabled(getConfig().get("ampClanEnabled").getAsBoolean());
+			ampClanEnabled = getConfig().get("ampClanEnabled").getAsBoolean();
 
 		if (getConfig().has("chatReplacement"))
-			setAMPChatReplacement(getConfig().get("chatReplacement").getAsString());
+			ampChatReplacement = getConfig().get("chatReplacement").getAsString();
 
 		if (getConfig().has("tablistReplacement"))
-			setAMPTablistReplacement(getConfig().get("tablistReplacement").getAsString());
+			ampTablistReplacement = getConfig().get("tablistReplacement").getAsString();
 
 		if (getConfig().has("preventCommandFailure"))
-			setPreventCommandFailure(getConfig().get("preventCommandFailure").getAsBoolean());
+			preventCommandFailure = getConfig().get("preventCommandFailure").getAsBoolean();
 
 		if (getConfig().has("markTPAMsg"))
-			setMarkTPAMsg(getConfig().get("markTPAMsg").getAsBoolean());
+			markTPAMsg = getConfig().get("markTPAMsg").getAsBoolean();
 
 		if (getConfig().has("cleanVoteMsg"))
-			setCleanVoteMsg(getConfig().get("cleanVoteMsg").getAsBoolean());
+			cleanVoteMsg = getConfig().get("cleanVoteMsg").getAsBoolean();
 
 		if (getConfig().has("cleanNewsMsg"))
-			setCleanNewsMsg(getConfig().get("cleanNewsMsg").getAsBoolean());
+			cleanNewsMsg = getConfig().get("cleanNewsMsg").getAsBoolean();
 
 		if (getConfig().has("updateBoosterState"))
-			setUpdateBoosterState(getConfig().get("updateBoosterState").getAsBoolean());
+			updateBoosterState = getConfig().get("updateBoosterState").getAsBoolean();
 
 		if (getConfig().has("clearMapCache"))
-			setClearMapCache(getConfig().get("clearMapCache").getAsBoolean());
+			clearMapCache = getConfig().get("clearMapCache").getAsBoolean();
 
 		if (getConfig().has("labyChatShowSubServerEnabled"))
-			setLabyChatShowSubServerEnabled(getConfig().get("labyChatShowSubServerEnabled").getAsBoolean());
+			labyChatShowSubServerEnabled = getConfig().get("labyChatShowSubServerEnabled").getAsBoolean();
 
 		if (getConfig().has("autoPortal"))
-			setAutoPortal(getConfig().get("autoPortal").getAsBoolean());
+			autoPortal = getConfig().get("autoPortal").getAsBoolean();
 
 		if (getConfig().has("hideBoosterMenu"))
-			setHideBoosterMenu(getConfig().get("hideBoosterMenu").getAsBoolean());
+			hideBoosterMenu = getConfig().get("hideBoosterMenu").getAsBoolean();
 
 		if (getConfig().has("autoUpdate"))
-			setAutoUpdate(getConfig().get("autoUpdate").getAsBoolean());
+			autoUpdate = getConfig().get("autoUpdate").getAsBoolean();
 
 		if (getConfig().has("vanishHelper"))
-			setVanishHelper(getConfig().get("vanishHelper").getAsBoolean());
+			vanishHelper = getConfig().get("vanishHelper").getAsBoolean();
 
 		if (getConfig().has("checkPlotHelper"))
-			setCheckPlotHelper(getConfig().get("checkPlotHelper").getAsBoolean());
+			checkPlotHelper = getConfig().get("checkPlotHelper").getAsBoolean();
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -691,23 +495,23 @@ public class ModSettings {
 		final BooleanElement modEnabledBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_addonEnabled"),
 				new ControlElement.IconData(Material.LEVER), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean modEnabled) {
-						setModEnabled(modEnabled);
-						getConfig().addProperty("modEnabled", modEnabled);
+					public void accept(Boolean value) {
+						modEnabled = value;
+						getConfig().addProperty("modEnabled", value);
 						saveConfig();
 					}
-				}, isModEnabled());
+				}, modEnabled);
 		settings.add(modEnabledBtn);
 
 		final BooleanElement autoUpdateBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_autoUpdate"),
 				new ControlElement.IconData("labymod/textures/settings/settings/serverlistliveview.png"), new Consumer<Boolean>() {
 			@Override
-			public void accept(Boolean autoUpdate) {
-				setAutoUpdate(autoUpdate);
-				getConfig().addProperty("autoUpdate", autoUpdate);
+			public void accept(Boolean value) {
+				autoUpdate = value;
+				getConfig().addProperty("autoUpdate", value);
 				saveConfig();
 			}
-		}, isAutoUpdate());
+		}, autoUpdate);
 		settings.add(autoUpdateBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_language")));
@@ -717,13 +521,13 @@ public class ModSettings {
 		final DropDownElement<EnumLanguages> languageDropDown = new DropDownElement<EnumLanguages>(
 				LanguageManager.translateOrReturnKey("settings_gg_addonLanguage"), languageDropDownMenu);
 
-		languageDropDownMenu.setSelected(getLanguage());
+		languageDropDownMenu.setSelected(language);
 
 		languageDropDown.setChangeListener(new Consumer<EnumLanguages>() {
 			@Override
-			public void accept(EnumLanguages language) {
-				setLanguage(language);
-				getConfig().addProperty("language", language.name());
+			public void accept(EnumLanguages value) {
+				language = value;
+				getConfig().addProperty("language", value.name());
 				saveConfig();
 			}
 		});
@@ -735,12 +539,12 @@ public class ModSettings {
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean privateChatRight) {
-						setPrivateChatRight(privateChatRight);
-						getConfig().addProperty("privateChatRight", privateChatRight);
+					public void accept(Boolean value) {
+						privateChatRight = value;
+						getConfig().addProperty("privateChatRight", value);
 						saveConfig();
 					}
-				}, isPrivateChatRight());
+				}, privateChatRight);
 		settings.add(privateChatRightBtn);
 
 		final DropDownMenu<EnumSounds> privateChatSoundDropDownMenu = new DropDownMenu<EnumSounds>(
@@ -750,14 +554,14 @@ public class ModSettings {
 				LanguageManager.translateOrReturnKey("settings_gg_privateMessageSound"), privateChatSoundDropDownMenu);
 
 		// Set selected entry
-		privateChatSoundDropDownMenu.setSelected(getPrivateChatSound());
+		privateChatSoundDropDownMenu.setSelected(privateChatSound);
 
 		// Listen on changes
 		privateChatSoundDropDown.setChangeListener(new Consumer<EnumSounds>() {
 			@Override
-			public void accept(EnumSounds privateChatSound) {
-				setPrivateChatSound(privateChatSound);
-				getConfig().addProperty("privateChatSound", privateChatSound.name());
+			public void accept(EnumSounds value) {
+				privateChatSound = value;
+				getConfig().addProperty("privateChatSound", value.name());
 				saveConfig();
 			}
 		});
@@ -767,57 +571,57 @@ public class ModSettings {
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean plotChatRight) {
-						setPlotChatRight(plotChatRight);
-						getConfig().addProperty("plotChatRight", plotChatRight);
+					public void accept(Boolean value) {
+						plotChatRight = value;
+						getConfig().addProperty("plotChatRight", value);
 						saveConfig();
 					}
-				}, isPlotChatRight());
+				}, plotChatRight);
 		settings.add(plotChatRightBtn);
 
 		final BooleanElement msgDisplayNameClickBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_clickToAnswer"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatshortcuts.png"), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean msgDisplayNameClick) {
-						setMsgDisplayNameClick(msgDisplayNameClick);
-						getConfig().addProperty("msgDisplayNameClick", msgDisplayNameClick);
+					public void accept(Boolean value) {
+						msgDisplayNameClick = value;
+						getConfig().addProperty("msgDisplayNameClick", value);
 						saveConfig();
 					}
-				}, isMsgDisplayNameClick());
+				}, msgDisplayNameClick);
 		settings.add(msgDisplayNameClickBtn);
 
 		final BooleanElement clanTagClickBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_clickClanTag"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatshortcuts.png"), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean clanTagClick) {
-						setClanTagClick(clanTagClick);
-						getConfig().addProperty("clanTagClick", clanTagClick);
+					public void accept(Boolean value) {
+						clanTagClick = value;
+						getConfig().addProperty("clanTagClick", value);
 						saveConfig();
 					}
-				}, isClanTagClick());
+				}, clanTagClick);
 		settings.add(clanTagClickBtn);
 
 		final BooleanElement filterDuplicateMessagesBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_filterDuplicateMessages"),
 				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean filterDuplicateMessages) {
-						setFilterDuplicateMessages(filterDuplicateMessages);
+					public void accept(Boolean value) {
+						filterDuplicateMessages = value;
 						getConfig().addProperty("filterDuplicateMessages", filterDuplicateMessages);
 						saveConfig();
 					}
-				}, isFilterDuplicateMessages());
+				}, filterDuplicateMessages);
 		settings.add(filterDuplicateMessagesBtn);
 
 		final NumberElement filterDuplicateMessagesTimeNumber = new NumberElement(LanguageManager.translateOrReturnKey("settings_gg_filterDuplicateMessagesTime"),
 				new ControlElement.IconData(Material.WATCH),
-				getFilterDuplicateMessagesTime());
+				filterDuplicateMessagesTime);
 		filterDuplicateMessagesTimeNumber.setMinValue(3);
 		filterDuplicateMessagesTimeNumber.setMaxValue(120);
 		filterDuplicateMessagesTimeNumber.addCallback(new Consumer<Integer>() {
 			@Override
-			public void accept(Integer filterDuplicateMessagesTime) {
-				setFilterDuplicateMessagesTime(filterDuplicateMessagesTime);
-				getConfig().addProperty("filterDuplicateMessagesTime", filterDuplicateMessagesTime);
+			public void accept(Integer value) {
+				filterDuplicateMessagesTime = value;
+				getConfig().addProperty("filterDuplicateMessagesTime", value);
 				saveConfig();
 			}
 		});
@@ -826,82 +630,82 @@ public class ModSettings {
 		final BooleanElement preventCommandFailureBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_blockIncorrectCommands"),
 				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean preventCommandFailure) {
-						setPreventCommandFailure(preventCommandFailure);
-						getConfig().addProperty("preventCommandFailure", preventCommandFailure);
+					public void accept(Boolean value) {
+						preventCommandFailure = value;
+						getConfig().addProperty("preventCommandFailure", value);
 						saveConfig();
 					}
-				}, isPreventCommandFailure());
+				}, preventCommandFailure);
 		settings.add(preventCommandFailureBtn);
 
 		final BooleanElement markTPAMsgBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_highlightTpaMessages"),
 				new ControlElement.IconData("labymod/textures/settings/settings/second_chat.png"),
 				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean markTPAMsg) {
-						setMarkTPAMsg(markTPAMsg);
-						getConfig().addProperty("markTPAMsg", markTPAMsg);
+					public void accept(Boolean value) {
+						markTPAMsg = value;
+						getConfig().addProperty("markTPAMsg", value);
 						saveConfig();
 					}
-				}, isMarkTPAMsg());
+				}, markTPAMsg);
 		settings.add(markTPAMsgBtn);
 
 		final BooleanElement cleanVoteMsgBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_deleteVoteMessages"),
 				new ControlElement.IconData(Material.BARRIER),
 				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean cleanVoteMsg) {
-						setCleanVoteMsg(cleanVoteMsg);
-						getConfig().addProperty("cleanVoteMsg", cleanVoteMsg);
+					public void accept(Boolean value) {
+						cleanVoteMsg = value;
+						getConfig().addProperty("cleanVoteMsg", value);
 						saveConfig();
 					}
-				}, isCleanVoteMsg());
+				}, cleanVoteMsg);
 		settings.add(cleanVoteMsgBtn);
 
 		final BooleanElement cleanNewsMsgBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_deleteNewsMessages"),
 				new ControlElement.IconData(Material.BARRIER),
 				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean cleanNewsMsg) {
-						setCleanNewsMsg(cleanNewsMsg);
-						getConfig().addProperty("cleanNewsMsg", cleanNewsMsg);
+					public void accept(Boolean value) {
+						cleanNewsMsg = value;
+						getConfig().addProperty("cleanNewsMsg", value);
 						saveConfig();
 					}
-				}, isCleanNewsMsg());
+				}, cleanNewsMsg);
 		settings.add(cleanNewsMsgBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_chattime")));
 		final BooleanElement showChatTimeBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_displayChatTime"),
 				new ControlElement.IconData(Material.WATCH), new Consumer<Boolean>() {
 			@Override
-			public void accept(Boolean showChatTime) {
-				setShowChatTime(showChatTime);
-				getConfig().addProperty("showChatTime", showChatTime);
+			public void accept(Boolean value) {
+				showChatTime = value;
+				getConfig().addProperty("showChatTime", value);
 				saveConfig();
 			}
-		}, isShowChatTime());
+		}, showChatTime);
 		settings.add(showChatTimeBtn);
 
 		final BooleanElement chatTimeShortFormatBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_chatTimeShortVersion"),
 				new ControlElement.IconData(Material.WATCH), new Consumer<Boolean>() {
 			@Override
-			public void accept(Boolean shortVersion) {
-				setChatTimeShortFormat(shortVersion);
-				getConfig().addProperty("chatTimeShortFormat", shortVersion);
+			public void accept(Boolean value) {
+				chatTimeShortFormat = value;
+				getConfig().addProperty("chatTimeShortFormat", value);
 				saveConfig();
 			}
-		}, isChatTimeShortFormat());
+		}, chatTimeShortFormat);
 		settings.add(chatTimeShortFormatBtn);
 
 		final BooleanElement chatTimeAfterMessageBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_chatTimeAfterMessage"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"), new Consumer<Boolean>() {
 			@Override
-			public void accept(Boolean afterMessage) {
-				setChatTimeAfterMessage(afterMessage);
-				getConfig().addProperty("chatTimeAfterMessage", afterMessage);
+			public void accept(Boolean value) {
+				chatTimeAfterMessage = value;
+				getConfig().addProperty("chatTimeAfterMessage", value);
 				saveConfig();
 			}
-		}, isChatTimeAfterMessage());
+		}, chatTimeAfterMessage);
 		settings.add(chatTimeAfterMessageBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_realname")));
@@ -912,14 +716,14 @@ public class ModSettings {
 				LanguageManager.translateOrReturnKey("settings_gg_showRealname"), realnameDropDownMenu);
 
 		// Set selected entry
-		realnameDropDownMenu.setSelected(getRealname());
+		realnameDropDownMenu.setSelected(realname);
 
 		// Listen on changes
 		realnameDropDown.setChangeListener(new Consumer<EnumRealnameShown>() {
 			@Override
-			public void accept(EnumRealnameShown realname) {
-				setRealname(realname);
-				getConfig().addProperty("realname", realname.name());
+			public void accept(EnumRealnameShown value) {
+				realname = value;
+				getConfig().addProperty("realname", value.name());
 				saveConfig();
 			}
 		});
@@ -929,23 +733,23 @@ public class ModSettings {
 		final BooleanElement cleanBlanksBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_cleanBlanks"),
 				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean cleanBlanks) {
-						setCleanBlanks(cleanBlanks);
-						getConfig().addProperty("cleanBlanks", cleanBlanks);
+					public void accept(Boolean value) {
+						cleanBlanks = value;
+						getConfig().addProperty("cleanBlanks", value);
 						saveConfig();
 					}
-				}, isCleanBlanks());
+				}, cleanBlanks);
 		settings.add(cleanBlanksBtn);
 
 		final BooleanElement cleanSupremeBlanksBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_cleanSupremeBlanks"),
 				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean cleanSupremeBlanks) {
-						setCleanSupremeBlanks(cleanSupremeBlanks);
-						getConfig().addProperty("cleanSupremeBlanks", cleanSupremeBlanks);
+					public void accept(Boolean value) {
+						cleanSupremeBlanks = value;
+						getConfig().addProperty("cleanSupremeBlanks", value);
 						saveConfig();
 					}
-				}, isCleanSupremeBlanks());
+				}, cleanSupremeBlanks);
 		settings.add(cleanSupremeBlanksBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_payment")));
@@ -953,45 +757,45 @@ public class ModSettings {
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean payChatRight) {
-						setPayChatRight(payChatRight);
-						getConfig().addProperty("payChatRight", payChatRight);
+					public void accept(Boolean value) {
+						payChatRight = value;
+						getConfig().addProperty("payChatRight", value);
 						saveConfig();
 					}
-				}, isPayChatRight());
+				}, payChatRight);
 		settings.add(payChatRightBtn);
 
 		final BooleanElement payAchievementBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_payAchievement"),
 				new ControlElement.IconData(Material.BOOK), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean payAchievement) {
-						setPayAchievement(payAchievement);
-						getConfig().addProperty("payAchievement", payAchievement);
+					public void accept(Boolean value) {
+						payAchievement = value;
+						getConfig().addProperty("payAchievement", value);
 						saveConfig();
 					}
-				}, isPayAchievement());
+				}, payAchievement);
 		settings.add(payAchievementBtn);
 
 		final BooleanElement payMarkerBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_payHighlight"),
 				new ControlElement.IconData("labymod/textures/settings/settings/second_chat.png"), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean payMarker) {
-						setPayMarker(payMarker);
-						getConfig().addProperty("payMarker", payMarker);
+					public void accept(Boolean value) {
+						payMarker = value;
+						getConfig().addProperty("payMarker", value);
 						saveConfig();
 					}
-				}, isPayMarker());
+				}, payMarker);
 		settings.add(payMarkerBtn);
 
 		final BooleanElement payHoverBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_payHover"),
 				new ControlElement.IconData("labymod/textures/settings/settings/bettershaderselection.png"), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean payHover) {
-						setPayHover(payHover);
-						getConfig().addProperty("payHover", payHover);
+					public void accept(Boolean value) {
+						payHover = value;
+						getConfig().addProperty("payHover", value);
 						saveConfig();
 					}
-				}, isPayHover());
+				}, payHover);
 		settings.add(payHoverBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_bank")));
@@ -999,23 +803,23 @@ public class ModSettings {
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean bankChatRight) {
-						setBankChatRight(bankChatRight);
-						getConfig().addProperty("bankChatRight", bankChatRight);
+					public void accept(Boolean value) {
+						bankChatRight = value;
+						getConfig().addProperty("bankChatRight", value);
 						saveConfig();
 					}
-				}, isBankChatRight());
+				}, bankChatRight);
 		settings.add(bankChatRightBtn);
 
 		final BooleanElement bankAchievementBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_bankAchievement"),
 				new ControlElement.IconData(Material.BOOK), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean bankAchievement) {
-						setBankAchievement(bankAchievement);
-						getConfig().addProperty("bankAchievement", bankAchievement);
+					public void accept(Boolean value) {
+						bankAchievement = value;
+						getConfig().addProperty("bankAchievement", value);
 						saveConfig();
 					}
-				}, isBankAchievement());
+				}, bankAchievement);
 		settings.add(bankAchievementBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_clearlag")));
@@ -1023,23 +827,23 @@ public class ModSettings {
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean itemRemoverChatRight) {
-						setItemRemoverChatRight(itemRemoverChatRight);
-						getConfig().addProperty("itemRemoverChatRight", itemRemoverChatRight);
+					public void accept(Boolean value) {
+						itemRemoverChatRight = value;
+						getConfig().addProperty("itemRemoverChatRight", value);
 						saveConfig();
 					}
-				}, isItemRemoverChatRight());
+				}, itemRemoverChatRight);
 		settings.add(itemRemoverChatRightBtn);
 
 		final BooleanElement itemRemoverLastTimeHoverBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_clearlagTimeHover"),
 				new ControlElement.IconData(Material.WATCH), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean itemRemoverLastTimeHover) {
-						setItemRemoverLastTimeHover(itemRemoverLastTimeHover);
-						getConfig().addProperty("itemRemoverLastTimeHover", itemRemoverLastTimeHover);
+					public void accept(Boolean value) {
+						itemRemoverLastTimeHover = value;
+						getConfig().addProperty("itemRemoverLastTimeHover", value);
 						saveConfig();
 					}
-				}, isItemRemoverLastTimeHover());
+				}, itemRemoverLastTimeHover);
 		settings.add(itemRemoverLastTimeHoverBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_mobremover")));
@@ -1047,35 +851,35 @@ public class ModSettings {
 				new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
 				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean mobRemoverChatRight) {
-						setMobRemoverChatRight(mobRemoverChatRight);
-						getConfig().addProperty("mobRemoverChatRight", mobRemoverChatRight);
+					public void accept(Boolean value) {
+						mobRemoverChatRight = value;
+						getConfig().addProperty("mobRemoverChatRight", value);
 						saveConfig();
 					}
-				}, isMobRemoverChatRight());
+				}, mobRemoverChatRight);
 		settings.add(mobRemoverChatRightBtn);
 
 		final BooleanElement mobRemoverLastTimeHoverBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_mobRemoverTimeHover"),
 				new ControlElement.IconData(Material.WATCH), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean mobRemoverLastTimeHover) {
-						setMobRemoverLastTimeHover(mobRemoverLastTimeHover);
-						getConfig().addProperty("mobRemoverLastTimeHover", mobRemoverLastTimeHover);
+					public void accept(Boolean value) {
+						mobRemoverChatRight = value;
+						getConfig().addProperty("mobRemoverLastTimeHover", value);
 						saveConfig();
 					}
-				}, isMobRemoverLastTimeHover());
+				}, mobRemoverChatRight);
 		settings.add(mobRemoverLastTimeHoverBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_ignoredPlayers")));
 		final BooleanElement betterIgnoreListBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_betterIgnoreList"),
 				new ControlElement.IconData("labymod/textures/settings/settings/publicserverlist.png"), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean betterIgnoreList) {
-						setBetterIgnoreList(betterIgnoreList);
-						getConfig().addProperty("betterIgnoreList", betterIgnoreList);
+					public void accept(Boolean value) {
+						betterIgnoreList = value;
+						getConfig().addProperty("betterIgnoreList", value);
 						saveConfig();
 					}
-				}, isBetterIgnoreList());
+				}, betterIgnoreList);
 		settings.add(betterIgnoreListBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_maps")));
@@ -1083,59 +887,57 @@ public class ModSettings {
 				new ControlElement.IconData(Material.EMPTY_MAP),
 				new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean clearMapCache) {
-						setClearMapCache(clearMapCache);
+					public void accept(Boolean value) {
+						clearMapCache = value;
 						getConfig().addProperty("clearMapCache", clearMapCache);
 						saveConfig();
 					}
-				}, isClearMapCache());
+				}, clearMapCache);
 		settings.add(clearMapCacheBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_updateboosterstatus")));
 		final BooleanElement updateBoosterStateBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_updateBoosterStatusEnabled"),
 				new ControlElement.IconData("labymod/textures/settings/settings/serverlistliveview.png"), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean updateBoosterState) {
-						setUpdateBoosterState(updateBoosterState);
-						getConfig().addProperty("updateBoosterState", updateBoosterState);
+					public void accept(Boolean value) {
+						updateBoosterState = value;
+						getConfig().addProperty("updateBoosterState", value);
 						saveConfig();
 					}
-				}, isUpdateBoosterState());
+				}, updateBoosterState);
 		settings.add(updateBoosterStateBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_antimagicprefix")));
 		final BooleanElement ampEnabledBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_antiMagicPrefixEnabled"),
 				new ControlElement.IconData("labymod/textures/settings/settings/particlefix.png"), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean ampEnabled) {
-						setAMPEnabled(ampEnabled);
-						getConfig().addProperty("ampEnabled", ampEnabled);
+					public void accept(Boolean value) {
+						ampEnabled = value;
+						getConfig().addProperty("ampEnabled", value);
 						saveConfig();
 					}
-				}, isAMPEnabled());
+				}, ampEnabled);
 		settings.add(ampEnabledBtn);
 
-		final String ampChatText = (getAMPChatReplacement().length() > 0) ? getAMPChatReplacement()
-				: getDefaultAMPChatReplacement();
+		final String ampChatText = (ampChatReplacement.length() > 0) ? ampChatReplacement : defaultAMPChatReplacement;
 		final StringElement chatReplacementInput = new StringElement(LanguageManager.translateOrReturnKey("settings_gg_antiMagicPrefixChatReplacement"),
 				new ControlElement.IconData(Material.BOOK_AND_QUILL), ampChatText, new Consumer<String>() {
 					@Override
-					public void accept(String replacement) {
-						setAMPChatReplacement(replacement);
-						getConfig().addProperty("chatReplacement", replacement);
+					public void accept(String value) {
+						ampChatReplacement = value;
+						getConfig().addProperty("chatReplacement", value);
 						saveConfig();
 					}
 				});
 		settings.add(chatReplacementInput);
 
-		final String ampTabListText = (getAMPTablistReplacement().length() > 0) ? getAMPTablistReplacement()
-				: getDefaultAMPTablistReplacement();
+		final String ampTabListText = (ampTablistReplacement.length() > 0) ? ampTablistReplacement : defaultAMPTablistReplacement;
 		final StringElement tablistReplacementInput = new StringElement(LanguageManager.translateOrReturnKey("settings_gg_antiMagicPrefixTablistReplacement"),
 				new ControlElement.IconData(Material.BOOK_AND_QUILL), ampTabListText, new Consumer<String>() {
 					@Override
-					public void accept(String replacement) {
-						setAMPTablistReplacement(replacement);
-						getConfig().addProperty("tablistReplacement", replacement);
+					public void accept(String value) {
+						ampTablistReplacement = value;
+						getConfig().addProperty("tablistReplacement", value);
 						saveConfig();
 					}
 				});
@@ -1145,47 +947,52 @@ public class ModSettings {
 		final BooleanElement ampClanEnabledBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_antiMagicClanTagEnabled"),
 				new ControlElement.IconData("labymod/textures/settings/settings/particlefix.png"), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean ampClanEnabled) {
-						setAMPClanEnabled(ampClanEnabled);
-						getConfig().addProperty("ampClanEnabled", ampClanEnabled);
+					public void accept(Boolean value) {
+						ampClanEnabled = value;
+						getConfig().addProperty("ampClanEnabled", value);
 						saveConfig();
 					}
-				}, isAMPClanEnabled());
+				}, ampClanEnabled);
 		settings.add(ampClanEnabledBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_labychat")));
 		final BooleanElement labyChatShowSubServerEnabledBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_labyChatEnabled"),
 				new ControlElement.IconData("labymod/textures/settings/settings/motd.png"), new Consumer<Boolean>() {
 					@Override
-					public void accept(Boolean labyChatShowSubServerEnabled) {
-						setLabyChatShowSubServerEnabled(labyChatShowSubServerEnabled);
-						getConfig().addProperty("labyChatShowSubServerEnabled", labyChatShowSubServerEnabled);
+					public void accept(Boolean value) {
+						labyChatShowSubServerEnabled = value;
+						getConfig().addProperty("labyChatShowSubServerEnabled", value);
 						saveConfig();
+						if(value) {
+							getGG().getHelper().updateLabyChatSubServer("lobby");
+						} else {
+							getGG().getHelper().updateLabyChatSubServer("reset");
+						}
 					}
-				}, isLabyChatShowSubServerEnabled());
+				}, labyChatShowSubServerEnabled);
 		settings.add(labyChatShowSubServerEnabledBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_automatisations")));
 		final BooleanElement autoPortalBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_portalOnJoin"),
 				new ControlElement.IconData("labymod/textures/chat/autotext.png"), new Consumer<Boolean>() {
 			@Override
-			public void accept(Boolean autoPortal) {
-				setAutoPortal(autoPortal);
-				getConfig().addProperty("autoPortal", autoPortal);
+			public void accept(Boolean value) {
+				autoPortal = value;
+				getConfig().addProperty("autoPortal", value);
 				saveConfig();
 			}
-		}, isAutoPortl());
+		}, autoPortal);
 		settings.add(autoPortalBtn);
 
 		final BooleanElement hodeBoosterMenuBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_hideBoosterMenu"),
 				new ControlElement.IconData("labymod/textures/chat/autotext.png"), new Consumer<Boolean>() {
 			@Override
-			public void accept(Boolean hideMenu) {
-				setHideBoosterMenu(hideMenu);
-				getConfig().addProperty("hideBoosterMenu", hideMenu);
+			public void accept(Boolean value) {
+				hideBoosterMenu = value;
+				getConfig().addProperty("hideBoosterMenu", value);
 				saveConfig();
 			}
-		}, isHideBoosterMenu());
+		}, hideBoosterMenu);
 		settings.add(hodeBoosterMenuBtn);
 	}
 }

@@ -13,17 +13,7 @@ public class AntiMagicClanTag extends Chat {
 
 	@Override
 	public String getName() {
-		return "antiMagicClanTag";
-	}
-
-	@Override
-	public boolean doAction(String unformatted, String formatted) {
-		String oldMessage = getHelper().getProperTextFormat(formatted);
-
-		Matcher antiMagicClanTag = antiMagicClanTagRegex.matcher(unformatted);
-
-		return getSettings().isAMPClanEnabled() && unformatted.trim().length() > 0
-				&& (oldMessage.contains("§k") || oldMessage.contains("§m")) && antiMagicClanTag.find();
+		return "antiMagicPrefix";
 	}
 
 	@Override
@@ -31,7 +21,12 @@ public class AntiMagicClanTag extends Chat {
 		String unformatted = msg.getUnformattedText();
 		String formatted = msg.getFormattedText();
 
-		return doAction(unformatted, formatted);
+		String oldMessage = getHelper().getProperTextFormat(formatted);
+
+		Matcher antiMagicClanTag = antiMagicClanTagRegex.matcher(unformatted);
+
+		return getSettings().isAMPClanEnabled() && unformatted.trim().length() > 0
+				&& (oldMessage.contains("§k") || oldMessage.contains("§m")) && antiMagicClanTag.find();
 	}
 
 	@Override
@@ -49,10 +44,8 @@ public class AntiMagicClanTag extends Chat {
 					ChatStyle msgStyling = component.getChatStyle().createDeepCopy().setObfuscated(false)
 							.setStrikethrough(false);
 					component.setChatStyle(msgStyling);
-					newMsg.appendSibling(component);
-				} else {
-					newMsg.appendSibling(component);
 				}
+				newMsg.appendSibling(component);
 			}
 			return newMsg;
 		}

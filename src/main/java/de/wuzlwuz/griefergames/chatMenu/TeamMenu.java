@@ -1,24 +1,24 @@
 package de.wuzlwuz.griefergames.chatMenu;
 
 import de.wuzlwuz.griefergames.GrieferGames;
-import de.wuzlwuz.griefergames.helper.Helper;
+import de.wuzlwuz.griefergames.utils.Helper;
 import de.wuzlwuz.griefergames.settings.ModSettings;
 import net.labymod.api.LabyModAPI;
 
 public class TeamMenu {
-	protected static GrieferGames getGG() {
+	private static GrieferGames getGG() {
 		return GrieferGames.getGriefergames();
 	}
 
-	protected static LabyModAPI getApi() {
+	private static LabyModAPI getApi() {
 		return getGG().getApi();
 	}
 
-	protected static Helper getHelper() {
+	private static Helper getHelper() {
 		return GrieferGames.getGriefergames().getHelper();
 	}
 
-	protected static ModSettings getSettings() {
+	private static ModSettings getSettings() {
 		return GrieferGames.getSettings();
 	}
 

@@ -20,46 +20,37 @@ public class ClanTag extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
+	public boolean doActionModifyChatMessage(IChatComponent msg) {
+		String unformatted = msg.getUnformattedText();
+		String formatted = msg.getFormattedText();
+
 		Matcher clanTag = clanTagRegex.matcher(unformatted);
 
 		return getSettings().isClanTagClick() && unformatted.trim().length() > 0 && clanTag.find();
 	}
 
 	@Override
-	public boolean doActionModifyChatMessage(IChatComponent msg) {
-		String unformatted = msg.getUnformattedText();
-		String formatted = msg.getFormattedText();
-
-		return doAction(unformatted, formatted);
-	}
-
-	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		if (doActionModifyChatMessage(msg)) {
-			String clanTag = "/clan info " + getClanTagFromMessage(msg.getUnformattedText());
-			boolean clickClanTag = true;
-			IChatComponent newMsg = new ChatComponentText("");
-			for (IChatComponent component : msg.getSiblings()) {
-				if (clickClanTag) {
-					ChatStyle msgStyling = component.getChatStyle().createDeepCopy()
-							.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, clanTag));
+		String clanTag = "/clan info " + getClanTagFromMessage(msg.getUnformattedText());
+		boolean clickClanTag = true;
+		IChatComponent newMsg = new ChatComponentText("");
+		for (IChatComponent component : msg.getSiblings()) {
+			if (clickClanTag) {
+				ChatStyle msgStyling = component.getChatStyle().createDeepCopy()
+						.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, clanTag));
 
-					String clanTagClickHoverTxt = LanguageManager
-							.translateOrReturnKey("message_gg_clanTagClickHoverTxt");
-					IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") + clanTagClickHoverTxt);
+				String clanTagClickHoverTxt = LanguageManager
+						.translateOrReturnKey("message_gg_clanTagClickHoverTxt");
+				IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") + clanTagClickHoverTxt);
 
-					msgStyling.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
-					component.setChatStyle(msgStyling);
+				msgStyling.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+				component.setChatStyle(msgStyling);
 
-					clickClanTag = !component.getUnformattedText().contains("]");
-				}
-				newMsg.appendSibling(component);
+				clickClanTag = !component.getUnformattedText().contains("]");
 			}
-			return newMsg;
+			newMsg.appendSibling(component);
 		}
-
-		return msg;
+		return newMsg;
 	}
 
 	private String getClanTagFromMessage(String unformatted) {

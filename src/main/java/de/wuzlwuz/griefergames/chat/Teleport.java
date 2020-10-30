@@ -20,20 +20,14 @@ public class Teleport extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
+	public boolean doActionModifyChatMessage(IChatComponent msg) {
+		String unformatted = msg.getUnformattedText();
+
 		Matcher tpaMesssage = tpaMesssageRegexp.matcher(unformatted);
 		Matcher tpahereMesssage = tpahereMesssageRegexp.matcher(unformatted);
 
 		return getSettings().isMarkTPAMsg() && unformatted.trim().length() > 0
 				&& (tpaMesssage.find() || tpahereMesssage.find());
-	}
-
-	@Override
-	public boolean doActionModifyChatMessage(IChatComponent msg) {
-		String unformatted = msg.getUnformattedText();
-		String formatted = msg.getFormattedText();
-
-		return doAction(unformatted, formatted);
 	}
 
 	@Override
@@ -59,6 +53,6 @@ public class Teleport extends Chat {
 			}
 		}
 
-		return super.modifyChatMessage(msg);
+		return msg;
 	}
 }

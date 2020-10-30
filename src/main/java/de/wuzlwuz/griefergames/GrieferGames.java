@@ -13,7 +13,7 @@ import de.wuzlwuz.griefergames.booster.Booster;
 import de.wuzlwuz.griefergames.chat.Chat;
 import de.wuzlwuz.griefergames.chatMenu.TeamMenu;
 import de.wuzlwuz.griefergames.enums.EnumLanguages;
-import de.wuzlwuz.griefergames.helper.Helper;
+import de.wuzlwuz.griefergames.utils.Helper;
 import de.wuzlwuz.griefergames.server.GrieferGamesServer;
 import de.wuzlwuz.griefergames.settings.ModSettings;
 import de.wuzlwuz.griefergames.utils.Updater;
@@ -24,21 +24,18 @@ import net.labymod.ingamegui.ModuleCategory;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement;
 import net.labymod.settings.elements.SettingsElement;
-import net.labymod.utils.Consumer;
-import net.labymod.utils.ServerData;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
 public class GrieferGames extends LabyModAddon {
 	public static final String PREFIX = "§8[§6GrieferGames-Addon§8] §r";
 	public static final String VERSION = "1.0.1";
+	public static final String SERVER_IP = "griefergames.net", SECOND_SERVER_IP = "griefergames.de";
 
 	private static GrieferGames griefergames;
-	private Runnable continueEnable;
 	private static ModSettings settings;
+	private GrieferGamesServer ggserver;
 	private Updater updater;
-	private String serverIp = "";
-	private String secondServerIp = "";
+
 	private boolean showModules = false;
 	private boolean showBoosterDummy = false;
 	private boolean vanishActive = false;
@@ -60,54 +57,25 @@ public class GrieferGames extends LabyModAddon {
 		return griefergames;
 	}
 
-	private static void setGriefergames(GrieferGames griefergames) {
-		GrieferGames.griefergames = griefergames;
-	}
-
-	private Runnable getContinueEnable() {
-		return continueEnable;
-	}
-
-	private void setContinueEnable(Runnable continueEnable) {
-		this.continueEnable = continueEnable;
-	}
-
 	public static ModSettings getSettings() {
 		return settings;
+	}
+
+	public GrieferGamesServer getGGServer() {
+		return ggserver;
 	}
 
 	public Updater getUpdater() {
 		return updater;
 	}
 
-	public void setUpdater(Updater updater) {
-		this.updater = updater;
-	}
-
-	private static void setSettings(ModSettings settings) {
-		GrieferGames.settings = settings;
-	}
-
-	public String getServerIp() {
-		return serverIp;
-	}
-
-	private void setServerIp(String serverIp) {
-		this.serverIp = serverIp;
-	}
-
-	public String getSecondServerIp() {
-		return secondServerIp;
-	}
-
-	private void setSecondServerIp(String secondServerIp) {
-		this.secondServerIp = secondServerIp;
+	public Helper getHelper() {
+		return helper;
 	}
 
 	public boolean isShowModules() {
 		return showModules;
 	}
-
 	public void setShowModules(boolean showModules) {
 		this.showModules = showModules;
 	}
@@ -115,7 +83,6 @@ public class GrieferGames extends LabyModAddon {
 	public boolean isShowBoosterDummy() {
 		return showBoosterDummy;
 	}
-
 	public void setShowBoosterDummy(boolean showBoosterDummy) {
 		this.showBoosterDummy = showBoosterDummy;
 	}
@@ -123,7 +90,6 @@ public class GrieferGames extends LabyModAddon {
 	public boolean isVanishActive() {
 		return vanishActive;
 	}
-
 	public void setVanishActive(boolean vanishActive) {
 		this.vanishActive = vanishActive;
 	}
@@ -131,7 +97,6 @@ public class GrieferGames extends LabyModAddon {
 	public boolean isAuraActive() {
 		return auraActive;
 	}
-
 	public void setAuraActive(boolean auraActive) {
 		this.auraActive = auraActive;
 	}
@@ -139,7 +104,6 @@ public class GrieferGames extends LabyModAddon {
 	public boolean isGodActive() {
 		return godActive;
 	}
-
 	public void setGodActive(boolean godActive) {
 		this.godActive = godActive;
 	}
@@ -147,7 +111,6 @@ public class GrieferGames extends LabyModAddon {
 	public boolean isFlyActive() {
 		return flyActive;
 	}
-
 	public void setFlyActive(boolean flyActive) {
 		this.flyActive = flyActive;
 	}
@@ -156,18 +119,9 @@ public class GrieferGames extends LabyModAddon {
 		return moduleCategory;
 	}
 
-	public void setModuleCategory(ModuleCategory moduleCategory) {
-		this.moduleCategory = moduleCategory;
-	}
-
 	public List<Booster> getBoosters() {
 		return boosters;
 	}
-
-	public void setBoosters(List<Booster> boosters) {
-		this.boosters = boosters;
-	}
-
 	public void addBooster(Booster booster) {
 		boolean found = false;
 		if (getBoosters().size() > 0) {
@@ -197,11 +151,9 @@ public class GrieferGames extends LabyModAddon {
 			this.boosters.add(booster);
 		}
 	}
-
 	public void delBooster(Booster booster) {
 		this.boosters.remove(booster);
 	}
-
 	public void boosterDone(String type) {
 		if (boosters.size() > 0) {
 			for (Booster booster : boosters) {
@@ -215,18 +167,9 @@ public class GrieferGames extends LabyModAddon {
 		}
 	}
 
-	public Helper getHelper() {
-		return helper;
-	}
-
-	private void setHelper(Helper helper) {
-		this.helper = helper;
-	}
-
 	public List<Chat> getChatModules() {
 		return chatModules;
 	}
-
 	public void addChatModule(Chat chatModule) {
 		boolean found = false;
 		for (Chat chatList : chatModules) {
@@ -242,20 +185,17 @@ public class GrieferGames extends LabyModAddon {
 	public boolean getIsInTeam() {
 		return isInTeam;
 	}
-
 	public void setIsInTeam(boolean isInTeam) {
 		TeamMenu.printMenu();
 		this.isInTeam = isInTeam;
 	}
 
 	public boolean isNicknameActive() {
-		return (!LabyModCore.getMinecraft().getPlayer().getName().trim().equalsIgnoreCase(getNickname()));
+		return (!LabyModCore.getMinecraft().getPlayer().getName().trim().equalsIgnoreCase(nickname));
 	}
-
 	public String getNickname() {
 		return nickname;
 	}
-
 	public void setNickname(String nickname) {
 		if (nickname.trim().length() <= 0) {
 			this.nickname = LabyModCore.getMinecraft().getPlayer().getName().trim();
@@ -267,7 +207,6 @@ public class GrieferGames extends LabyModAddon {
 	public String getPlayerRank() {
 		return playerRank;
 	}
-
 	public void setPlayerRank(String playerRank) {
 		this.playerRank = playerRank;
 	}
@@ -275,7 +214,6 @@ public class GrieferGames extends LabyModAddon {
 	public boolean getNewsStart() {
 		return newsStart;
 	}
-
 	public void setNewsStart(boolean newsStart) {
 		this.newsStart = newsStart;
 	}
@@ -287,7 +225,6 @@ public class GrieferGames extends LabyModAddon {
 	public void setTimeToWait(int timeToWait) {
 		this.timeToWait = timeToWait;
 	}
-
 	public double getIncome() {
 		return income;
 	}
@@ -296,69 +233,15 @@ public class GrieferGames extends LabyModAddon {
 		this.income = income;
 	}
 
-	private GrieferGamesServer ggserver;
-
-	public GrieferGamesServer getGGServer() {
-		return ggserver;
-	}
-
-	public void setGGServer(GrieferGamesServer ggserver) {
-		this.ggserver = ggserver;
-	}
-
 	@Override
 	public void onEnable() {
-		// save instance
-		setGriefergames(this);
+		griefergames = this;
 
-		// init updater
-		setUpdater(new Updater());
+		updater = new Updater();
+		helper = new Helper();
+		settings = new ModSettings();
 
-		// set ip
-		setServerIp("griefergames.net");
-		setSecondServerIp("griefergames.de");
-
-		// setup helper
-		setHelper(new Helper());
-
-		// load settings
-		setSettings(new ModSettings());
-
-		// wait for settings to be loaded
-		setContinueEnable(new Runnable() {
-			@Override
-			public void run() {
-				getUpdater().setAddonJar(AddonLoader.getFiles().get(about.uuid));
-
-				// extend translations
-				if(getSettings().getLanguage() == EnumLanguages.GAMELANGUAGE) {
-					loadTranslations(null);
-				} else {
-					loadTranslations(getSettings().getLanguage().name());
-				}
-
-				// set module category
-				setModuleCategory(new ModuleCategory(LanguageManager.translateOrReturnKey("modules_category_gg"),
-						true, new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/icon.png"))));
-
-				setGGServer(new GrieferGamesServer(Minecraft.getMinecraft()));
-
-				// set server support
-				getApi().registerServerSupport(getGriefergames(), getGGServer());
-
-				// show / hide gg modules
-				getApi().getEventManager().registerOnJoin(new Consumer<ServerData>() {
-					@Override
-					public void accept(ServerData serverData) {
-						boolean showModules = (serverData.getIp().toLowerCase().contains(getServerIp())
-								|| serverData.getIp().toLowerCase().contains(getSecondServerIp()));
-						setShowModules(showModules);
-					}
-				});
-
-				System.out.println("[GrieferGames] enabled.");
-			}
-		});
+		System.out.println("[GrieferGames] enabled.");
 	}
 
 	public void loadTranslations(String lang) {
@@ -411,12 +294,25 @@ public class GrieferGames extends LabyModAddon {
 
 	@Override
 	public void loadConfig() {
-		getSettings().loadConfig();
-		getContinueEnable().run();
+		updater.setAddonJar(AddonLoader.getFiles().get(about.uuid));
+
+		settings.loadConfig();
+
+		if(settings.getLanguage() == EnumLanguages.GAMELANGUAGE) {
+			loadTranslations(null);
+		} else {
+			loadTranslations(settings.getLanguage().name());
+		}
+
+		moduleCategory = new ModuleCategory(LanguageManager.translateOrReturnKey("modules_category_gg"),
+				true, new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/icon.png")));
+
+		ggserver = new GrieferGamesServer();
+		getApi().registerServerSupport(griefergames, ggserver);
 	}
 
 	@Override
-	protected void fillSettings(final List<SettingsElement> settings) {
-		getSettings().fillSettings(settings);
+	protected void fillSettings(final List<SettingsElement> settingsList) {
+		settings.fillSettings(settingsList);
 	}
 }

@@ -25,7 +25,7 @@ public class Bank extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
+	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
 		Matcher bankPayInMessage = bankPayInMessageRegexp.matcher(unformatted);
 		Matcher bankPayOutMessage = bankPayOutMessageRegexp.matcher(unformatted);
 		Matcher bankBalanceMessage = bankBalanceMessageRegexp.matcher(unformatted);
@@ -39,45 +39,37 @@ public class Bank extends Chat {
 	}
 
 	@Override
-	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		return (doAction(unformatted, formatted));
-	}
-
-	@Override
 	public ChatDisplayAction handleChatMessage(String unformatted, String formatted) {
-		if (doAction(unformatted, formatted)) {
-			Matcher bankPayInMessage = bankPayInMessageRegexp.matcher(unformatted);
-			Matcher bankPayOutMessage = bankPayOutMessageRegexp.matcher(unformatted);
+		Matcher bankPayInMessage = bankPayInMessageRegexp.matcher(unformatted);
+		Matcher bankPayOutMessage = bankPayOutMessageRegexp.matcher(unformatted);
 
-			if ((bankPayInMessage.find() || bankPayOutMessage.find())) {
-				if (getSettings().isBankAchievement()) {
-					int money = getMoneyBank(unformatted);
-					if (money > 0) {
-						DecimalFormat moneyFormat = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.ENGLISH);
+		if ((bankPayInMessage.find() || bankPayOutMessage.find())) {
+			if (getSettings().isBankAchievement()) {
+				int money = getMoneyBank(unformatted);
+				if (money > 0) {
+					DecimalFormat moneyFormat = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.ENGLISH);
 
-						String achievementTitle = LanguageManager.translateOrReturnKey("message_gg_moneyWithdrawn");
-						String achievementDesc = LanguageManager.translateOrReturnKey("message_gg_moneyWithdrawnBank");
+					String achievementTitle = LanguageManager.translateOrReturnKey("message_gg_moneyWithdrawn");
+					String achievementDesc = LanguageManager.translateOrReturnKey("message_gg_moneyWithdrawnBank");
 
-						bankPayInMessage = bankPayInMessageRegexp.matcher(unformatted);
-						if (bankPayInMessage.find()) {
-							achievementTitle = LanguageManager.translateOrReturnKey("message_gg_moneyDeposited");
-							achievementDesc = LanguageManager.translateOrReturnKey("message_gg_moneyDepositedBank");
-						}
-
-						achievementTitle = achievementTitle.replace("{money}", moneyFormat.format(money));
-						achievementDesc = achievementDesc.replace("{money}", moneyFormat.format(money));
-
-						LabyMod.getInstance().getGuiCustomAchievement().displayAchievement(achievementTitle,
-								achievementDesc);
+					bankPayInMessage = bankPayInMessageRegexp.matcher(unformatted);
+					if (bankPayInMessage.find()) {
+						achievementTitle = LanguageManager.translateOrReturnKey("message_gg_moneyDeposited");
+						achievementDesc = LanguageManager.translateOrReturnKey("message_gg_moneyDepositedBank");
 					}
-				}
 
-				return getSettings().isBankChatRight() ? ChatDisplayAction.SWAP : ChatDisplayAction.NORMAL;
+					achievementTitle = achievementTitle.replace("{money}", moneyFormat.format(money));
+					achievementDesc = achievementDesc.replace("{money}", moneyFormat.format(money));
+
+					LabyMod.getInstance().getGuiCustomAchievement().displayAchievement(achievementTitle,
+							achievementDesc);
+				}
 			}
 
-			return ChatDisplayAction.SWAP;
+			return getSettings().isBankChatRight() ? ChatDisplayAction.SWAP : ChatDisplayAction.NORMAL;
 		}
-		return super.handleChatMessage(unformatted, formatted);
+
+		return ChatDisplayAction.SWAP;
 	}
 
 	private int getMoneyBank(String unformatted) {

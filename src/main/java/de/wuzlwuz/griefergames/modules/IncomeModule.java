@@ -7,7 +7,7 @@ import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement;
 
 public class IncomeModule extends SimpleModule {
-    protected GrieferGames getGG() {
+    private GrieferGames getGG() {
         return GrieferGames.getGriefergames();
     }
 

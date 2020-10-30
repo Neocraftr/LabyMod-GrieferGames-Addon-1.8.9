@@ -1,6 +1,5 @@
 package de.wuzlwuz.griefergames.chat;
 
-import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -20,42 +19,29 @@ public class ChatTime extends Chat {
 	}
 
 	@Override
-	public boolean doAction(String unformatted, String formatted) {
+	public boolean doActionModifyChatMessage(IChatComponent msg) {
+		String unformatted = msg.getUnformattedText();
+
 		return getSettings().isShowChatTime() && !unformatted.trim().equals("");
 	}
 
 	@Override
-	public boolean doActionModifyChatMessage(IChatComponent msg) {
-		String unformatted = msg.getUnformattedText();
-		String formatted = msg.getFormattedText();
-
-		return doAction(unformatted, formatted);
-	}
-
-	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		String unformatted = msg.getUnformattedText();
-		String formatted = msg.getFormattedText();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		String dateNowStr = LocalDateTime.now().format(formatter);
 
-		if (doAction(unformatted, formatted)) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-			String dateNowStr = LocalDateTime.now().format(formatter);
-
-			IChatComponent timeMsg;
-			if(getSettings().isChatTimeShortFormat()) {
-				timeMsg = new ChatComponentText("§6[§fT§6]");
-				timeMsg.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(dateNowStr)));
-			} else {
-				timeMsg = new ChatComponentText("§6[§f"+dateNowStr+"§6]");
-			}
-
-			if(getSettings().isChatTimeAfterMessage()) {
-				return new ChatComponentText("").appendSibling(msg).appendSibling(resetMsg).appendSibling(timeMsg);
-			} else {
-				return new ChatComponentText("").appendSibling(timeMsg).appendSibling(resetMsg).appendSibling(msg);
-			}
+		IChatComponent timeMsg;
+		if(getSettings().isChatTimeShortFormat()) {
+			timeMsg = new ChatComponentText("§6[§fT§6]");
+			timeMsg.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(dateNowStr)));
+		} else {
+			timeMsg = new ChatComponentText("§6[§f"+dateNowStr+"§6]");
 		}
 
-		return super.modifyChatMessage(msg);
+		if(getSettings().isChatTimeAfterMessage()) {
+			return new ChatComponentText("").appendSibling(msg).appendSibling(resetMsg).appendSibling(timeMsg);
+		} else {
+			return new ChatComponentText("").appendSibling(timeMsg).appendSibling(resetMsg).appendSibling(msg);
+		}
 	}
 }
