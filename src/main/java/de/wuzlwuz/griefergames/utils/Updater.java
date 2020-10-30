@@ -56,13 +56,14 @@ public class Updater {
         }));
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void checkForUpdates() {
         try {
             BufferedReader reader = Resources.asCharSource(new URL(UPDATE_URL), StandardCharsets.UTF_8).openBufferedStream();
             JsonObject json = new JsonParser().parse(reader).getAsJsonObject();
             if(json.has("tag_name") && json.has("assets")) {
                 latestVersion = json.get("tag_name").getAsString().replace("v", "");
-                if(!GrieferGames.VERSION.equals(latestVersion)) {
+                if(!GrieferGames.VERSION.equals(latestVersion) && !GrieferGames.VERSION.contains("beta")) {
                     JsonArray assets = json.get("assets").getAsJsonArray();
                     if(assets.size() > 0)  {
                         JsonObject grieferGamesAsset = assets.get(0).getAsJsonObject();
