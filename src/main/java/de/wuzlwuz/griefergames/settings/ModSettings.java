@@ -80,6 +80,7 @@ public class ModSettings {
 	private boolean clearMapCache = false;
 
 	private boolean labyChatShowSubServerEnabled = false;
+	private boolean discordShowSubServerEnabled = false;
 
 	private boolean autoPortal = false;
 
@@ -298,6 +299,10 @@ public class ModSettings {
 		return labyChatShowSubServerEnabled;
 	}
 
+	public boolean isDiscordShowSubServerEnabled() {
+		return discordShowSubServerEnabled;
+	}
+
 	public boolean isAutoPortl() {
 		return autoPortal;
 	}
@@ -472,6 +477,8 @@ public class ModSettings {
 
 		if (getConfig().has("labyChatShowSubServerEnabled"))
 			labyChatShowSubServerEnabled = getConfig().get("labyChatShowSubServerEnabled").getAsBoolean();
+		if (getConfig().has("discordShowSubServerEnabled"))
+			discordShowSubServerEnabled = getConfig().get("discordShowSubServerEnabled").getAsBoolean();
 
 		if (getConfig().has("autoPortal"))
 			autoPortal = getConfig().get("autoPortal").getAsBoolean();
@@ -971,6 +978,22 @@ public class ModSettings {
 					}
 				}, labyChatShowSubServerEnabled);
 		settings.add(labyChatShowSubServerEnabledBtn);
+
+		final BooleanElement discordShowSubServerEnabledBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_discordEnabled"),
+				new ControlElement.IconData("labymod/textures/settings/settings/discordrichpresence.png"), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean value) {
+				discordShowSubServerEnabled = value;
+				getConfig().addProperty("discordShowSubServerEnabled", value);
+				saveConfig();
+				if(value) {
+					getGG().getHelper().updateDiscordSubServer("lobby");
+				} else {
+					getGG().getHelper().updateDiscordSubServer("reset");
+				}
+			}
+		}, discordShowSubServerEnabled);
+		settings.add(discordShowSubServerEnabledBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_automatisations")));
 		final BooleanElement autoPortalBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_portalOnJoin"),

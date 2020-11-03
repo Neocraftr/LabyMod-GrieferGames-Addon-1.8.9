@@ -536,46 +536,70 @@ public class Helper {
 	}
 
 	public String getServerMessageName(String subServerName) {
-		String prefix = "GrieferGames";
 		if (subServerName == null || subServerName.trim().length() == 0 || subServerName.equalsIgnoreCase("lobby")
 				|| subServerName.equalsIgnoreCase("portal"))
-			return prefix;
+			return "";
 
 		String retSubServerName = subServerName.trim();
 
 		if (retSubServerName.equalsIgnoreCase("cb0")) {
-			retSubServerName = "CB Zero";
+			retSubServerName = "CityBuild Zero";
 		} else if (subServerName.equalsIgnoreCase("cbe")) {
-			retSubServerName = "CB Evil";
+			retSubServerName = "CityBuild Evil";
 		} else if (subServerName.equalsIgnoreCase("extreme") || subServerName.equalsIgnoreCase("nature")) {
-			retSubServerName = "CB " + subServerName;
+			retSubServerName = "CityBuild " + subServerName;
 		} else if (subServerName.equalsIgnoreCase("lava") || subServerName.equalsIgnoreCase("wasser")) {
 			retSubServerName = "Farmserver " + subServerName;
 		} else {
 			Matcher matcher = subServerCityBuildRegex.matcher(retSubServerName.toLowerCase());
 			if (matcher.find()) {
 				String cbNum = matcher.group(1);
-				retSubServerName = "CB " + cbNum;
+				retSubServerName = "CityBuild " + cbNum;
 			}
 		}
 
-		return prefix + " " + retSubServerName;
+		return retSubServerName;
 	}
 
 	public void updateLabyChatSubServer(String subServerName) {
 		JsonObject serverMessage = new JsonObject();
 
 		if(!subServerName.equals("reset")) {
-			String labyConnectString = GrieferGames.getGriefergames().getHelper().getServerMessageName(subServerName);
+			String subServer = GrieferGames.getGriefergames().getHelper().getServerMessageName(subServerName);
 
-			if (labyConnectString != null && labyConnectString.trim().length() > 0) {
+			if(!GrieferGames.getGriefergames().getGGServer().getLastLabyChatSubServer().equals(subServer)) {
+				GrieferGames.getGriefergames().getGGServer().setLastLabyChatSubServer(subServer);
 				serverMessage.addProperty("show_gamemode", true);
-				serverMessage.addProperty("gamemode_name", labyConnectString);
+				serverMessage.addProperty("gamemode_name", "GrieferGames "+subServer);
+				LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
 			}
 		} else {
+			GrieferGames.getGriefergames().getGGServer().setLastLabyChatSubServer("");
 			serverMessage.addProperty("show_gamemode", false);
-			serverMessage.addProperty("gamemode_name", "");
+			LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
 		}
-		LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
+	}
+
+	public void updateDiscordSubServer(String subServerName) {
+		JsonObject serverMessage = new JsonObject();
+
+		if(!subServerName.equals("reset")) {
+			String subServer = GrieferGames.getGriefergames().getHelper().getServerMessageName(subServerName);
+			if(subServer.equals("")) subServer = "GrieferGames";
+
+			if(!GrieferGames.getGriefergames().getGGServer().getLastDiscordSubServer().equals(subServer)) {
+				GrieferGames.getGriefergames().getGGServer().setLastDiscordSubServer(subServer);
+				serverMessage.addProperty("hasGame", true);
+				serverMessage.addProperty("game_mode", subServer);
+				serverMessage.addProperty("game_startTime", System.currentTimeMillis());
+				serverMessage.addProperty("game_endTime", 0);
+				LabyMod.getInstance().getDiscordApp().onServerMessage("discord_rpc", serverMessage);
+			}
+		} else {
+			GrieferGames.getGriefergames().getGGServer().setLastDiscordSubServer("");
+			serverMessage.addProperty("hasGame", false);
+			LabyMod.getInstance().getDiscordApp().onServerMessage("discord_rpc", serverMessage);
+		}
+
 	}
 }

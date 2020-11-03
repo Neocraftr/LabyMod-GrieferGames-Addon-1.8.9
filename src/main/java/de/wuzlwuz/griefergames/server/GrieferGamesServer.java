@@ -64,6 +64,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class GrieferGamesServer extends Server {
 	private List<SubServerListener> subServerListener = new ArrayList<SubServerListener>();
 	private String subServer = "";
+	private String lastLabyChatSubServer = "", lastDiscordSubServer = "";
 	private long nextLastMessageRequest = System.currentTimeMillis() + 1000L;
 	private long nextScoreboardRequest = System.currentTimeMillis() + (-1 * 1000L);
 	private long nextCheckFly = System.currentTimeMillis() + 1000L;
@@ -148,6 +149,9 @@ public class GrieferGamesServer extends Server {
 				if(getSettings().isLabyChatShowSubServerEnabled()) {
 					getGG().getHelper().updateLabyChatSubServer(subServerName);
 				}
+				if(getSettings().isDiscordShowSubServerEnabled()) {
+					getGG().getHelper().updateDiscordSubServer(subServerName);
+				}
 
 				if (getHelper().doResetBoosterBySubserver(subServerName)) {
 					getGG().getBoosters().clear();
@@ -218,6 +222,20 @@ public class GrieferGamesServer extends Server {
 	}
 	public void setSubServer(String subServer) {
 		this.subServer = subServer.trim();
+	}
+
+	public String getLastDiscordSubServer() {
+		return lastDiscordSubServer;
+	}
+	public void setLastDiscordSubServer(String lastDiscordSubServer) {
+		this.lastDiscordSubServer = lastDiscordSubServer;
+	}
+
+	public String getLastLabyChatSubServer() {
+		return lastLabyChatSubServer;
+	}
+	public void setLastLabyChatSubServer(String lastLabyChatSubServer) {
+		this.lastLabyChatSubServer = lastLabyChatSubServer;
 	}
 
 	public String getLastMessage() {
@@ -375,6 +393,8 @@ public class GrieferGamesServer extends Server {
 	@Override
 	public void onJoin(ServerData serverData) {
 		subServer = "";
+		lastLabyChatSubServer = "";
+		lastDiscordSubServer = "";
 		getGG().setNickname("");
 		getGG().setShowModules(true);
 
