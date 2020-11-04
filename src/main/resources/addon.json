@@ -1,10 +1,10 @@
 {
 	"uuid":"%uuid%",
 	"name":"GrieferGames",
-	"icon": "https://i.imgur.com/reKhDd6.png",
+	"icon": "https://raw.githubusercontent.com/Neocraftr/LabyMod-GrieferGames-Addon-1.8.9/master/icons/griefergames.png",
 	"mainClass":"de.wuzlwuz.griefergames.GrieferGames",
-	"description": "This add-on helps you to get a much better gaming experience on GrieferGames.net (Neocraftr fork)",
+	"description": "This add-on helps you to get a much better gaming experience on GrieferGames.net",
 	"version": 1,
-	"author": "wuzlwuz",
+	"author": "wuzlwuz & Neocraftr",
 	"category": 3
 }

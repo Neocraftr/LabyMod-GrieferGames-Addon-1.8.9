@@ -1017,5 +1017,7 @@ public class ModSettings {
 			}
 		}, hideBoosterMenu);
 		settings.add(hodeBoosterMenuBtn);
+
+		settings.add(new TextElement("§7Version: §e"+GrieferGames.VERSION+"\n§7GitHub: §bhttps://github.com/Neocraftr/LabyMod-GrieferGames-Addon-1.8.9"));
 	}
 }
