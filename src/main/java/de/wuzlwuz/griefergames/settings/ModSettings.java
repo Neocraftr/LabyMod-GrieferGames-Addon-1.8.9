@@ -36,7 +36,7 @@ public class ModSettings {
 	private EnumSounds privateChatSound = EnumSounds.NONE;
 	private EnumRealnameShown realname = EnumRealnameShown.DEFAULT;
 	// private boolean realnameClick = false;
-	private boolean msgDisplayNameClick = false;
+	private boolean msgDisplayNameClick = true;
 	private boolean clanTagClick = false;
 	private boolean filterDuplicateMessages = false;
 	private Integer filterDuplicateMessagesTime = 5;
@@ -52,15 +52,15 @@ public class ModSettings {
 	private boolean bankChatRight = true;
 	private boolean bankAchievement = false;
 
-	private boolean itemRemoverChatRight = true;
-	private boolean itemRemoverLastTimeHover = false;
+	private boolean itemRemoverChatRight = false;
+	private boolean itemRemoverLastTimeHover = true;
 
-	private boolean mobRemoverChatRight = true;
-	private boolean mobRemoverLastTimeHover = false;
+	private boolean mobRemoverChatRight = false;
+	private boolean mobRemoverLastTimeHover = true;
 
 	private boolean betterIgnoreList = true;
 
-	private boolean ampEnabled = false;
+	private boolean ampEnabled = true;
 	private boolean ampClanEnabled = false;
 	private String ampChatReplacement = "";
 	private String defaultAMPChatReplacement = "[AMP] %CLEAN%";
@@ -75,16 +75,16 @@ public class ModSettings {
 
 	private boolean cleanNewsMsg = false;
 
-	private boolean updateBoosterState = false;
+	private boolean updateBoosterState = true;
 
 	private boolean clearMapCache = false;
 
-	private boolean labyChatShowSubServerEnabled = false;
-	private boolean discordShowSubServerEnabled = false;
+	private boolean labyChatShowSubServerEnabled = true;
+	private boolean discordShowSubServerEnabled = true;
 
 	private boolean autoPortal = false;
 
-	private boolean hideBoosterMenu = false;
+	private boolean hideBoosterMenu = true;
 
 	private boolean autoUpdate = true;
 
