@@ -30,6 +30,11 @@ public class AntiMagicPrefix extends Chat {
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
+		// Players in clan
+		if(msg.getSiblings().size() == 2) {
+			msg = msg.getSiblings().get(1);
+		}
+
 		IChatComponent newMsg = new ChatComponentText("");
 		for(int i=0; i<msg.getSiblings().size(); i++) {
 			if(i+2 < msg.getSiblings().size()) {

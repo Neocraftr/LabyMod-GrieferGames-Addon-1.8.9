@@ -13,7 +13,7 @@ public class AntiMagicClanTag extends Chat {
 
 	@Override
 	public String getName() {
-		return "antiMagicPrefix";
+		return "antiMagicClanTag";
 	}
 
 	@Override
