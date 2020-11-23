@@ -24,25 +24,26 @@ public class PrivateMessage extends Chat {
 		return "privateMessage";
 	}
 
-	public boolean doAction(String unformatted, String formatted) {
-		Matcher privateMessage = privateMessageRegex.matcher(unformatted);
-		Matcher privateMessageSent = privateMessageSentRegex.matcher(unformatted);
+	public boolean doAction(String unformatted) {
+		if(unformatted.trim().length() > 0) {
+			Matcher privateMessage = privateMessageRegex.matcher(unformatted);
+			Matcher privateMessageSent = privateMessageSentRegex.matcher(unformatted);
 
-		return getSettings().isPrivateChatRight() && unformatted.trim().length() > 0
-				&& (privateMessage.find() || privateMessageSent.find());
+			return privateMessage.find() || privateMessageSent.find();
+		}
+		return false;
 	}
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		return doAction(unformatted, formatted);
+		return getSettings().isPrivateChatRight() && doAction(unformatted);
 	}
 
 	@Override
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
 		String unformatted = msg.getUnformattedText();
-		String formatted = msg.getFormattedText();
 
-		return doAction(unformatted, formatted);
+		return doAction(unformatted);
 	}
 
 	@Override

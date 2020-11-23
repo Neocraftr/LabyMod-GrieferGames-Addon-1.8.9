@@ -15,8 +15,11 @@ public class PlotChat extends Chat {
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		Matcher matcher = plotMsgRegex.matcher(unformatted);
-		return getSettings().isPlotChatRight() && unformatted.trim().length() > 0 && matcher.find();
+		if(getSettings().isPlotChatRight() && unformatted.trim().length() > 0) {
+			Matcher matcher = plotMsgRegex.matcher(unformatted);
+			return matcher.find();
+		}
+		return false;
 	}
 
 	@Override

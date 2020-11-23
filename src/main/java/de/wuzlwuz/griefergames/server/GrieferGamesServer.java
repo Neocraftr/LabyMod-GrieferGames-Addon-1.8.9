@@ -466,6 +466,8 @@ public class GrieferGamesServer extends Server {
 		if (!getSettings().isModEnabled())
 			return o;
 
+		long startTime = System.nanoTime();
+
 		try {
 			boolean hasPrefix = false;
 			IChatComponent msg = (IChatComponent) o;
@@ -489,6 +491,7 @@ public class GrieferGamesServer extends Server {
 				}
 			}
 
+			System.out.println(System.nanoTime() - startTime);
 			return msg;
 		} catch (Exception e) {
 			e.printStackTrace();

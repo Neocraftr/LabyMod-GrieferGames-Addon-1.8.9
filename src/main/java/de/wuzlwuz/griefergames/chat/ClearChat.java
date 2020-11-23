@@ -19,8 +19,12 @@ public class ClearChat extends Chat {
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
 		String unformatted = msg.getUnformattedText();
 
-		Matcher matcher = chatClearedRegex.matcher(unformatted);
-		return getSettings().isCleanBlanks() && unformatted.trim().length() > 0 && matcher.find() && !getGG().getIsInTeam();
+		if(getSettings().isCleanBlanks() && unformatted.trim().length() > 0) {
+			Matcher matcher = chatClearedRegex.matcher(unformatted);
+			return matcher.find();
+		}
+
+		return false;
 	}
 
 	@Override

@@ -23,20 +23,23 @@ public class MobRemover extends Chat {
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		if(!getSettings().isMobRemoverChatRight()) return false;
-
-		Matcher mobRemoverMessage = mobRemoverMessageRegex.matcher(unformatted);
-		Matcher mobRemoverDoneMessage = mobRemoverDoneMessageRegex.matcher(unformatted);
-		return unformatted.trim().length() > 0 && (mobRemoverMessage.find() || mobRemoverDoneMessage.find());
+		if(getSettings().isMobRemoverChatRight() && unformatted.trim().length() > 0) {
+			Matcher mobRemoverMessage = mobRemoverMessageRegex.matcher(unformatted);
+			Matcher mobRemoverDoneMessage = mobRemoverDoneMessageRegex.matcher(unformatted);
+			return mobRemoverMessage.find() || mobRemoverDoneMessage.find();
+		}
+		return false;
 	}
 
 	@Override
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
 		String unformatted = msg.getUnformattedText();
 
-		Matcher mobRemoverDoneMessage = mobRemoverDoneMessageRegex.matcher(unformatted);
-
-		return (mobRemoverDoneMessage.find());
+		if(getSettings().isMobRemoverLastTimeHover() && unformatted.trim().length() > 0) {
+			Matcher mobRemoverDoneMessage = mobRemoverDoneMessageRegex.matcher(unformatted);
+			return mobRemoverDoneMessage.find();
+		}
+		return false;
 	}
 
 	@Override
@@ -46,13 +49,11 @@ public class MobRemover extends Chat {
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		if (getSettings().isMobRemoverLastTimeHover() && doActionModifyChatMessage(msg)) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-			String dateNowStr = LocalDateTime.now().format(formatter);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		String dateNowStr = LocalDateTime.now().format(formatter);
 
-			IChatComponent hoverText = new ChatComponentText(dateNowStr);
-			msg.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
-		}
+		IChatComponent hoverText = new ChatComponentText(dateNowStr);
+		msg.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 		return msg;
 	}
 }

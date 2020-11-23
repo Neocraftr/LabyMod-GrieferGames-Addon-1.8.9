@@ -17,15 +17,18 @@ public class AntiMagicPrefix extends Chat {
 
 	@Override
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
-		String unformatted = msg.getUnformattedText();
-		String formatted = msg.getFormattedText();
+		if(getSettings().isAMPEnabled()) {
+			String unformatted = msg.getUnformattedText();
+			String formatted = msg.getFormattedText();
 
-		String oldMessage = getHelper().getProperTextFormat(formatted);
+			String oldMessage = getHelper().getProperTextFormat(formatted);
 
-		Matcher antiMagicPrefix = antiMagicPrefixRegex.matcher(unformatted);
-
-		return getSettings().isAMPEnabled() && unformatted.trim().length() > 0 && oldMessage.contains("§k")
-				&& antiMagicPrefix.find();
+			if(unformatted.trim().length() > 0 && oldMessage.contains("§k")) {
+				Matcher antiMagicPrefix = antiMagicPrefixRegex.matcher(unformatted);
+				return antiMagicPrefix.find();
+			}
+		}
+		return false;
 	}
 
 	@Override

@@ -20,8 +20,11 @@ public class IgnoreList extends Chat {
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
 		String unformatted = msg.getUnformattedText();
 
-		Matcher ignoreList = ignoreListRegex.matcher(unformatted);
-		return getSettings().isBetterIgnoreList() && ignoreList.find();
+		if(getSettings().isBetterIgnoreList()) {
+			Matcher ignoreList = ignoreListRegex.matcher(unformatted);
+			return ignoreList.find();
+		}
+		return false;
 	}
 
 	@Override

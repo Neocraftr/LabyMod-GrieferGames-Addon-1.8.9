@@ -18,10 +18,13 @@ public class Vote extends Chat {
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		Matcher matcher = voteMsgHubRegexp.matcher(unformatted);
-		Matcher matcher2 = voteMsgRegexp.matcher(unformatted);
-		return getSettings().isMobRemoverChatRight() && unformatted.trim().length() > 0
-				&& (matcher.find() || matcher2.find());
+		if(getSettings().isMobRemoverChatRight() && unformatted.trim().length() > 0) {
+			Matcher matcher = voteMsgHubRegexp.matcher(unformatted);
+			Matcher matcher2 = voteMsgRegexp.matcher(unformatted);
+
+			return matcher.find() || matcher2.find();
+		}
+		return false;
 	}
 
 	@Override

@@ -26,16 +26,20 @@ public class Bank extends Chat {
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		Matcher bankPayInMessage = bankPayInMessageRegexp.matcher(unformatted);
-		Matcher bankPayOutMessage = bankPayOutMessageRegexp.matcher(unformatted);
-		Matcher bankBalanceMessage = bankBalanceMessageRegexp.matcher(unformatted);
-		Matcher bankMessageOther = bankMessageOtherRegexp.matcher(unformatted);
+		if(unformatted.trim().length() > 0) {
+			Matcher bankPayInMessage = bankPayInMessageRegexp.matcher(unformatted);
+			Matcher bankPayOutMessage = bankPayOutMessageRegexp.matcher(unformatted);
 
-		if (unformatted.trim().length() > 0 && (bankPayInMessage.find() || bankPayOutMessage.find()))
-			return true;
+			if (bankPayInMessage.find() || bankPayOutMessage.find()) return true;
 
-		return getSettings().isBankChatRight() && unformatted.trim().length() > 0
-				&& (bankBalanceMessage.find() || bankMessageOther.find());
+			if(getSettings().isBankChatRight()) {
+				Matcher bankBalanceMessage = bankBalanceMessageRegexp.matcher(unformatted);
+				Matcher bankMessageOther = bankMessageOtherRegexp.matcher(unformatted);
+
+				return bankBalanceMessage.find() || bankMessageOther.find();
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -73,18 +77,15 @@ public class Bank extends Chat {
 	}
 
 	private int getMoneyBank(String unformatted) {
-		int money = 0;
 		Matcher matcher = moneyBankRegexp.matcher(unformatted);
 		if (matcher.find()) {
 			String moneyStr = matcher.group(1).trim();
 			if (moneyStr.length() > 0) {
 				try {
-					money = Integer.parseInt(moneyStr);
-				} catch (NumberFormatException e) {
-					// TODO: handle exception
-				}
+					return Integer.parseInt(moneyStr);
+				} catch (NumberFormatException ignored) {}
 			}
 		}
-		return money;
+		return -1;
 	}
 }

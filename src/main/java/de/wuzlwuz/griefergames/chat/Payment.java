@@ -35,13 +35,11 @@ public class Payment extends Chat {
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		if(!getSettings().isPayChatRight()) return false;
-
 		if (!getHelper().getProperTextFormat(formatted).contains("§r§f §r§ahat dir $")) {
 			Matcher matcher = getMoneyValidRegex.matcher(unformatted);
 			if (matcher.find()) {
 				getGG().setIncome(getGG().getIncome() + getMoneyPay(unformatted));
-				return true;
+				return getSettings().isPayChatRight();
 			}
 		}
 
@@ -49,11 +47,11 @@ public class Payment extends Chat {
 		Matcher earnedMoney = earnedMoneyRegex.matcher(unformatted);
 		if(payedMoney.find()) {
 			getGG().setIncome(getGG().getIncome() - getMoneyPay(unformatted));
-			return true;
+			return getSettings().isPayChatRight();
 		}
 		if(earnedMoney.find()) {
 			getGG().setIncome(getGG().getIncome() + getMoneyPay(unformatted));
-			return true;
+			return getSettings().isPayChatRight();
 		}
 		return false;
 	}

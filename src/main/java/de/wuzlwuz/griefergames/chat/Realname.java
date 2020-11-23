@@ -25,9 +25,13 @@ public class Realname extends Chat {
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		Matcher realname = realnameRegex.matcher(unformatted);
-		Matcher realname2 = realnameRegex2.matcher(getHelper().getProperTextFormat(formatted));
-		return getSettings().isRealnameRight() && unformatted.trim().length() > 0 && realname.find() && realname2.find();
+		if(getSettings().isRealnameRight() && unformatted.trim().length() > 0) {
+			Matcher realname = realnameRegex.matcher(unformatted);
+			Matcher realname2 = realnameRegex2.matcher(getHelper().getProperTextFormat(formatted));
+
+			return realname.find() && realname2.find();
+		}
+		return false;
 	}
 
 	@Override
@@ -43,8 +47,11 @@ public class Realname extends Chat {
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
 		String unformatted = msg.getUnformattedText();
 
-		Matcher realname = realnameDupRegex.matcher(unformatted);
-		return realname.find();
+		if(getSettings().isRealnameRight() && getSettings().isRealnameBoth()) {
+			Matcher realname = realnameDupRegex.matcher(unformatted);
+			return realname.find();
+		}
+		return false;
 	}
 
 	@Override

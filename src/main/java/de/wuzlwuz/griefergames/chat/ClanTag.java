@@ -22,11 +22,13 @@ public class ClanTag extends Chat {
 	@Override
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
 		String unformatted = msg.getUnformattedText();
-		String formatted = msg.getFormattedText();
 
-		Matcher clanTag = clanTagRegex.matcher(unformatted);
+		if(getSettings().isClanTagClick() && unformatted.trim().length() > 0) {
+			Matcher clanTag = clanTagRegex.matcher(unformatted);
+			return clanTag.find();
+		}
 
-		return getSettings().isClanTagClick() && unformatted.trim().length() > 0 && clanTag.find();
+		return false;
 	}
 
 	@Override

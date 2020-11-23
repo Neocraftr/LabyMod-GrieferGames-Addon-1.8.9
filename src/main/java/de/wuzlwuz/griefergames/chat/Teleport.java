@@ -23,34 +23,34 @@ public class Teleport extends Chat {
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
 		String unformatted = msg.getUnformattedText();
 
-		Matcher tpaMesssage = tpaMesssageRegexp.matcher(unformatted);
-		Matcher tpahereMesssage = tpahereMesssageRegexp.matcher(unformatted);
+		if(getSettings().isMarkTPAMsg() && unformatted.trim().length() > 0) {
+			Matcher tpaMesssage = tpaMesssageRegexp.matcher(unformatted);
+			Matcher tpahereMesssage = tpahereMesssageRegexp.matcher(unformatted);
 
-		return getSettings().isMarkTPAMsg() && unformatted.trim().length() > 0
-				&& (tpaMesssage.find() || tpahereMesssage.find());
+			return tpaMesssage.find() || tpahereMesssage.find();
+		}
+		return false;
 	}
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
 		String unformatted = msg.getUnformattedText();
 
-		if (doActionModifyChatMessage(msg)) {
-			Matcher tpaMesssage = tpaMesssageRegexp.matcher(unformatted);
-			Matcher tpahereMesssage = tpahereMesssageRegexp.matcher(unformatted);
+		Matcher tpaMesssage = tpaMesssageRegexp.matcher(unformatted);
+		Matcher tpahereMesssage = tpahereMesssageRegexp.matcher(unformatted);
 
-			if (tpaMesssage.find()) {
-				IChatComponent beforeTpaMsg = new ChatComponentText("[TPA] ")
-						.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_GREEN).setBold(true));
-				IChatComponent newMsg = new ChatComponentText("").appendSibling(beforeTpaMsg).appendSibling(msg);
-				return newMsg;
-			}
+		if (tpaMesssage.find()) {
+			IChatComponent beforeTpaMsg = new ChatComponentText("[TPA] ")
+					.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_GREEN).setBold(true));
+			IChatComponent newMsg = new ChatComponentText("").appendSibling(beforeTpaMsg).appendSibling(msg);
+			return newMsg;
+		}
 
-			if (tpahereMesssage.find()) {
-				IChatComponent beforeTpaMsg = new ChatComponentText("[TPAHERE] ")
-						.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED).setBold(true));
-				IChatComponent newMsg = new ChatComponentText("").appendSibling(beforeTpaMsg).appendSibling(msg);
-				return newMsg;
-			}
+		if (tpahereMesssage.find()) {
+			IChatComponent beforeTpaMsg = new ChatComponentText("[TPAHERE] ")
+					.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED).setBold(true));
+			IChatComponent newMsg = new ChatComponentText("").appendSibling(beforeTpaMsg).appendSibling(msg);
+			return newMsg;
 		}
 
 		return msg;
