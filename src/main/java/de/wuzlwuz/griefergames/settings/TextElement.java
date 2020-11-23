@@ -8,14 +8,20 @@ import java.util.List;
 
 public class TextElement extends SettingsElement {
 
-    private final int FONT_HEIGHT = LabyMod.getInstance().getDrawUtils().fontRenderer.FONT_HEIGHT;
+    private final int FONT_HEIGHT = LabyMod.getInstance().getDrawUtils().getFontRenderer().FONT_HEIGHT;
     private List<String> rows = new ArrayList<>();
+    private String textAlignment;
 
-    public TextElement(String text) {
+    public TextElement(String text, String textAlignment) {
         super(text, null);
         for(String row : text.split("\n")) {
             rows.addAll(LabyMod.getInstance().getDrawUtils().listFormattedStringToWidth("§f"+row, 200));
         }
+        this.textAlignment = textAlignment;
+    }
+
+    public TextElement(String text) {
+        this(text, "left");
     }
 
     public void init() {}
@@ -26,7 +32,22 @@ public class TextElement extends SettingsElement {
         for(int i=0; i<rows.size(); i++) {
             String element = rows.get(i);
             String colorCodes = i != 0 ? getLastColors(rows.get(i - 1)) : "";
-            LabyMod.getInstance().getDrawUtils().drawString(colorCodes+element, x, absoluteY + (i * FONT_HEIGHT));
+
+            int xOffset;
+            int textWidth = LabyMod.getInstance().getDrawUtils().getFontRenderer().getStringWidth(element);
+            switch(textAlignment) {
+                case "center":
+                    xOffset = 200/2 - textWidth/2;
+                    break;
+                case "right":
+                    xOffset = 200 - textWidth;
+                    break;
+                default:
+                    xOffset = 0;
+                    break;
+            }
+
+            LabyMod.getInstance().getDrawUtils().drawString(colorCodes+element, x + xOffset, absoluteY + (i * FONT_HEIGHT));
         }
 
     }
@@ -53,6 +74,10 @@ public class TextElement extends SettingsElement {
         for(String row : text.split("\n")) {
             rows.addAll(LabyMod.getInstance().getDrawUtils().listFormattedStringToWidth("§f"+row, 200));
         }
+    }
+
+    public void setTextAlignment(String textAlignment) {
+        this.textAlignment = textAlignment;
     }
 
     private String getLastColors(String input) {
