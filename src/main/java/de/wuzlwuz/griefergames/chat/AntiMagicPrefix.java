@@ -33,18 +33,20 @@ public class AntiMagicPrefix extends Chat {
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		// Players in clan
-		if(msg.getSiblings().size() == 2) {
-			msg = msg.getSiblings().get(1);
+		boolean clan = msg.getSiblings().size() == 2;
+
+		IChatComponent message = msg;
+		if(clan) {
+			message = msg.getSiblings().get(1);
 		}
 
 		IChatComponent newMsg = new ChatComponentText("");
-		for(int i=0; i<msg.getSiblings().size(); i++) {
-			if(i+2 < msg.getSiblings().size()) {
-				String messageToCheck = msg.getSiblings().get(i).getUnformattedText()+msg.getSiblings().get(i+1).getUnformattedText()+msg.getSiblings().get(i+2).getUnformattedText();
+		for(int i=0; i<message.getSiblings().size(); i++) {
+			if(i+2 < message.getSiblings().size()) {
+				String messageToCheck = message.getSiblings().get(i).getUnformattedText()+message.getSiblings().get(i+1).getUnformattedText()+message.getSiblings().get(i+2).getUnformattedText();
 				Matcher antiMagicPrefix = antiMagicPrefixRegex.matcher(messageToCheck);
-				if (msg.getSiblings().get(i).getChatStyle().getObfuscated() && antiMagicPrefix.find()) {
-					ChatStyle msgStyling = msg.getSiblings().get(i).getChatStyle().createDeepCopy().setObfuscated(false);
+				if (message.getSiblings().get(i).getChatStyle().getObfuscated() && antiMagicPrefix.find()) {
+					ChatStyle msgStyling = message.getSiblings().get(i).getChatStyle().createDeepCopy().setObfuscated(false);
 
 					String chatRepText = getSettings().getAMPChatReplacement();
 
@@ -52,7 +54,7 @@ public class AntiMagicPrefix extends Chat {
 						chatRepText = getSettings().getDefaultAMPChatReplacement();
 					}
 
-					chatRepText = chatRepText.replaceAll("%CLEAN%", msg.getSiblings().get(i).getUnformattedText());
+					chatRepText = chatRepText.replaceAll("%CLEAN%", message.getSiblings().get(i).getUnformattedText());
 					chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
 
 					// Rank
@@ -60,20 +62,22 @@ public class AntiMagicPrefix extends Chat {
 							new ChatComponentText(chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
 									.setChatStyle(msgStyling));
 					// Separator: ┃
-					newMsg.appendSibling(msg.getSiblings().get(i+1));
+					newMsg.appendSibling(message.getSiblings().get(i+1));
 
 					// Name
-					ChatStyle msgStyling2 = msg.getSiblings().get(i+2).getChatStyle().createDeepCopy().setObfuscated(false);
-					newMsg.appendSibling(new ChatComponentText(msg.getSiblings().get(i+2).getUnformattedText()).setChatStyle(msgStyling2));
+					ChatStyle msgStyling2 = message.getSiblings().get(i+2).getChatStyle().createDeepCopy().setObfuscated(false);
+					newMsg.appendSibling(new ChatComponentText(message.getSiblings().get(i+2).getUnformattedText()).setChatStyle(msgStyling2));
 
 					i += 2;
 				} else {
-					newMsg.appendSibling(msg.getSiblings().get(i));
+					newMsg.appendSibling(message.getSiblings().get(i));
 				}
 			} else {
-				newMsg.appendSibling(msg.getSiblings().get(i));
+				newMsg.appendSibling(message.getSiblings().get(i));
 			}
 		}
+
+		if(clan) newMsg.getSiblings().add(0, msg.getSiblings().get(0));
 		return newMsg;
 	}
 }
