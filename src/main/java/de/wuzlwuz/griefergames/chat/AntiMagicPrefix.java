@@ -42,8 +42,8 @@ public class AntiMagicPrefix extends Chat {
 
 		IChatComponent newMsg = new ChatComponentText("");
 		for(int i=0; i<message.getSiblings().size(); i++) {
-			if(i+2 < message.getSiblings().size()) {
-				String messageToCheck = message.getSiblings().get(i).getUnformattedText()+message.getSiblings().get(i+1).getUnformattedText()+message.getSiblings().get(i+2).getUnformattedText();
+			if(i+3 < message.getSiblings().size()) {
+				String messageToCheck = message.getSiblings().get(i).getUnformattedText()+message.getSiblings().get(i+1).getUnformattedText()+message.getSiblings().get(i+2).getUnformattedText()+message.getSiblings().get(i+3).getUnformattedText();
 				Matcher antiMagicPrefix = antiMagicPrefixRegex.matcher(messageToCheck);
 				if (message.getSiblings().get(i).getChatStyle().getObfuscated() && antiMagicPrefix.find()) {
 					ChatStyle msgStyling = message.getSiblings().get(i).getChatStyle().createDeepCopy().setObfuscated(false);
@@ -61,14 +61,15 @@ public class AntiMagicPrefix extends Chat {
 					newMsg.appendSibling(
 							new ChatComponentText(chatRepText.replace("${REPSTART}", "").replace("${REPEND}", ""))
 									.setChatStyle(msgStyling));
-					// Separator: ┃
+					// Space + Separator: ┃
 					newMsg.appendSibling(message.getSiblings().get(i+1));
+					newMsg.appendSibling(message.getSiblings().get(i+2));
 
 					// Name
-					ChatStyle msgStyling2 = message.getSiblings().get(i+2).getChatStyle().createDeepCopy().setObfuscated(false);
-					newMsg.appendSibling(new ChatComponentText(message.getSiblings().get(i+2).getUnformattedText()).setChatStyle(msgStyling2));
+					ChatStyle msgStyling2 = message.getSiblings().get(i+3).getChatStyle().createDeepCopy().setObfuscated(false);
+					newMsg.appendSibling(new ChatComponentText(message.getSiblings().get(i+3).getUnformattedText()).setChatStyle(msgStyling2));
 
-					i += 2;
+					i += 3;
 				} else {
 					newMsg.appendSibling(message.getSiblings().get(i));
 				}

@@ -187,25 +187,45 @@ public class GrieferGamesServer extends Server {
 				if (subServerName.equalsIgnoreCase("lobby")) {
 					getGG().setTimeToWait(0);
 					//getGG().setShowBoosterDummy(true);
-					if (!loadPlayerRank()) {
-						Thread thread = new Thread() {
-							public void run() {
-								try {
-									Thread.sleep(500);
-									if (!loadPlayerRank()) {
-										Thread.sleep(500);
-										if (!loadPlayerRank()) {
-											getApi().displayMessageInChat(GrieferGames.PREFIX+"§4"+ LanguageManager.translateOrReturnKey("message_gg_error")+
-													": §c"+LanguageManager.translateOrReturnKey("message_gg_rankError"));
+
+					Thread thread = new Thread() {
+						public void run() {
+							try {
+								int errorCount = 0;
+								while(errorCount < 3) {
+									if(loadPlayerRank()) {
+										if (!modulesLoaded) {
+											modulesLoaded = true;
+
+											if (getHelper().showGodModule(getGG().getPlayerRank())) {
+												new GodmodeModule();
+											}
+											if (getHelper().showAuraModule(getGG().getPlayerRank())) {
+												new AuraModule();
+											}
+											if (getHelper().showVanishModule(getGG().getPlayerRank())) {
+												new VanishModule();
+											}
 										}
+										if(getSettings().isAutoPortl()) {
+											Minecraft.getMinecraft().thePlayer.sendChatMessage("/portal");
+										}
+										break;
+									} else {
+										errorCount++;
+										Thread.sleep(500);
 									}
-								} catch (Exception e) {
-									e.printStackTrace();
 								}
+								if(errorCount >= 3) {
+									getApi().displayMessageInChat(GrieferGames.PREFIX+"§4"+ LanguageManager.translateOrReturnKey("message_gg_error")+
+											": §c"+LanguageManager.translateOrReturnKey("message_gg_rankError"));
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
-						};
-						thread.start();
-					}
+						}
+					};
+					thread.start();
 				} else {
 					// Minecraft.getMinecraft().entityRenderer.getMapItemRenderer().clearLoadedMaps();
 					//getGG().setShowBoosterDummy(false);
@@ -306,20 +326,8 @@ public class GrieferGamesServer extends Server {
 				 * getGG().setIsInTeam(getHelper().isInTeam(getPlayerRank())); }
 				 */
 			}
-			if (!modulesLoaded) {
-				modulesLoaded = true;
 
-				if (getHelper().showGodModule(getGG().getPlayerRank())) {
-					new GodmodeModule();
-				}
-				if (getHelper().showAuraModule(getGG().getPlayerRank())) {
-					new AuraModule();
-				}
-				if (getHelper().showVanishModule(getGG().getPlayerRank())) {
-					new VanishModule();
-				}
-			}
-			return true;
+			return getGG().getPlayerRank() != "";
 		} catch (Exception e) {
 			e.printStackTrace();
 
@@ -455,10 +463,6 @@ public class GrieferGamesServer extends Server {
 			});
 
 			listenerLoaded = true;
-		}
-
-		if(getSettings().isModEnabled() && getSettings().isAutoPortl()) {
-			Minecraft.getMinecraft().thePlayer.sendChatMessage("/portal");
 		}
 	}
 

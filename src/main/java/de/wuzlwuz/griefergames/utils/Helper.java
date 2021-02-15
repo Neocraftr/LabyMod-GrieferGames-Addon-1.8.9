@@ -21,7 +21,6 @@ import net.labymod.ingamechat.tools.filter.Filters.Filter;
 import net.labymod.main.LabyMod;
 
 public class Helper {
-	private Pattern subServerNameRegex = Pattern.compile("§3§lServer\\:?$");
 	private Pattern subServerCityBuildRegex = Pattern.compile("^cb([0-9]+)$");
 	private Pattern displayNameRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}))");
 
@@ -62,15 +61,9 @@ public class Helper {
 	}
 
 	public boolean isScoreBoardSubServer(String formatted) {
-
 		String fMsg = getProperTextFormat(formatted);
 
-		if (fMsg.contains("§3§lServer")) {
-			Matcher matcher = subServerNameRegex.matcher(fMsg);
-			return matcher.find();
-		}
-
-		return false;
+		return fMsg.contains("§3§lServer");
 	}
 
 	public int isValidBoosterDoneMessage(String unformatted, String formatted) {

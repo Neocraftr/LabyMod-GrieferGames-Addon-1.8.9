@@ -36,19 +36,20 @@ public class AntiMagicClanTag extends Chat {
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
 		boolean delClanTagMagic = true;
 		IChatComponent newMsg = new ChatComponentText("");
-		for (IChatComponent component : msg.getSiblings()) {
+
+		for (IChatComponent component : msg.getSiblings().get(0).getSiblings()) { // message[0] : clan tag
 			if(component.getUnformattedText().contains("]")) {
 				delClanTagMagic = false;
 			}
 
-			if ((component.getChatStyle().getObfuscated() || component.getChatStyle().getStrikethrough())
-					&& delClanTagMagic) {
-				ChatStyle msgStyling = component.getChatStyle().createDeepCopy().setObfuscated(false)
-						.setStrikethrough(false);
+			if ((component.getChatStyle().getObfuscated() || component.getChatStyle().getStrikethrough()) && delClanTagMagic) {
+				ChatStyle msgStyling = component.getChatStyle().createDeepCopy().setObfuscated(false).setStrikethrough(false);
 				component.setChatStyle(msgStyling);
 			}
 			newMsg.appendSibling(component);
 		}
+
+		newMsg.appendSibling(msg.getSiblings().get(1)); // message[1] : normal message
 		return newMsg;
 	}
 }

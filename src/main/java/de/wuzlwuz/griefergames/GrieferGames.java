@@ -48,7 +48,7 @@ public class GrieferGames extends LabyModAddon {
 	private List<Chat> chatModules = new ArrayList<Chat>();
 	private boolean isInTeam = false;
 	private String nickname = "";
-	private String playerRank = "Spieler";
+	private String playerRank = "";
 	private boolean newsStart = false;
 	private int timeToWait = 0;
 	private double income;
