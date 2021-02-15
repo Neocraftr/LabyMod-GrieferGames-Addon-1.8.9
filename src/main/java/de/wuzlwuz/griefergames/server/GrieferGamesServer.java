@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.google.gson.JsonObject;
-
 import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.chat.AntiMagicClanTag;
 import de.wuzlwuz.griefergames.chat.AntiMagicPrefix;
@@ -14,7 +12,6 @@ import de.wuzlwuz.griefergames.chat.Blanks;
 import de.wuzlwuz.griefergames.chat.Chat;
 import de.wuzlwuz.griefergames.chat.ChatTime;
 import de.wuzlwuz.griefergames.chat.CheckPlot;
-import de.wuzlwuz.griefergames.chat.ClanTag;
 import de.wuzlwuz.griefergames.chat.ClearChat;
 import de.wuzlwuz.griefergames.chat.GlobalMessage;
 import de.wuzlwuz.griefergames.chat.IgnoreList;
@@ -46,7 +43,6 @@ import net.labymod.api.events.MessageSendEvent;
 import net.labymod.api.events.TabListEvent;
 import net.labymod.core.LabyModCore;
 import net.labymod.ingamegui.ModuleCategoryRegistry;
-import net.labymod.main.LabyMod;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.labymod.servermanager.Server;
@@ -131,7 +127,6 @@ public class GrieferGamesServer extends Server {
 		getGG().addChatModule(new LobbyHub());
 		getGG().addChatModule(new Realname());
 		getGG().addChatModule(new IgnoreList());
-		getGG().addChatModule(new ClanTag());
 		getGG().addChatModule(new AntiMagicClanTag());
 		getGG().addChatModule(new Teleport());
 		getGG().addChatModule(new AntiMagicPrefix());

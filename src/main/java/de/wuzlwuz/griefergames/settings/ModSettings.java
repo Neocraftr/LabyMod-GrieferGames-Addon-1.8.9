@@ -37,7 +37,6 @@ public class ModSettings {
 	private EnumRealnameShown realname = EnumRealnameShown.DEFAULT;
 	// private boolean realnameClick = false;
 	private boolean msgDisplayNameClick = true;
-	private boolean clanTagClick = false;
 	private boolean filterDuplicateMessages = false;
 	private Integer filterDuplicateMessagesTime = 5;
 
@@ -181,10 +180,6 @@ public class ModSettings {
 
 	public boolean isMsgDisplayNameClick() {
 		return this.msgDisplayNameClick;
-	}
-
-	public boolean isClanTagClick() {
-		return this.clanTagClick;
 	}
 
 	public boolean isPreventCommandFailure() {
@@ -380,9 +375,6 @@ public class ModSettings {
 
 		if (getConfig().has("msgDisplayNameClick"))
 			msgDisplayNameClick = getConfig().get("msgDisplayNameClick").getAsBoolean();
-
-		if (getConfig().has("clanTagClick"))
-			clanTagClick = getConfig().get("clanTagClick").getAsBoolean();
 
 		if (getConfig().has("filterDuplicateMessages"))
 			filterDuplicateMessages = getConfig().get("filterDuplicateMessages").getAsBoolean();
@@ -596,17 +588,6 @@ public class ModSettings {
 					}
 				}, msgDisplayNameClick);
 		settings.add(msgDisplayNameClickBtn);
-
-		final BooleanElement clanTagClickBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_clickClanTag"),
-				new ControlElement.IconData("labymod/textures/settings/settings/chatshortcuts.png"), new Consumer<Boolean>() {
-					@Override
-					public void accept(Boolean value) {
-						clanTagClick = value;
-						getConfig().addProperty("clanTagClick", value);
-						saveConfig();
-					}
-				}, clanTagClick);
-		settings.add(clanTagClickBtn);
 
 		final BooleanElement filterDuplicateMessagesBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_filterDuplicateMessages"),
 				new ControlElement.IconData(Material.BARRIER), new Consumer<Boolean>() {
