@@ -241,7 +241,7 @@ public class GrieferGames extends LabyModAddon {
 		helper = new Helper();
 		settings = new ModSettings();
 
-		System.out.println("[GrieferGames] enabled.");
+		System.out.println("[GrieferGames-Addon] enabled.");
 	}
 
 	public void loadTranslations(String lang) {
@@ -260,7 +260,7 @@ public class GrieferGames extends LabyModAddon {
 
 			if (stream == null) {
 				stream = defaultStream;
-				System.out.println("[GrieferGames] Couldn't load language file " + lang);
+				System.out.println("[GrieferGames-Addon] Couldn't load language file " + lang);
 			}
 
 			if (stream != null) {
@@ -278,18 +278,18 @@ public class GrieferGames extends LabyModAddon {
 			}
 
 			if (!found) {
-				System.out.println("[GrieferGames] Couldn't load language file EN");
+				System.out.println("[GrieferGames-Addon] Couldn't load language file EN");
 			}
 
 		} catch (Exception error) {
 			error.printStackTrace();
-			System.out.println("[GrieferGames] Couldn't load language file " + lang + " " + error.getMessage());
+			System.out.println("[GrieferGames-Addon] Couldn't load language file " + lang + " " + error.getMessage());
 		}
 	}
 
 	@Override
 	public void onDisable() {
-		System.out.println("[GrieferGames] disabled.");
+		System.out.println("[GrieferGames-Addon] disabled.");
 	}
 
 	@Override

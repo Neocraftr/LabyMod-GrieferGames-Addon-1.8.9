@@ -23,6 +23,8 @@ import net.labymod.utils.Material;
 import org.apache.commons.codec.language.bm.Lang;
 
 public class ModSettings {
+	private TextElement infoText;
+
 	private boolean modEnabled = true;
 
 	private EnumLanguages language = EnumLanguages.GAMELANGUAGE;
@@ -509,6 +511,7 @@ public class ModSettings {
 				autoUpdate = value;
 				getConfig().addProperty("autoUpdate", value);
 				saveConfig();
+				updateInfo();
 			}
 		}, autoUpdate);
 		settings.add(autoUpdateBtn);
@@ -999,6 +1002,28 @@ public class ModSettings {
 		}, hideBoosterMenu);
 		settings.add(hodeBoosterMenuBtn);
 
-		settings.add(new TextElement("§7Version: §e"+GrieferGames.VERSION+"\n§7GitHub: §bhttps://github.com/Neocraftr/LabyMod-GrieferGames-Addon-1.8.9"));
+		infoText = new TextElement("");
+		updateInfo();
+		settings.add(infoText);
+	}
+
+	private void updateInfo() {
+		String text = "§7Version: §e"+GrieferGames.VERSION;
+		if(getGG().getUpdater().isUpdateAvailable()) {
+			text += " §c(";
+			if(autoUpdate) {
+				if(getGG().getUpdater().canDoUpdate()) {
+					text += LanguageManager.translateOrReturnKey("message_gg_updateReady");
+				} else {
+					text += LanguageManager.translateOrReturnKey("message_gg_updateFailed");
+				}
+			} else {
+				text += LanguageManager.translateOrReturnKey("message_gg_updateAvailable");
+			}
+			text += ")";
+		}
+
+		text += "\n§7GitHub: §bhttps://github.com/Neocraftr/LabyMod-GrieferGames-Addon-1.8.9";
+		infoText.setText(text);
 	}
 }

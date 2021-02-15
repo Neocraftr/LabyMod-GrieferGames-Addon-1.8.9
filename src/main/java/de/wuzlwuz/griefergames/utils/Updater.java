@@ -29,26 +29,6 @@ public class Updater {
     public Updater() {
         checkForUpdates();
 
-        GrieferGames.getGriefergames().getApi().getEventManager().registerOnJoin(new Consumer<ServerData>() {
-            @Override
-            public void accept(ServerData serverData) {
-                if(updateAvailable) {
-                    String msg = GrieferGames.PREFIX+"§3";
-                    if(GrieferGames.getSettings().isAutoUpdate()) {
-                        if(!canDoUpdate()) {
-                            msg += LanguageManager.translateOrReturnKey("message_gg_updateFailed");
-                        } else {
-                            msg += LanguageManager.translateOrReturnKey("message_gg_updateReady");
-                        }
-                    } else {
-                        msg += LanguageManager.translateOrReturnKey("message_gg_updateAvailable");
-                    }
-                    msg = msg.replace("${version}", "§ev"+latestVersion+"§3").replace("${dl_link}", "§e"+downloadUrl+"§3");
-                    GrieferGames.getGriefergames().getApi().displayMessageInChat(msg);
-                }
-            }
-        });
-
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if(updateAvailable && GrieferGames.getSettings().isAutoUpdate()) {
                 update();
@@ -74,10 +54,10 @@ public class Updater {
                     }
                 }
             } else {
-                System.out.println("[GrieferGames] Could not check for updates: Invalid response.");
+                System.out.println("[GrieferGames-Addon] Could not check for updates: Invalid response.");
             }
         } catch (IOException | IllegalStateException | JsonSyntaxException e) {
-            System.out.println("[GrieferGames] Could not check for updates: "+e.getMessage());
+            System.out.println("[GrieferGames-Addon] Could not check for updates: "+e.getMessage());
         }
     }
 
@@ -91,8 +71,12 @@ public class Updater {
         }
     }
 
-    private boolean canDoUpdate() {
+    public boolean canDoUpdate() {
         return addonJar != null && addonJar.isFile();
+    }
+
+    public boolean isUpdateAvailable() {
+        return updateAvailable;
     }
 
     public String getLatestVersion() {
