@@ -5,30 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import de.wuzlwuz.griefergames.GrieferGames;
-import de.wuzlwuz.griefergames.chat.AntiMagicClanTag;
-import de.wuzlwuz.griefergames.chat.AntiMagicPrefix;
-import de.wuzlwuz.griefergames.chat.Bank;
-import de.wuzlwuz.griefergames.chat.Blanks;
-import de.wuzlwuz.griefergames.chat.Chat;
-import de.wuzlwuz.griefergames.chat.ChatTime;
-import de.wuzlwuz.griefergames.chat.CheckPlot;
-import de.wuzlwuz.griefergames.chat.ClearChat;
-import de.wuzlwuz.griefergames.chat.GlobalMessage;
-import de.wuzlwuz.griefergames.chat.IgnoreList;
-import de.wuzlwuz.griefergames.chat.ItemRemover;
-import de.wuzlwuz.griefergames.chat.LobbyHub;
-import de.wuzlwuz.griefergames.chat.MobRemover;
-import de.wuzlwuz.griefergames.chat.News;
-import de.wuzlwuz.griefergames.chat.Nickname;
-import de.wuzlwuz.griefergames.chat.Payment;
-import de.wuzlwuz.griefergames.chat.PlotChat;
-import de.wuzlwuz.griefergames.chat.PreventCommandFailure;
-import de.wuzlwuz.griefergames.chat.PrivateMessage;
-import de.wuzlwuz.griefergames.chat.Realname;
-import de.wuzlwuz.griefergames.chat.SupremeBlanks;
-import de.wuzlwuz.griefergames.chat.Teleport;
-import de.wuzlwuz.griefergames.chat.VanishHelper;
-import de.wuzlwuz.griefergames.chat.Vote;
+import de.wuzlwuz.griefergames.chat.*;
 import de.wuzlwuz.griefergames.gui.VanishHelperGui;
 import de.wuzlwuz.griefergames.utils.Helper;
 import de.wuzlwuz.griefergames.listener.OnTickListener;
@@ -134,6 +111,7 @@ public class GrieferGamesServer extends Server {
 		getGG().addChatModule(new CheckPlot());
 		getGG().addChatModule(new VanishHelper());
 		getGG().addChatModule(new ChatTime());
+		getGG().addChatModule(new Mention());
 
 		addSubServerListener(new SubServerListener() {
 			@Override

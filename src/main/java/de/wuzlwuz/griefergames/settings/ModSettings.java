@@ -1,5 +1,6 @@
 package de.wuzlwuz.griefergames.settings;
 
+import java.awt.*;
 import java.util.List;
 
 import com.google.gson.JsonObject;
@@ -8,16 +9,11 @@ import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.enums.EnumLanguages;
 import de.wuzlwuz.griefergames.enums.EnumRealnameShown;
 import de.wuzlwuz.griefergames.enums.EnumSounds;
+import net.labymod.gui.elements.ColorPicker;
 import net.labymod.gui.elements.DropDownMenu;
 import net.labymod.main.LabyMod;
 import net.labymod.main.lang.LanguageManager;
-import net.labymod.settings.elements.BooleanElement;
-import net.labymod.settings.elements.ControlElement;
-import net.labymod.settings.elements.DropDownElement;
-import net.labymod.settings.elements.HeaderElement;
-import net.labymod.settings.elements.NumberElement;
-import net.labymod.settings.elements.SettingsElement;
-import net.labymod.settings.elements.StringElement;
+import net.labymod.settings.elements.*;
 import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
 import org.apache.commons.codec.language.bm.Lang;
@@ -44,6 +40,9 @@ public class ModSettings {
 
 	private boolean cleanBlanks = false;
 	private boolean cleanSupremeBlanks = false;
+
+	private boolean highlightMentions = true;
+	private Color mentionsColor = new Color(121, 178, 255);
 
 	private boolean payChatRight = true;
 	private boolean payAchievement = false;
@@ -202,6 +201,14 @@ public class ModSettings {
 
 	public boolean isCleanSupremeBlanks() {
 		return this.cleanSupremeBlanks;
+	}
+
+	public boolean isHighlightMentions() {
+		return highlightMentions;
+	}
+
+	public Color getMentionsColor() {
+		return mentionsColor;
 	}
 
 	public boolean isPayChatRight() {
@@ -389,6 +396,12 @@ public class ModSettings {
 
 		if (getConfig().has("cleanSupremeBlanks"))
 			cleanSupremeBlanks = getConfig().get("cleanSupremeBlanks").getAsBoolean();
+
+		if(getConfig().has("highlightMentions"))
+			highlightMentions = getConfig().get("highlightMentions").getAsBoolean();
+
+		if(getConfig().has("mentionsColor"))
+			mentionsColor = new Color(getConfig().get("mentionsColor").getAsInt());
 
 		if (getConfig().has("payChatRight"))
 			payChatRight = getConfig().get("payChatRight").getAsBoolean();
@@ -742,6 +755,33 @@ public class ModSettings {
 					}
 				}, cleanSupremeBlanks);
 		settings.add(cleanSupremeBlanksBtn);
+
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_mentions")));
+		final BooleanElement highlightMentionsBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_highlightMentions"),
+			new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
+			new Consumer<Boolean>() {
+				@Override
+				public void accept(Boolean value) {
+					highlightMentions = value;
+					getConfig().addProperty("highlightMentions", value);
+					saveConfig();
+				}
+			}, highlightMentions);
+		settings.add(highlightMentionsBtn);
+
+		final ColorPickerCheckBoxBulkElement mentionsColorBulkElement = new ColorPickerCheckBoxBulkElement("");
+		final ColorPicker mentionsColorPicker = new ColorPicker(LanguageManager.translateOrReturnKey("settings_gg_mentionColor"), mentionsColor, null, 0, 0, 0, 0);
+		mentionsColorPicker.setHasAdvanced(true);
+		mentionsColorPicker.setUpdateListener(new Consumer<Color>() {
+			@Override
+			public void accept(Color value) {
+				mentionsColor = value;
+				getConfig().addProperty("mentionsColor", value.getRGB());
+				saveConfig();
+			}
+		});
+		mentionsColorBulkElement.addColorPicker(mentionsColorPicker);
+		settings.add(mentionsColorBulkElement);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_payment")));
 		final BooleanElement payChatRightBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_payChatRight"),
