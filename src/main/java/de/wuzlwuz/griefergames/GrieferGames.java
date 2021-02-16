@@ -11,7 +11,6 @@ import java.util.Properties;
 
 import de.wuzlwuz.griefergames.booster.Booster;
 import de.wuzlwuz.griefergames.chat.Chat;
-import de.wuzlwuz.griefergames.chatMenu.TeamMenu;
 import de.wuzlwuz.griefergames.enums.EnumLanguages;
 import de.wuzlwuz.griefergames.utils.Helper;
 import de.wuzlwuz.griefergames.server.GrieferGamesServer;
@@ -35,6 +34,7 @@ public class GrieferGames extends LabyModAddon {
 	private static ModSettings settings;
 	private GrieferGamesServer ggserver;
 	private Updater updater;
+	private Helper helper;
 
 	private boolean showModules = false;
 	private boolean showBoosterDummy = false;
@@ -42,14 +42,12 @@ public class GrieferGames extends LabyModAddon {
 	private boolean auraActive = false;
 	private boolean godActive = false;
 	private boolean flyActive = false;
+	private boolean newsStart = false;
 	private ModuleCategory moduleCategory;
 	private List<Booster> boosters = new ArrayList<Booster>();
-	private Helper helper;
 	private List<Chat> chatModules = new ArrayList<Chat>();
-	private boolean isInTeam = false;
 	private String nickname = "";
 	private String playerRank = "";
-	private boolean newsStart = false;
 	private int timeToWait = 0;
 	private double income;
 
@@ -182,16 +180,8 @@ public class GrieferGames extends LabyModAddon {
 		}
 	}
 
-	public boolean getIsInTeam() {
-		return isInTeam;
-	}
-	public void setIsInTeam(boolean isInTeam) {
-		TeamMenu.printMenu();
-		this.isInTeam = isInTeam;
-	}
-
 	public boolean isNicknameActive() {
-		return (!LabyModCore.getMinecraft().getPlayer().getName().trim().equalsIgnoreCase(nickname));
+		return !LabyModCore.getMinecraft().getPlayer().getName().trim().equalsIgnoreCase(nickname);
 	}
 	public String getNickname() {
 		return nickname;
@@ -221,14 +211,13 @@ public class GrieferGames extends LabyModAddon {
 	public int getTimeToWait() {
 		return timeToWait;
 	}
-
 	public void setTimeToWait(int timeToWait) {
 		this.timeToWait = timeToWait;
 	}
+
 	public double getIncome() {
 		return income;
 	}
-
 	public void setIncome(double income) {
 		this.income = income;
 	}

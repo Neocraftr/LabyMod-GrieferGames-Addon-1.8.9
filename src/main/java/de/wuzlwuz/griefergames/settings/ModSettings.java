@@ -88,10 +88,6 @@ public class ModSettings {
 
 	private boolean autoUpdate = true;
 
-	private boolean vanishHelper = false;
-
-	private boolean checkPlotHelper = false;
-
 	private GrieferGames getGG() {
 		return GrieferGames.getGriefergames();
 	}
@@ -319,37 +315,6 @@ public class ModSettings {
 		return autoUpdate;
 	}
 
-	public boolean isVanishHelper() {
-		return vanishHelper;
-	}
-	public void deactivateVanishHelper() {
-		vanishHelper = false;
-		getConfig().addProperty("vanishHelper", false);
-		saveConfig();
-	}
-
-	public void activateVanishHelper() {
-		vanishHelper = true;
-		getConfig().addProperty("vanishHelper", true);
-		saveConfig();
-	}
-
-	public boolean isCheckPlotHelper() {
-		return checkPlotHelper;
-	}
-
-	public void deactivateCheckPlotHelper() {
-		checkPlotHelper = false;
-		getConfig().addProperty("checkPlotHelper", false);
-		saveConfig();
-	}
-
-	public void activateCheckPlotHelper() {
-		checkPlotHelper = true;
-		getConfig().addProperty("checkPlotHelper", true);
-		saveConfig();
-	}
-
 	public void loadConfig() {
 		if (getConfig().has("modEnabled"))
 			modEnabled = getConfig().get("modEnabled").getAsBoolean();
@@ -495,12 +460,6 @@ public class ModSettings {
 
 		if (getConfig().has("autoUpdate"))
 			autoUpdate = getConfig().get("autoUpdate").getAsBoolean();
-
-		if (getConfig().has("vanishHelper"))
-			vanishHelper = getConfig().get("vanishHelper").getAsBoolean();
-
-		if (getConfig().has("checkPlotHelper"))
-			checkPlotHelper = getConfig().get("checkPlotHelper").getAsBoolean();
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -1041,6 +1000,14 @@ public class ModSettings {
 			}
 		}, hideBoosterMenu);
 		settings.add(hodeBoosterMenuBtn);
+
+		final BooleanElement test = new BooleanElement("Test", new ControlElement.IconData("labymod/textures/chat/autotext.png"), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean value) {
+				settings.clear();
+			}
+		}, false);
+		settings.add(test);
 
 		infoText = new TextElement("");
 		updateInfo();

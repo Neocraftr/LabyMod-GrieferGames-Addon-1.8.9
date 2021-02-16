@@ -27,9 +27,6 @@ public class Helper {
 	private Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})");
 	private Pattern playerNameRankRegex2 = Pattern.compile("([0-9]+)([A-Za-z\\-]+\\+?)"); // Don't know what that is for
 
-	private Pattern portalRoomRegex = Pattern
-			.compile("^\\[GrieferGames\\] Du bist im Portalraum. Wähle deinen Citybuild aus.$");
-
 	private Pattern vanishRegex = Pattern
 			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) : aktiviert$");
 	private Pattern vanishRegex2 = Pattern
@@ -199,28 +196,6 @@ public class Helper {
 		return 0;
 	}
 
-	public int isPortalRoom(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0)
-			return -1;
-
-		Matcher matcher = portalRoomRegex.matcher(unformatted);
-		if (matcher.find()) {
-			return 1;
-		}
-		return 0;
-	}
-
-	public int joinedNewCB(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0)
-			return -1;
-
-		Matcher matcher = switcherRegexp.matcher(unformatted);
-		if (matcher.find()) {
-			return 1;
-		}
-		return 0;
-	}
-
 	public String getDisplayName(String unformatted) {
 		String displayName = "";
 		Matcher matcher = displayNameRegex.matcher(unformatted);
@@ -251,13 +226,6 @@ public class Helper {
 		return playerRank.toLowerCase();
 	}
 
-	public boolean isInTeam(String playerRank) {
-		List<String> teamRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "dev", "deppelopfer", "moderator", "mod", "supporter", "sup", "t-supporter",
-				"t-sup", "content", "designer");
-		return teamRanks.contains(playerRank);
-	}
-
 	public int isVanishMessage(String unformatted, String formatted) {
 		if (unformatted.trim().length() <= 0)
 			return -1;
@@ -284,13 +252,6 @@ public class Helper {
 		List<String> vanishRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
 				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod");
 		return vanishRanks.contains(playerRank);
-	}
-
-	public boolean doCheckPlotRoom(String playerRank) {
-		List<String> checkPlotRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support",
-				"orga", "obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter",
-				"sup");
-		return checkPlotRanks.contains(playerRank);
 	}
 
 	public boolean doResetBoosterBySubserver(String subServer) {
@@ -438,94 +399,6 @@ public class Helper {
 		}
 
 		return 0;
-	}
-
-	public static int parseWithDefault(String s, int defaultVal) {
-		return s.matches("\\d+") ? Integer.parseInt(s) : defaultVal;
-	}
-
-	public Filters.Filter getChatToolFilter(String name) {
-		List<Filter> chatToolFilter = LabyMod.getInstance().getChatToolManager().getFilters();
-
-		for (Filters.Filter component : chatToolFilter) {
-			if (component.getFilterName().equals(name)) {
-				return component;
-			}
-		}
-
-		String[] wordsContains = new String[1];
-		wordsContains[0] = "RKxJ9WbM7y-lherOXb9OnUszHphNOPCg";
-
-		String[] wordsNotContains = new String[0];
-
-		Filter filter = new Filter(name, wordsContains, wordsNotContains, false, "", false, (short) 0, (short) 0,
-				(short) 0, false, false, false, "Global");
-
-		if (!chatToolFilter.contains(filter)) {
-			chatToolFilter.add(filter);
-		}
-		return chatToolFilter.get(chatToolFilter.indexOf(filter));
-	}
-
-	public void delChatToolFilter(String name) {
-		List<Filter> chatToolFilter = LabyMod.getInstance().getChatToolManager().getFilters();
-		if (chatToolFilter.contains(getChatToolFilter(name))) {
-			chatToolFilter.remove(chatToolFilter.indexOf(getChatToolFilter(name)));
-		}
-	}
-
-	public void setChatToolFilterText(String name, String filterText) {
-		if (filterText.trim().length() > 0) {
-			String[] wordsContains = new String[1];
-			wordsContains[0] = filterText.trim();
-
-			getChatToolFilter(name).setWordsContains(wordsContains);
-		}
-	}
-
-	public List<String> getChatToolFilterText(String name) {
-		String[] filterArr = getChatToolFilter(name).getWordsContains();
-		List<String> filterList = new ArrayList<String>(filterArr.length);
-
-		Collections.addAll(filterList, filterArr);
-		return filterList;
-	}
-
-	public void addChatToolFilterText(String name, String filterText) {
-		String[] filterArr = getChatToolFilter(name).getWordsContains();
-		List<String> filterList = new ArrayList<String>(filterArr.length + 1);
-
-		Collections.addAll(filterList, filterArr);
-		filterList.add(filterText);
-
-		String filterArrNew[] = new String[filterList.size()];
-		for (int i = 0; i < filterList.size(); i++) {
-			filterArrNew[i] = filterList.get(i);
-		}
-
-		getChatToolFilter(name).setWordsContains(filterArrNew);
-	}
-
-	public void setChatToolFilterText(String name) {
-		setChatToolFilterText(name, "RKxJ9WbM7y-lherOXb9OnUszHphNOPCg");
-	}
-
-	public void setChatToolFilterRoom(String name, String room) {
-		if (room.trim().length() > 0) {
-			getChatToolFilter(name).setRoom(room);
-		}
-	}
-
-	public void setChatToolFilterRoom(String name) {
-		setChatToolFilterRoom(name, "Global");
-	}
-
-	public void setChatToolFilterSecondChat(String name, boolean secondChat) {
-		getChatToolFilter(name).setDisplayInSecondChat(secondChat);
-	}
-
-	public void setChatToolFilterSecondChat(String name) {
-		setChatToolFilterSecondChat(name, false);
 	}
 
 	public String getServerMessageName(String subServerName) {

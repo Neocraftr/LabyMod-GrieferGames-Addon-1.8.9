@@ -6,7 +6,6 @@ import java.util.List;
 
 import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.chat.*;
-import de.wuzlwuz.griefergames.gui.VanishHelperGui;
 import de.wuzlwuz.griefergames.utils.Helper;
 import de.wuzlwuz.griefergames.listener.OnTickListener;
 import de.wuzlwuz.griefergames.listener.PreRenderListener;
@@ -38,11 +37,11 @@ public class GrieferGamesServer extends Server {
 	private List<SubServerListener> subServerListener = new ArrayList<SubServerListener>();
 	private String subServer = "";
 	private String lastLabyChatSubServer = "", lastDiscordSubServer = "";
+	private String lastMessage = "";
 	private long nextLastMessageRequest = System.currentTimeMillis() + 1000L;
 	private long nextScoreboardRequest = System.currentTimeMillis() + (-1 * 1000L);
 	private long nextCheckFly = System.currentTimeMillis() + 1000L;
 	private long nextUpdateTimeToWait = System.currentTimeMillis() + 1000L;
-	private String lastMessage = "";
 	private boolean modulesLoaded = false;
 	private boolean listenerLoaded = false;
 
@@ -108,8 +107,6 @@ public class GrieferGamesServer extends Server {
 		getGG().addChatModule(new Teleport());
 		getGG().addChatModule(new AntiMagicPrefix());
 		getGG().addChatModule(new Nickname());
-		getGG().addChatModule(new CheckPlot());
-		getGG().addChatModule(new VanishHelper());
 		getGG().addChatModule(new ChatTime());
 		getGG().addChatModule(new Mention());
 
@@ -128,25 +125,6 @@ public class GrieferGamesServer extends Server {
 
 				if (getHelper().doResetBoosterBySubserver(subServerName)) {
 					getGG().getBoosters().clear();
-				} else {
-					if (getSettings().isVanishHelper() && getHelper().showVanishModule(getGG().getPlayerRank())) {
-						final VanishHelperGui vanishHelper = new VanishHelperGui();
-						getMC().displayGuiScreen(vanishHelper);
-						Thread thread = new Thread() {
-							public void run() {
-								try {
-									Thread.sleep(3000);
-									if (getMC().currentScreen != null && getMC().currentScreen.equals(vanishHelper)) {
-										getMC().displayGuiScreen(null);
-									}
-								} catch (Exception e) {
-									System.err.println(e);
-								}
-							}
-						};
-
-						thread.start();
-					}
 				}
 
 				if(getHelper().doHaveToWaitAfterJoin(subServerName)) {
@@ -288,7 +266,6 @@ public class GrieferGamesServer extends Server {
 							.equalsIgnoreCase(getHelper().getPlayerName(tabListName.getUnformattedText()).trim())) {
 
 						getGG().setPlayerRank(getHelper().getPlayerRank(tabListName.getUnformattedText().trim()));
-						getGG().setIsInTeam(getHelper().isInTeam(getGG().getPlayerRank()));
 					}
 				}
 				/*
