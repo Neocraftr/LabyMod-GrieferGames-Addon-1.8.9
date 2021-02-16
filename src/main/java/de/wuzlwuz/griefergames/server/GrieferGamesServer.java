@@ -250,38 +250,34 @@ public class GrieferGamesServer extends Server {
 	}
 
 	private boolean loadPlayerRank() {
-		String accountName = LabyModCore.getMinecraft().getPlayer().getName().trim();
+		if(getSettings().getOverrideRank() == null) {
+			String accountName = LabyModCore.getMinecraft().getPlayer().getName().trim();
 
-		try {
-			NetHandlerPlayClient nethandlerplayclient = LabyModCore.getMinecraft().getPlayer().sendQueue;
-			Collection<NetworkPlayerInfo> playerMap = nethandlerplayclient.getPlayerInfoMap();
+			try {
+				NetHandlerPlayClient nethandlerplayclient = LabyModCore.getMinecraft().getPlayer().sendQueue;
+				Collection<NetworkPlayerInfo> playerMap = nethandlerplayclient.getPlayerInfoMap();
 
-			for (NetworkPlayerInfo player : playerMap) {
-				IChatComponent tabListName = player.getDisplayName();
-				// String teamName = player.getPlayerTeam().getTeamName();
-				// String registeredName = player.getGameProfile().getName();
+				for (NetworkPlayerInfo player : playerMap) {
+					IChatComponent tabListName = player.getDisplayName();
 
-				if (tabListName != null) {
-					if (accountName.length() > 0 && accountName
-							.equalsIgnoreCase(getHelper().getPlayerName(tabListName.getUnformattedText()).trim())) {
+					if (tabListName != null) {
+						if (accountName.length() > 0 && accountName
+								.equalsIgnoreCase(getHelper().getPlayerName(tabListName.getUnformattedText()).trim())) {
 
-						getGG().setPlayerRank(getHelper().getPlayerRank(tabListName.getUnformattedText().trim()));
+							getGG().setPlayerRank(getHelper().getPlayerRank(tabListName.getUnformattedText().trim()));
+						}
 					}
 				}
-				/*
-				 * else if (accountName.length() > 0 && registeredName.length() > 0 &&
-				 * teamName.length() > 0 &&
-				 * accountName.trim().equalsIgnoreCase(registeredName.trim())) {
-				 * setPlayerRank(getHelper().getPlayerRank(teamName.trim()));
-				 * getGG().setIsInTeam(getHelper().isInTeam(getPlayerRank())); }
-				 */
+
+				return getGG().getPlayerRank() != "";
+			} catch (Exception e) {
+				e.printStackTrace();
+
+				return false;
 			}
-
-			return getGG().getPlayerRank() != "";
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			return false;
+		} else {
+			getGG().setPlayerRank(getSettings().getOverrideRank());
+			return true;
 		}
 	}
 

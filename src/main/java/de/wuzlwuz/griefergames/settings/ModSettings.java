@@ -25,6 +25,8 @@ public class ModSettings {
 
 	private EnumLanguages language = EnumLanguages.GAMELANGUAGE;
 
+	private String overrideRank = null;
+
 	private boolean showChatTime = false;
 	private boolean chatTimeShortFormat = true;
 	private boolean chatTimeAfterMessage = false;
@@ -88,6 +90,7 @@ public class ModSettings {
 
 	private boolean autoUpdate = true;
 
+
 	private GrieferGames getGG() {
 		return GrieferGames.getGriefergames();
 	}
@@ -105,6 +108,10 @@ public class ModSettings {
 
 	public EnumLanguages getLanguage() {
 		return language;
+	}
+
+	public String getOverrideRank() {
+		return overrideRank;
 	}
 
 	public boolean isShowChatTime() {
@@ -326,6 +333,9 @@ public class ModSettings {
 				}
 			}
 		}
+
+		if(getConfig().has("overrideRank"))
+			overrideRank = getConfig().get("overrideRank").getAsString();
 
 		if (getConfig().has("showChatTime"))
 			showChatTime = getConfig().get("showChatTime").getAsBoolean();
