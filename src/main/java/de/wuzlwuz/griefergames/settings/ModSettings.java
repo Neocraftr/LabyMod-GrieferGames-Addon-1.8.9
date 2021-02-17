@@ -89,6 +89,8 @@ public class ModSettings {
 	private boolean hideBoosterMenu = true;
 
 	private boolean autoUpdate = true;
+	private boolean vanishOnJoin = false;
+	private boolean flyOnJoin = false;
 
 
 	private GrieferGames getGG() {
@@ -322,6 +324,14 @@ public class ModSettings {
 		return autoUpdate;
 	}
 
+	public boolean isVanishOnJoin() {
+		return vanishOnJoin;
+	}
+
+	public boolean isFlyOnJoin() {
+		return flyOnJoin;
+	}
+
 	public void loadConfig() {
 		if (getConfig().has("modEnabled"))
 			modEnabled = getConfig().get("modEnabled").getAsBoolean();
@@ -470,6 +480,12 @@ public class ModSettings {
 
 		if (getConfig().has("autoUpdate"))
 			autoUpdate = getConfig().get("autoUpdate").getAsBoolean();
+
+		if (getConfig().has("vanishOnJoin"))
+			vanishOnJoin = getConfig().get("vanishOnJoin").getAsBoolean();
+
+		if (getConfig().has("flyOnJoin"))
+			flyOnJoin = getConfig().get("flyOnJoin").getAsBoolean();
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -1011,13 +1027,27 @@ public class ModSettings {
 		}, hideBoosterMenu);
 		settings.add(hodeBoosterMenuBtn);
 
-		final BooleanElement test = new BooleanElement("Test", new ControlElement.IconData("labymod/textures/chat/autotext.png"), new Consumer<Boolean>() {
+		final BooleanElement vanishOnJoinBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_vanishOnJoin"),
+				new ControlElement.IconData("labymod/textures/chat/autotext.png"), new Consumer<Boolean>() {
 			@Override
 			public void accept(Boolean value) {
-				settings.clear();
+				vanishOnJoin = value;
+				getConfig().addProperty("vanishOnJoin", value);
+				saveConfig();
 			}
-		}, false);
-		settings.add(test);
+		}, vanishOnJoin);
+		settings.add(vanishOnJoinBtn);
+
+		final BooleanElement flyOnJoinBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_flyOnJoin"),
+				new ControlElement.IconData("labymod/textures/chat/autotext.png"), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean value) {
+				flyOnJoin = value;
+				getConfig().addProperty("flyOnJoin", value);
+				saveConfig();
+			}
+		}, flyOnJoin);
+		settings.add(flyOnJoinBtn);
 
 		infoText = new TextElement("");
 		updateInfo();

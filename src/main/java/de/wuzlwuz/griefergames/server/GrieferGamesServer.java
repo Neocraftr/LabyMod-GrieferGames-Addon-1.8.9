@@ -27,11 +27,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityDispatcher;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class GrieferGamesServer extends Server {
 	private List<SubServerListener> subServerListener = new ArrayList<SubServerListener>();
@@ -309,6 +315,14 @@ public class GrieferGamesServer extends Server {
 				if (getSettings().isUpdateBoosterState() && getHelper().isSwitcherDoneMsg(unformatted, formatted) > 0) {
 					getGG().getBoosters().clear();
 					Minecraft.getMinecraft().thePlayer.sendChatMessage("/booster");
+
+					if(getSettings().isVanishOnJoin() && getHelper().showVanishModule(getGG().getPlayerRank()) && !getGG().isVanishActive()) {
+						Minecraft.getMinecraft().thePlayer.sendChatMessage("/vanish");
+					}
+
+					if(getSettings().isFlyOnJoin() && getHelper().hasFlyPermission(getGG().getPlayerRank()) && !LabyModCore.getMinecraft().getPlayer().capabilities.allowFlying) {
+						Minecraft.getMinecraft().thePlayer.sendChatMessage("/fly");
+					}
 				}
 
 				int status = getHelper().isVanishMessage(unformatted, formatted);

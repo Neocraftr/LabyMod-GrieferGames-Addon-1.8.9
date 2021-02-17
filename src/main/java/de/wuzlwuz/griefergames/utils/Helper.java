@@ -323,6 +323,12 @@ public class Helper {
 		return auraRanks.contains(playerRank);
 	}
 
+	public boolean hasFlyPermission(String playerRank) {
+		List<String> godRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup", "youtuber+", "yt+");
+		return godRanks.contains(playerRank);
+	}
+
 	public int checkCurrentBoosters(String unformatted, String formatted) {
 		if (unformatted.trim().length() <= 0)
 			return -1;
