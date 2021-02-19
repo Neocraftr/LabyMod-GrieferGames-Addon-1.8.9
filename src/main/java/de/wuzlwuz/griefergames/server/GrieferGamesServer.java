@@ -328,9 +328,11 @@ public class GrieferGamesServer extends Server {
 				getHelper().isValidBoosterMultiDoneMessage(unformatted, formatted);
 				getHelper().checkCurrentBoosters(unformatted, formatted);
 
-				if (getSettings().isUpdateBoosterState() && getHelper().isSwitcherDoneMsg(unformatted, formatted) > 0) {
-					getGG().getBoosters().clear();
-					Minecraft.getMinecraft().thePlayer.sendChatMessage("/booster");
+				if (getHelper().isSwitcherDoneMsg(unformatted, formatted) > 0) {
+					if(getSettings().isUpdateBoosterState()) {
+						getGG().getBoosters().clear();
+						Minecraft.getMinecraft().thePlayer.sendChatMessage("/booster");
+					}
 
 					if(getSettings().isVanishOnJoin() && getHelper().showVanishModule(getGG().getPlayerRank()) && !getGG().isVanishActive()) {
 						Minecraft.getMinecraft().thePlayer.sendChatMessage("/vanish");
