@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.wuzlwuz.griefergames.GrieferGames;
+import de.wuzlwuz.griefergames.settings.ModSettings;
 import net.labymod.core.LabyModCore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -54,13 +55,11 @@ public class PreRenderListener {
 													.createDeepCopy().setObfuscated(false);
 											String chatRepText = GrieferGames.getSettings().getAMPTablistReplacement();
 
-											if (!chatRepText.contains("%CLEAN%")) {
-												chatRepText = GrieferGames.getSettings()
-														.getDefaultAMPTablistReplacement();
+											if (!chatRepText.contains("%CLEAN%") && !chatRepText.contains("%clean%")) {
+												chatRepText = ModSettings.DEFAULT_AMP_REPLACEMENT_TABLIST;
 											}
 
-											chatRepText = chatRepText.replaceAll("%CLEAN%",
-													displayName.getUnformattedText());
+											chatRepText = chatRepText.replaceAll("%CLEAN%", displayName.getUnformattedText()).replaceAll("%clean%", displayName.getUnformattedText());
 											chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
 
 											newPlayerDisplayName.appendSibling(new ChatComponentText(

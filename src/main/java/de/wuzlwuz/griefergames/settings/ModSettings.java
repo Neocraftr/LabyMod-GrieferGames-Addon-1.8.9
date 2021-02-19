@@ -19,6 +19,10 @@ import net.labymod.utils.Material;
 import org.apache.commons.codec.language.bm.Lang;
 
 public class ModSettings {
+	public static final String DEFAULT_AMP_REPLACEMENT_CHAT = "[AMP] %CLEAN%",
+			DEFAULT_AMP_REPLACEMENT_TABLIST = "[AMP] %CLEAN%",
+			DEFAULT_AFK_NICKNAME = "AFK_%name%";
+
 	private TextElement infoText;
 
 	private boolean modEnabled = true;
@@ -46,6 +50,12 @@ public class ModSettings {
 	private boolean highlightMentions = true;
 	private Color mentionsColor = new Color(121, 178, 255);
 
+	private boolean afkNick = false;
+	private String afkNickname = DEFAULT_AFK_NICKNAME;
+	private int afkTime = 15;
+	private boolean afkMsgAnswear = false;
+	private String afkMsgText = "Ich bin momentan AFK ;)";
+
 	private boolean payChatRight = true;
 	private boolean payAchievement = false;
 	private boolean payMarker = false;
@@ -64,10 +74,8 @@ public class ModSettings {
 
 	private boolean ampEnabled = true;
 	private boolean ampClanEnabled = false;
-	private String ampChatReplacement = "";
-	private String defaultAMPChatReplacement = "[AMP] %CLEAN%";
-	private String ampTablistReplacement = "";
-	private String defaultAMPTablistReplacement = "[AMP] %CLEAN%";
+	private String ampChatReplacement = DEFAULT_AMP_REPLACEMENT_CHAT;
+	private String ampTablistReplacement = DEFAULT_AMP_REPLACEMENT_TABLIST;
 
 	private boolean preventCommandFailure = false;
 
@@ -232,6 +240,26 @@ public class ModSettings {
 		return this.payHover;
 	}
 
+	public boolean isAfkNick() {
+		return afkNick;
+	}
+
+	public boolean isAfkMsgAnswear() {
+		return afkMsgAnswear;
+	}
+
+	public String getAfkMsgText() {
+		return afkMsgText;
+	}
+
+	public String getAfkNickname() {
+		return afkNickname;
+	}
+
+	public int getAfkTime() {
+		return afkTime;
+	}
+
 	public boolean isBankChatRight() {
 		return this.bankChatRight;
 	}
@@ -272,16 +300,8 @@ public class ModSettings {
 		return ampChatReplacement;
 	}
 
-	public String getDefaultAMPChatReplacement() {
-		return defaultAMPChatReplacement;
-	}
-
 	public String getAMPTablistReplacement() {
 		return ampTablistReplacement;
-	}
-
-	public String getDefaultAMPTablistReplacement() {
-		return defaultAMPTablistReplacement;
 	}
 
 	public boolean isMarkTPAMsg() {
@@ -399,6 +419,21 @@ public class ModSettings {
 
 		if (getConfig().has("payHover"))
 			payHover = getConfig().get("payHover").getAsBoolean();
+
+		if(getConfig().has("afkNick"))
+			afkNick = getConfig().get("afkNick").getAsBoolean();
+
+		if(getConfig().has("afkMsgAnswear"))
+			afkMsgAnswear = getConfig().get("afkMsgAnswear").getAsBoolean();
+
+		if(getConfig().has("afkMsgText"))
+			afkMsgText = getConfig().get("afkMsgText").getAsString();
+
+		if(getConfig().has("afkNickname"))
+			afkNickname = getConfig().get("afkNickname").getAsString();
+
+		if(getConfig().has("afkTime"))
+			afkTime = getConfig().get("afkTime").getAsInt();
 
 		if (getConfig().has("bankChatRight"))
 			bankChatRight = getConfig().get("bankChatRight").getAsBoolean();
@@ -605,7 +640,7 @@ public class ModSettings {
 				new ControlElement.IconData(Material.WATCH),
 				filterDuplicateMessagesTime);
 		filterDuplicateMessagesTimeNumber.setMinValue(3);
-		filterDuplicateMessagesTimeNumber.setMaxValue(120);
+		filterDuplicateMessagesTimeNumber.setMaxValue(60);
 		filterDuplicateMessagesTimeNumber.addCallback(new Consumer<Integer>() {
 			@Override
 			public void accept(Integer value) {
@@ -767,6 +802,68 @@ public class ModSettings {
 		});
 		mentionsColorBulkElement.addColorPicker(mentionsColorPicker);
 		settings.add(mentionsColorBulkElement);
+
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_afk")));
+		final NumberElement afkTimeSetting = new NumberElement(LanguageManager.translateOrReturnKey("settings_gg_afkTime"),
+				new ControlElement.IconData(Material.WATCH),
+				afkTime);
+		afkTimeSetting.setMinValue(1);
+		afkTimeSetting.setMaxValue(60);
+		afkTimeSetting.addCallback(new Consumer<Integer>() {
+			@Override
+			public void accept(Integer value) {
+				afkTime = value;
+				getConfig().addProperty("afkTime", value);
+				saveConfig();
+			}
+		});
+		settings.add(afkTimeSetting);
+
+		final BooleanElement afkNickBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_afkNick"),
+				new ControlElement.IconData("labymod/textures/settings/modules/afk_timer.png"),
+				new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean value) {
+						afkNick = value;
+						getConfig().addProperty("afkNick", value);
+						saveConfig();
+					}
+				}, afkNick);
+		settings.add(afkNickBtn);
+
+		final StringElement afkNicknameSetting = new StringElement(LanguageManager.translateOrReturnKey("settings_gg_afkNickname"),
+				new ControlElement.IconData(Material.BOOK_AND_QUILL), afkNickname, new Consumer<String>() {
+			@Override
+			public void accept(String value) {
+				afkNickname = value;
+				getConfig().addProperty("afkNickname", value);
+				saveConfig();
+			}
+		});
+		settings.add(afkNicknameSetting);
+
+		final BooleanElement afkMsgAnswearBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_afkMsgAnswear"),
+				new ControlElement.IconData("labymod/textures/settings/modules/afk_timer.png"),
+				new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean value) {
+						afkMsgAnswear = value;
+						getConfig().addProperty("afkMsgAnswear", value);
+						saveConfig();
+					}
+				}, afkMsgAnswear);
+		settings.add(afkMsgAnswearBtn);
+
+		final StringElement afkMsgTextSetting = new StringElement(LanguageManager.translateOrReturnKey("settings_gg_afkMsgText"),
+				new ControlElement.IconData(Material.BOOK_AND_QUILL), afkMsgText, new Consumer<String>() {
+			@Override
+			public void accept(String value) {
+				afkMsgText = value;
+				getConfig().addProperty("afkMsgText", value);
+				saveConfig();
+			}
+		});
+		settings.add(afkMsgTextSetting);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_payment")));
 		final BooleanElement payChatRightBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_payChatRight"),
@@ -935,9 +1032,8 @@ public class ModSettings {
 				}, ampEnabled);
 		settings.add(ampEnabledBtn);
 
-		final String ampChatText = (ampChatReplacement.length() > 0) ? ampChatReplacement : defaultAMPChatReplacement;
 		final StringElement chatReplacementInput = new StringElement(LanguageManager.translateOrReturnKey("settings_gg_antiMagicPrefixChatReplacement"),
-				new ControlElement.IconData(Material.BOOK_AND_QUILL), ampChatText, new Consumer<String>() {
+				new ControlElement.IconData(Material.BOOK_AND_QUILL), ampChatReplacement, new Consumer<String>() {
 					@Override
 					public void accept(String value) {
 						ampChatReplacement = value;
@@ -947,9 +1043,8 @@ public class ModSettings {
 				});
 		settings.add(chatReplacementInput);
 
-		final String ampTabListText = (ampTablistReplacement.length() > 0) ? ampTablistReplacement : defaultAMPTablistReplacement;
 		final StringElement tablistReplacementInput = new StringElement(LanguageManager.translateOrReturnKey("settings_gg_antiMagicPrefixTablistReplacement"),
-				new ControlElement.IconData(Material.BOOK_AND_QUILL), ampTabListText, new Consumer<String>() {
+				new ControlElement.IconData(Material.BOOK_AND_QUILL), ampTablistReplacement, new Consumer<String>() {
 					@Override
 					public void accept(String value) {
 						ampTablistReplacement = value;

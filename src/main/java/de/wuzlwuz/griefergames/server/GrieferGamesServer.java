@@ -1,8 +1,6 @@
 package de.wuzlwuz.griefergames.server;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.chat.*;
@@ -48,6 +46,8 @@ public class GrieferGamesServer extends Server {
 	private long nextScoreboardRequest = System.currentTimeMillis() + (-1 * 1000L);
 	private long nextCheckFly = System.currentTimeMillis() + 1000L;
 	private long nextUpdateTimeToWait = System.currentTimeMillis() + 1000L;
+	private long nextCheckAFKTime = System.currentTimeMillis() + 2000L;
+	private long lastActiveTime = System.currentTimeMillis();
 	private boolean modulesLoaded = false;
 	private boolean listenerLoaded = false;
 
@@ -255,6 +255,22 @@ public class GrieferGamesServer extends Server {
 		return nextUpdateTimeToWait;
 	}
 
+	public void setNextCheckAFKTime(long nextCheckAFKTime) {
+		this.nextCheckAFKTime = nextCheckAFKTime;
+	}
+
+	public long getNextCheckAFKTime() {
+		return nextCheckAFKTime;
+	}
+
+	public void setLastActiveTime(long lastActiveTime) {
+		this.lastActiveTime = lastActiveTime;
+	}
+
+	public long getLastActiveTime() {
+		return lastActiveTime;
+	}
+
 	private boolean loadPlayerRank() {
 		if(getSettings().getOverrideRank() == null) {
 			String accountName = LabyModCore.getMinecraft().getPlayer().getName().trim();
@@ -320,8 +336,15 @@ public class GrieferGamesServer extends Server {
 						Minecraft.getMinecraft().thePlayer.sendChatMessage("/vanish");
 					}
 
-					if(getSettings().isFlyOnJoin() && getHelper().hasFlyPermission(getGG().getPlayerRank()) && !LabyModCore.getMinecraft().getPlayer().capabilities.allowFlying) {
-						Minecraft.getMinecraft().thePlayer.sendChatMessage("/fly");
+					if(getSettings().isFlyOnJoin() && getHelper().hasFlyPermission(getGG().getPlayerRank())) {
+						new Timer().schedule(new TimerTask() {
+							@Override
+							public void run() {
+								if(!LabyModCore.getMinecraft().getPlayer().capabilities.allowFlying) {
+									Minecraft.getMinecraft().thePlayer.sendChatMessage("/fly");
+								}
+							}
+						}, 5000);
 					}
 				}
 
@@ -385,6 +408,8 @@ public class GrieferGamesServer extends Server {
 
 					if (!getSettings().isModEnabled())
 						return false;
+
+					lastActiveTime = System.currentTimeMillis();
 
 					List<Chat> chatModules = getGG().getChatModules();
 					for (Chat chatModule : chatModules) {

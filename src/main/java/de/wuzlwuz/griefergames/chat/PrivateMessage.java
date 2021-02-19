@@ -7,6 +7,7 @@ import net.labymod.core.LabyModCore;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.labymod.utils.ModColor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
@@ -88,6 +89,14 @@ public class PrivateMessage extends Chat {
 					msg.getSiblings().get(i).getChatStyle()
 							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username))
 							.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+				}
+			}
+
+			if(getSettings().isAfkMsgAnswear() && getGG().isAfk()) {
+				String message = getSettings().getAfkMsgText();
+				if(message.length() > 0) {
+					if(message.startsWith("~")) message = message.replaceFirst("~", "");
+					Minecraft.getMinecraft().thePlayer.sendChatMessage("/msg "+getPrivateMessageName(unformatted)+" "+message);
 				}
 			}
 		}

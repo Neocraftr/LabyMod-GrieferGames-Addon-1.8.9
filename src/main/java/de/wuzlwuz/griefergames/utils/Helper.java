@@ -1,10 +1,7 @@
 package de.wuzlwuz.griefergames.utils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,9 +13,11 @@ import de.wuzlwuz.griefergames.booster.DropBooster;
 import de.wuzlwuz.griefergames.booster.ExperienceBooster;
 import de.wuzlwuz.griefergames.booster.FlyBooster;
 import de.wuzlwuz.griefergames.booster.MobBooster;
+import net.labymod.core.LabyModCore;
 import net.labymod.ingamechat.tools.filter.Filters;
 import net.labymod.ingamechat.tools.filter.Filters.Filter;
 import net.labymod.main.LabyMod;
+import net.minecraft.client.Minecraft;
 
 public class Helper {
 	private Pattern subServerCityBuildRegex = Pattern.compile("^cb([0-9]+)$");
@@ -78,19 +77,19 @@ public class Helper {
 				boolean validBooster = false;
 				boosterName = boosterName.toLowerCase();
 				if (boosterName.equalsIgnoreCase("fly-booster")) {
-					GrieferGames.getGriefergames().boosterDone("fly");
+					getGG().boosterDone("fly");
 					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("drops-booster")) {
-					GrieferGames.getGriefergames().boosterDone("drop");
+					getGG().boosterDone("drop");
 					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("break-booster")) {
-					GrieferGames.getGriefergames().boosterDone("break");
+					getGG().boosterDone("break");
 					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
-					GrieferGames.getGriefergames().boosterDone("mob");
+					getGG().boosterDone("mob");
 					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("erfahrung-booster")) {
-					GrieferGames.getGriefergames().boosterDone("xp");
+					getGG().boosterDone("xp");
 					validBooster = true;
 				}
 
@@ -119,19 +118,19 @@ public class Helper {
 				boolean validBooster = false;
 				boosterName = boosterName.toLowerCase();
 				if (boosterName.equalsIgnoreCase("fly-booster")) {
-					GrieferGames.getGriefergames().boosterDone("fly");
+					getGG().boosterDone("fly");
 					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("drops-booster")) {
-					GrieferGames.getGriefergames().boosterDone("drop");
+					getGG().boosterDone("drop");
 					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("break-booster")) {
-					GrieferGames.getGriefergames().boosterDone("break");
+					getGG().boosterDone("break");
 					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
-					GrieferGames.getGriefergames().boosterDone("mob");
+					getGG().boosterDone("mob");
 					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("erfahrung-booster")) {
-					GrieferGames.getGriefergames().boosterDone("xp");
+					getGG().boosterDone("xp");
 					validBooster = true;
 				}
 
@@ -186,7 +185,7 @@ public class Helper {
 				}
 
 				if (validBooster) {
-					GrieferGames.getGriefergames().addBooster(booster);
+					getGG().addBooster(booster);
 					return 1;
 				}
 				return 0;
@@ -399,7 +398,7 @@ public class Helper {
 					}
 				}
 
-				GrieferGames.getGriefergames().addBooster(booster);
+				getGG().addBooster(booster);
 				return 1;
 			}
 		}
@@ -437,16 +436,16 @@ public class Helper {
 		JsonObject serverMessage = new JsonObject();
 
 		if(!subServerName.equals("reset")) {
-			String subServer = GrieferGames.getGriefergames().getHelper().getServerMessageName(subServerName);
+			String subServer = getGG().getHelper().getServerMessageName(subServerName);
 
-			if(!GrieferGames.getGriefergames().getGGServer().getLastLabyChatSubServer().equals(subServer)) {
-				GrieferGames.getGriefergames().getGGServer().setLastLabyChatSubServer(subServer);
+			if(!getGG().getGGServer().getLastLabyChatSubServer().equals(subServer)) {
+				getGG().getGGServer().setLastLabyChatSubServer(subServer);
 				serverMessage.addProperty("show_gamemode", true);
 				serverMessage.addProperty("gamemode_name", "GrieferGames "+subServer);
 				LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
 			}
 		} else {
-			GrieferGames.getGriefergames().getGGServer().setLastLabyChatSubServer("");
+			getGG().getGGServer().setLastLabyChatSubServer("");
 			serverMessage.addProperty("show_gamemode", false);
 			LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
 		}
@@ -456,11 +455,11 @@ public class Helper {
 		JsonObject serverMessage = new JsonObject();
 
 		if(!subServerName.equals("reset")) {
-			String subServer = GrieferGames.getGriefergames().getHelper().getServerMessageName(subServerName);
+			String subServer = getGG().getHelper().getServerMessageName(subServerName);
 			if(subServer.equals("")) subServer = "GrieferGames";
 
-			if(!GrieferGames.getGriefergames().getGGServer().getLastDiscordSubServer().equals(subServer)) {
-				GrieferGames.getGriefergames().getGGServer().setLastDiscordSubServer(subServer);
+			if(!getGG().getGGServer().getLastDiscordSubServer().equals(subServer)) {
+				getGG().getGGServer().setLastDiscordSubServer(subServer);
 				serverMessage.addProperty("hasGame", true);
 				serverMessage.addProperty("game_mode", subServer);
 				serverMessage.addProperty("game_startTime", System.currentTimeMillis());
@@ -468,10 +467,14 @@ public class Helper {
 				LabyMod.getInstance().getDiscordApp().onServerMessage("discord_rpc", serverMessage);
 			}
 		} else {
-			GrieferGames.getGriefergames().getGGServer().setLastDiscordSubServer("");
+			getGG().getGGServer().setLastDiscordSubServer("");
 			serverMessage.addProperty("hasGame", false);
 			LabyMod.getInstance().getDiscordApp().onServerMessage("discord_rpc", serverMessage);
 		}
 
+	}
+
+	private GrieferGames getGG() {
+		return GrieferGames.getGriefergames();
 	}
 }

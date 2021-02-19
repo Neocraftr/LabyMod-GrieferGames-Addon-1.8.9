@@ -3,6 +3,7 @@ package de.wuzlwuz.griefergames.chat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.wuzlwuz.griefergames.settings.ModSettings;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
@@ -50,11 +51,11 @@ public class AntiMagicPrefix extends Chat {
 
 					String chatRepText = getSettings().getAMPChatReplacement();
 
-					if (!chatRepText.contains("%CLEAN%")) {
-						chatRepText = getSettings().getDefaultAMPChatReplacement();
+					if (!chatRepText.contains("%CLEAN%") && !chatRepText.contains("%clean%")) {
+						chatRepText = ModSettings.DEFAULT_AMP_REPLACEMENT_CHAT;
 					}
 
-					chatRepText = chatRepText.replaceAll("%CLEAN%", message.getSiblings().get(i).getUnformattedText());
+					chatRepText = chatRepText.replaceAll("%CLEAN%", message.getSiblings().get(i).getUnformattedText()).replaceAll("%clean%", message.getSiblings().get(i).getUnformattedText());
 					chatRepText = "${REPSTART}" + chatRepText + "${REPEND}";
 
 					// Rank

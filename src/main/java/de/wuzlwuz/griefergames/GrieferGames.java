@@ -23,6 +23,7 @@ import net.labymod.ingamegui.ModuleCategory;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement;
 import net.labymod.settings.elements.SettingsElement;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 
 public class GrieferGames extends LabyModAddon {
@@ -43,13 +44,15 @@ public class GrieferGames extends LabyModAddon {
 	private boolean godActive = false;
 	private boolean flyActive = false;
 	private boolean newsStart = false;
+	private boolean afk = false;
 	private ModuleCategory moduleCategory;
 	private List<Booster> boosters = new ArrayList<Booster>();
 	private List<Chat> chatModules = new ArrayList<Chat>();
 	private String nickname = "";
 	private String playerRank = "";
 	private int timeToWait = 0;
-	private double income;
+	private double income = 0;
+	private BlockPos lastPlayerPosition = new BlockPos(0, 0, 0);
 
 	public static GrieferGames getGriefergames() {
 		return griefergames;
@@ -220,6 +223,22 @@ public class GrieferGames extends LabyModAddon {
 	}
 	public void setIncome(double income) {
 		this.income = income;
+	}
+
+	public boolean isAfk() {
+		return afk;
+	}
+
+	public void setAfk(boolean afk) {
+		this.afk = afk;
+	}
+
+	public BlockPos getLastPlayerPosition() {
+		return lastPlayerPosition;
+	}
+
+	public void setLastPlayerPosition(BlockPos lastPlayerPosition) {
+		this.lastPlayerPosition = lastPlayerPosition;
 	}
 
 	@Override
