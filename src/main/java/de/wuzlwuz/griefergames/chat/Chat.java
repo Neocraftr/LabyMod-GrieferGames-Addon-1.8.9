@@ -22,7 +22,7 @@ public abstract class Chat {
 	}
 
 	protected ModSettings getSettings() {
-		return GrieferGames.getSettings();
+		return getGG().getSettings();
 	}
 
 	protected Minecraft getMC() {

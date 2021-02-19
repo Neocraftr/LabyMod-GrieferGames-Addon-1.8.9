@@ -12,6 +12,7 @@ import java.util.Properties;
 import de.wuzlwuz.griefergames.booster.Booster;
 import de.wuzlwuz.griefergames.chat.Chat;
 import de.wuzlwuz.griefergames.enums.EnumLanguages;
+import de.wuzlwuz.griefergames.listener.SubServerListener;
 import de.wuzlwuz.griefergames.utils.Helper;
 import de.wuzlwuz.griefergames.server.GrieferGamesServer;
 import de.wuzlwuz.griefergames.settings.ModSettings;
@@ -32,7 +33,8 @@ public class GrieferGames extends LabyModAddon {
 	public static final String SERVER_IP = "griefergames.net", SECOND_SERVER_IP = "griefergames.de";
 
 	private static GrieferGames griefergames;
-	private static ModSettings settings;
+	private ModSettings settings;
+	private SubServerListener subServerListener;
 	private GrieferGamesServer ggserver;
 	private Updater updater;
 	private Helper helper;
@@ -45,20 +47,110 @@ public class GrieferGames extends LabyModAddon {
 	private boolean flyActive = false;
 	private boolean newsStart = false;
 	private boolean afk = false;
+	private boolean firstJoin = false;
 	private ModuleCategory moduleCategory;
 	private List<Booster> boosters = new ArrayList<Booster>();
 	private List<Chat> chatModules = new ArrayList<Chat>();
 	private String nickname = "";
 	private String playerRank = "";
+	private String subServer = "";
+	private String filterDuplicateLastMessage = "";
+	private String lastLabyChatSubServer = "", lastDiscordSubServer = "";
 	private int timeToWait = 0;
 	private double income = 0;
+	private long lastActiveTime = System.currentTimeMillis();
 	private BlockPos lastPlayerPosition = new BlockPos(0, 0, 0);
 
 	public static GrieferGames getGriefergames() {
 		return griefergames;
 	}
 
-	public static ModSettings getSettings() {
+	@Override
+	public void onEnable() {
+		griefergames = this;
+
+		updater = new Updater();
+		helper = new Helper();
+		settings = new ModSettings();
+
+		System.out.println("[GrieferGames-Addon] enabled.");
+	}
+
+	public void loadTranslations(String lang) {
+		if(lang == null) {
+			List<String> items = Arrays.asList(LanguageManager.getLanguage().getName().split("_"));
+			lang = items.get(0).toUpperCase();
+		}
+		try {
+			Properties prop = new Properties();
+			boolean found = false;
+			InputStream defaultStream = GrieferGames.class
+					.getResourceAsStream("/assets/minecraft/griefergames/lang/EN.properties");
+
+			InputStream stream = GrieferGames.class
+					.getResourceAsStream("/assets/minecraft/griefergames/lang/" + lang + ".properties");
+
+			if (stream == null) {
+				stream = defaultStream;
+				System.out.println("[GrieferGames-Addon] Couldn't load language file " + lang);
+			}
+
+			if (stream != null) {
+				InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+				prop.load(reader);
+				reader.close();
+				found = true;
+
+				Enumeration<String> enums = (Enumeration<String>) prop.propertyNames();
+				while (enums.hasMoreElements()) {
+					String key = enums.nextElement();
+					String value = prop.getProperty(key);
+					LanguageManager.getLanguage().add(key, value);
+				}
+			}
+
+			if (!found) {
+				System.out.println("[GrieferGames-Addon] Couldn't load language file EN");
+			}
+
+		} catch (Exception error) {
+			error.printStackTrace();
+			System.out.println("[GrieferGames-Addon] Couldn't load language file " + lang + " " + error.getMessage());
+		}
+	}
+
+	@Override
+	public void onDisable() {
+		System.out.println("[GrieferGames-Addon] disabled.");
+	}
+
+	@Override
+	public void loadConfig() {
+		updater.setAddonJar(AddonLoader.getFiles().get(about.uuid));
+
+		settings.loadConfig();
+
+		if(settings.getLanguage() == EnumLanguages.GAMELANGUAGE) {
+			loadTranslations(null);
+		} else {
+			loadTranslations(settings.getLanguage().name());
+		}
+
+		moduleCategory = new ModuleCategory(LanguageManager.translateOrReturnKey("modules_category_gg"),
+				true, new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/icon.png")));
+
+		subServerListener = new SubServerListener();
+		ggserver = new GrieferGamesServer();
+		getApi().registerServerSupport(griefergames, ggserver);
+	}
+
+	@Override
+	protected void fillSettings(final List<SettingsElement> settingsList) {
+		settings.fillSettings(settingsList);
+	}
+
+
+	public ModSettings getSettings() {
 		return settings;
 	}
 
@@ -241,86 +333,55 @@ public class GrieferGames extends LabyModAddon {
 		this.lastPlayerPosition = lastPlayerPosition;
 	}
 
-	@Override
-	public void onEnable() {
-		griefergames = this;
-
-		updater = new Updater();
-		helper = new Helper();
-		settings = new ModSettings();
-
-		System.out.println("[GrieferGames-Addon] enabled.");
+	public void callSubServerEvent(String subServerNameOld, String subServerName) {
+		subServerListener.onSubServerChanged(subServerNameOld, subServerName);
 	}
 
-	public void loadTranslations(String lang) {
-		if(lang == null) {
-			List<String> items = Arrays.asList(LanguageManager.getLanguage().getName().split("_"));
-			lang = items.get(0).toUpperCase();
-		}
-		try {
-			Properties prop = new Properties();
-			boolean found = false;
-			InputStream defaultStream = GrieferGames.class
-					.getResourceAsStream("/assets/minecraft/griefergames/lang/EN.properties");
-
-			InputStream stream = GrieferGames.class
-					.getResourceAsStream("/assets/minecraft/griefergames/lang/" + lang + ".properties");
-
-			if (stream == null) {
-				stream = defaultStream;
-				System.out.println("[GrieferGames-Addon] Couldn't load language file " + lang);
-			}
-
-			if (stream != null) {
-				InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-				prop.load(reader);
-				reader.close();
-				found = true;
-
-				Enumeration<String> enums = (Enumeration<String>) prop.propertyNames();
-				while (enums.hasMoreElements()) {
-					String key = enums.nextElement();
-					String value = prop.getProperty(key);
-					LanguageManager.getLanguage().add(key, value);
-				}
-			}
-
-			if (!found) {
-				System.out.println("[GrieferGames-Addon] Couldn't load language file EN");
-			}
-
-		} catch (Exception error) {
-			error.printStackTrace();
-			System.out.println("[GrieferGames-Addon] Couldn't load language file " + lang + " " + error.getMessage());
-		}
+	public boolean isFirstJoin() {
+		return firstJoin;
 	}
 
-	@Override
-	public void onDisable() {
-		System.out.println("[GrieferGames-Addon] disabled.");
+	public void setFirstJoin(boolean firstJoin) {
+		this.firstJoin = firstJoin;
 	}
 
-	@Override
-	public void loadConfig() {
-		updater.setAddonJar(AddonLoader.getFiles().get(about.uuid));
-
-		settings.loadConfig();
-
-		if(settings.getLanguage() == EnumLanguages.GAMELANGUAGE) {
-			loadTranslations(null);
-		} else {
-			loadTranslations(settings.getLanguage().name());
-		}
-
-		moduleCategory = new ModuleCategory(LanguageManager.translateOrReturnKey("modules_category_gg"),
-				true, new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/icon.png")));
-
-		ggserver = new GrieferGamesServer();
-		getApi().registerServerSupport(griefergames, ggserver);
+	public long getLastActiveTime() {
+		return lastActiveTime;
 	}
 
-	@Override
-	protected void fillSettings(final List<SettingsElement> settingsList) {
-		settings.fillSettings(settingsList);
+	public void setLastActiveTime(long lastActiveTime) {
+		this.lastActiveTime = lastActiveTime;
+	}
+
+	public String getSubServer() {
+		return subServer;
+	}
+
+	public void setSubServer(String subServer) {
+		this.subServer = subServer;
+	}
+
+	public String getFilterDuplicateLastMessage() {
+		return filterDuplicateLastMessage;
+	}
+
+	public void setFilterDuplicateLastMessage(String filterDuplicateLastMessage) {
+		this.filterDuplicateLastMessage = filterDuplicateLastMessage;
+	}
+
+	public String getLastDiscordSubServer() {
+		return lastDiscordSubServer;
+	}
+
+	public void setLastDiscordSubServer(String lastDiscordSubServer) {
+		this.lastDiscordSubServer = lastDiscordSubServer;
+	}
+
+	public String getLastLabyChatSubServer() {
+		return lastLabyChatSubServer;
+	}
+
+	public void setLastLabyChatSubServer(String lastLabyChatSubServer) {
+		this.lastLabyChatSubServer = lastLabyChatSubServer;
 	}
 }

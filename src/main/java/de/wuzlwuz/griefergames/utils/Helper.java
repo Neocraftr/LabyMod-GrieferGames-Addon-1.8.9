@@ -18,15 +18,17 @@ import net.labymod.ingamechat.tools.filter.Filters;
 import net.labymod.ingamechat.tools.filter.Filters.Filter;
 import net.labymod.main.LabyMod;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.util.IChatComponent;
 
 public class Helper {
+
 	private Pattern subServerCityBuildRegex = Pattern.compile("^cb([0-9]+)$");
 	private Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})");
 
-	private Pattern vanishRegex = Pattern
-			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) : aktiviert$");
-	private Pattern vanishRegex2 = Pattern
-			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) : deaktiviert$");
+	private Pattern vanishRegex = Pattern.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) : aktiviert$");
+	private Pattern vanishRegex2 = Pattern.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) : deaktiviert$");
 
 	private Pattern godmodeRegex = Pattern.compile("^Unsterblichkeit aktiviert.$");
 	private Pattern godmodeRegex2 = Pattern.compile("^Unsterblichkeit deaktiviert.$");
@@ -34,16 +36,13 @@ public class Helper {
 	private Pattern auraRegex = Pattern.compile("^Deine Aura wurde aktiviert!$");
 	private Pattern auraRegex2 = Pattern.compile("^Deine Aura ist jetzt deaktiviert.$");
 
-	private Pattern getBoosterValidRegexp = Pattern.compile(
-			"^\\[Booster\\] ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster) f\\u00FCr ([0-9]+) Minuten aktiviert.$");
-	private Pattern getBoosterDoneValidRegexp = Pattern
-			.compile("^\\[Booster\\] Der ([A-z]+\\-Booster) ist jetzt wieder deaktiviert.$");
-	private Pattern getBoosterMultiDoneValidRegexp = Pattern.compile(
-			"^\\[Booster\\] Der ([A-z]+\\-Booster) \\(Stufe [1-6]\\) von ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) ist abgelaufen.$");
-	private Pattern getCurrentBoosters = Pattern.compile(
-			"^([A-z]+\\-Booster): ([0-9])x Multiplikator ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
+	private Pattern getBoosterValidRegexp = Pattern.compile("^\\[Booster\\] ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster) f\\u00FCr ([0-9]+) Minuten aktiviert.$");
+	private Pattern getBoosterDoneValidRegexp = Pattern.compile("^\\[Booster\\] Der ([A-z]+\\-Booster) ist jetzt wieder deaktiviert.$");
+	private Pattern getBoosterMultiDoneValidRegexp = Pattern.compile("^\\[Booster\\] Der ([A-z]+\\-Booster) \\(Stufe [1-6]\\) von ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) ist abgelaufen.$");
+	private Pattern getCurrentBoosters = Pattern.compile("^([A-z]+\\-Booster): ([0-9])x Multiplikator ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
 
 	private Pattern switcherRegexp = Pattern.compile("^\\[Switcher\\] Daten heruntergeladen!$");
+
 
 	public String getProperTextFormat(String formatted) {
 		return formatted.replaceAll("\u00A7", "§");
@@ -59,98 +58,67 @@ public class Helper {
 		return fMsg.contains("§3§lServer");
 	}
 
-	public int isValidBoosterDoneMessage(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0)
-			return -1;
+	public void checkIfBoosterDoneMessage(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0) return;
 
 		String fMsg = getProperTextFormat(formatted);
-
 		if (fMsg.contains("§r§cist jetzt wieder deaktiviert.§r")) {
 
 			Matcher matcher = getBoosterDoneValidRegexp.matcher(unformatted.trim());
 			if (matcher.find()) {
-				String boosterName = matcher.group(1);
+				String boosterName = matcher.group(1).toLowerCase();
 
-				boolean validBooster = false;
-				boosterName = boosterName.toLowerCase();
 				if (boosterName.equalsIgnoreCase("fly-booster")) {
 					getGG().boosterDone("fly");
-					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("drops-booster")) {
 					getGG().boosterDone("drop");
-					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("break-booster")) {
 					getGG().boosterDone("break");
-					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
 					getGG().boosterDone("mob");
-					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("erfahrung-booster")) {
 					getGG().boosterDone("xp");
-					validBooster = true;
 				}
-
-				if (validBooster) {
-					return 1;
-				}
-				return 0;
 			}
 		}
-
-		return 0;
 	}
 
-	public int isValidBoosterMultiDoneMessage(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0)
-			return -1;
+	public void checkIfBoosterMultiDoneMessage(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0) return;
 
 		String fMsg = getProperTextFormat(formatted);
+		if (fMsg.contains("§r§fDer §r§b") && fMsg.contains("§r§7(Stufe") && fMsg.contains("§r§fist abgelaufen.§r")) {
 
-		if (fMsg.contains("§r§fDer §r§b") && fMsg.contains("§r§7(Stufe")
-				&& fMsg.contains("§r§fist abgelaufen.§r")) {
 			Matcher matcher = getBoosterMultiDoneValidRegexp.matcher(unformatted.trim());
 			if (matcher.find()) {
 				String boosterName = matcher.group(1);
 
-				boolean validBooster = false;
 				boosterName = boosterName.toLowerCase();
 				if (boosterName.equalsIgnoreCase("fly-booster")) {
 					getGG().boosterDone("fly");
-					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("drops-booster")) {
 					getGG().boosterDone("drop");
-					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("break-booster")) {
 					getGG().boosterDone("break");
-					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
 					getGG().boosterDone("mob");
-					validBooster = true;
 				} else if (boosterName.equalsIgnoreCase("erfahrung-booster")) {
 					getGG().boosterDone("xp");
-					validBooster = true;
 				}
-
-				if (validBooster) {
-					return 1;
-				}
-				return 0;
 			}
 		}
-
-		return 0;
 	}
 
-	public int isValidBoosterMessage(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0)
-			return -1;
+	public void checkIfBoosterMessage(String unformatted, String formatted) {
+		if (unformatted.trim().length() <= 0) return;
 
 		String fMsg = getProperTextFormat(formatted);
-
 		if (fMsg.contains("§r§ahat f\u00FCr die GrieferGames Community den §r§b§l")) {
+
 			Matcher matcher = getBoosterValidRegexp.matcher(unformatted);
 			if (matcher.find()) {
 				String boosterName = matcher.group(3);
+
 				Integer minutes = 0;
 				try {
 					matcher = getBoosterValidRegexp.matcher(unformatted);
@@ -183,140 +151,9 @@ public class Helper {
 
 				if (validBooster) {
 					getGG().addBooster(booster);
-					return 1;
 				}
-				return 0;
 			}
 		}
-
-		return 0;
-	}
-
-	public String getDisplayName(String unformatted) {
-		Matcher matcher = playerNameRankRegex.matcher(unformatted);
-		if (matcher.find()) {
-			return matcher.group(1);
-		}
-		return "";
-	}
-
-	public String getPlayerName(String unformatted) {
-		Matcher matcher = playerNameRankRegex.matcher(unformatted);
-		if (matcher.find()) {
-			return matcher.group(2);
-		}
-		return "";
-	}
-
-	public String getPlayerRank(String unformatted) {
-		Matcher matcher = playerNameRankRegex.matcher(unformatted);
-		if (matcher.find()) {
-			return matcher.group(1).toLowerCase();
-		}
-		return "";
-	}
-
-	public int isVanishMessage(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0)
-			return -1;
-
-		Matcher matcher = vanishRegex.matcher(unformatted);
-		Matcher matcher2 = vanishRegex2.matcher(unformatted);
-
-		if (matcher.find()) {
-			return 1;
-		} else if (matcher2.find()) {
-			return 0;
-		}
-
-		return -1;
-	}
-
-	public boolean showVanishModule(String playerRank) {
-		List<String> vanishRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "youtuber+", "yt+");
-		return vanishRanks.contains(playerRank);
-	}
-
-	public boolean vanishDefaultState(String playerRank) {
-		List<String> vanishRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod");
-		return vanishRanks.contains(playerRank);
-	}
-
-	public boolean doResetBoosterBySubserver(String subServer) {
-		List<String> subServers = Arrays.asList("lobby", "portal", "skyblock", "cb0", "kreativ", "hardcore",
-				"gestrandet");
-		return subServers.contains(subServer.toLowerCase());
-	}
-
-	public boolean doHaveToWaitAfterJoin(String subServer) {
-		if(subServer.startsWith("CB") && !subServer.equalsIgnoreCase("cb0")) return true;
-		List<String> subServers = Arrays.asList("skyblock", "lava", "wasser", "extreme", "evil", "nature");
-		return subServers.contains(subServer.toLowerCase());
-	}
-
-	public int isSwitcherDoneMsg(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0)
-			return -1;
-
-		String uMsg = unformatted.trim();
-		Matcher matcher = switcherRegexp.matcher(uMsg);
-		if (matcher.find()) {
-			return 1;
-		}
-
-		return 0;
-	}
-
-	public int isGodmodeMessage(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0)
-			return -1;
-
-		Matcher matcher = godmodeRegex.matcher(unformatted);
-		Matcher matcher2 = godmodeRegex2.matcher(unformatted);
-
-		if (matcher.find()) {
-			return 1;
-		} else if (matcher2.find()) {
-			return 0;
-		}
-
-		return -1;
-	}
-
-	public int isAuraMessage(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0)
-			return -1;
-
-		Matcher matcher = auraRegex.matcher(unformatted);
-		Matcher matcher2 = auraRegex2.matcher(unformatted);
-
-		if (matcher.find()) {
-			return 1;
-		} else if (matcher2.find()) {
-			return 0;
-		}
-
-		return -1;
-	}
-
-	public boolean showGodModule(String playerRank) {
-		List<String> godRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup");
-		return godRanks.contains(playerRank);
-	}
-
-	public boolean showAuraModule(String playerRank) {
-		List<String> auraRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "youtuber+", "yt+");
-		return auraRanks.contains(playerRank);
-	}
-
-	public boolean hasFlyPermission(String playerRank) {
-		List<String> godRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup", "youtuber+", "yt+");
-		return godRanks.contains(playerRank);
 	}
 
 	public int checkCurrentBoosters(String unformatted, String formatted) {
@@ -397,7 +234,157 @@ public class Helper {
 		return 0;
 	}
 
-	public String getServerMessageName(String subServerName) {
+	public String getDisplayName(String unformatted) {
+		Matcher matcher = playerNameRankRegex.matcher(unformatted);
+		if (matcher.find()) {
+			return matcher.group(1);
+		}
+		return "";
+	}
+
+	public String getPlayerName(String unformatted) {
+		Matcher matcher = playerNameRankRegex.matcher(unformatted);
+		if (matcher.find()) {
+			return matcher.group(2);
+		}
+		return "";
+	}
+
+	public String getPlayerRank(String unformatted) {
+		Matcher matcher = playerNameRankRegex.matcher(unformatted);
+		if (matcher.find()) {
+			return matcher.group(1).toLowerCase();
+		}
+		return "";
+	}
+
+	public int isVanishMessage(String unformatted) {
+		if (unformatted.trim().length() <= 0) return -1;
+
+		Matcher matcher = vanishRegex.matcher(unformatted);
+		Matcher matcher2 = vanishRegex2.matcher(unformatted);
+
+		if (matcher.find()) {
+			return 1;
+		} else if (matcher2.find()) {
+			return 0;
+		}
+
+		return -1;
+	}
+
+	public int isGodmodeMessage(String unformatted) {
+		if (unformatted.trim().length() <= 0) return -1;
+
+		Matcher matcher = godmodeRegex.matcher(unformatted);
+		Matcher matcher2 = godmodeRegex2.matcher(unformatted);
+
+		if (matcher.find()) {
+			return 1;
+		} else if (matcher2.find()) {
+			return 0;
+		}
+
+		return -1;
+	}
+
+	public int isAuraMessage(String unformatted) {
+		if (unformatted.trim().length() <= 0) return -1;
+
+		Matcher matcher = auraRegex.matcher(unformatted);
+		Matcher matcher2 = auraRegex2.matcher(unformatted);
+
+		if (matcher.find()) {
+			return 1;
+		} else if (matcher2.find()) {
+			return 0;
+		}
+
+		return -1;
+	}
+
+	public boolean isSwitcherDoneMsg(String unformatted) {
+		if (unformatted.trim().length() < 0) return false;
+
+		String uMsg = unformatted.trim();
+		Matcher matcher = switcherRegexp.matcher(uMsg);
+		return matcher.find();
+	}
+
+	public boolean loadPlayerRank() {
+		if(getGG().getSettings().getOverrideRank() == null) {
+			String accountName = LabyModCore.getMinecraft().getPlayer().getName().trim();
+
+			try {
+				NetHandlerPlayClient nethandlerplayclient = LabyModCore.getMinecraft().getPlayer().sendQueue;
+				Collection<NetworkPlayerInfo> playerMap = nethandlerplayclient.getPlayerInfoMap();
+
+				for (NetworkPlayerInfo player : playerMap) {
+					IChatComponent tabListName = player.getDisplayName();
+
+					if (tabListName != null) {
+						if (accountName.length() > 0
+								&& accountName.equalsIgnoreCase(getGG().getHelper().getPlayerName(tabListName.getUnformattedText()).trim())) {
+
+							getGG().setPlayerRank(getGG().getHelper().getPlayerRank(tabListName.getUnformattedText().trim()));
+						}
+					}
+				}
+
+				return getGG().getPlayerRank() != "";
+			} catch (Exception e) {
+				e.printStackTrace();
+
+				return false;
+			}
+		} else {
+			getGG().setPlayerRank(getGG().getSettings().getOverrideRank());
+			return true;
+		}
+	}
+
+	public boolean showVanishModule(String playerRank) {
+		List<String> vanishRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "youtuber+", "yt+");
+		return vanishRanks.contains(playerRank);
+	}
+
+	public boolean vanishDefaultState(String playerRank) {
+		List<String> vanishRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod");
+		return vanishRanks.contains(playerRank);
+	}
+
+	public boolean doResetBoosterBySubserver(String subServer) {
+		List<String> subServers = Arrays.asList("lobby", "portal", "skyblock", "cb0", "kreativ", "hardcore", "gestrandet");
+		return subServers.contains(subServer.toLowerCase());
+	}
+
+	public boolean doHaveToWaitAfterJoin(String subServer) {
+		if(subServer.startsWith("CB") && !subServer.equalsIgnoreCase("cb0")) return true;
+		List<String> subServers = Arrays.asList("skyblock", "lava", "wasser", "extreme", "evil", "nature");
+		return subServers.contains(subServer.toLowerCase());
+	}
+
+	public boolean showGodModule(String playerRank) {
+		List<String> godRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup");
+		return godRanks.contains(playerRank);
+	}
+
+	public boolean showAuraModule(String playerRank) {
+		List<String> auraRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "youtuber+", "yt+");
+		return auraRanks.contains(playerRank);
+	}
+
+	public boolean hasFlyPermission(String playerRank) {
+		List<String> godRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup", "youtuber+", "yt+");
+		return godRanks.contains(playerRank);
+	}
+
+	public String formatServerName(String subServerName) {
 		if (subServerName == null || subServerName.trim().length() == 0 || subServerName.equalsIgnoreCase("lobby")
 				|| subServerName.equalsIgnoreCase("portal"))
 			return "";
@@ -427,16 +414,16 @@ public class Helper {
 		JsonObject serverMessage = new JsonObject();
 
 		if(!subServerName.equals("reset")) {
-			String subServer = getGG().getHelper().getServerMessageName(subServerName);
+			String subServer = formatServerName(subServerName);
 
-			if(!getGG().getGGServer().getLastLabyChatSubServer().equals(subServer)) {
-				getGG().getGGServer().setLastLabyChatSubServer(subServer);
+			if(!getGG().getLastLabyChatSubServer().equals(subServer)) {
+				getGG().setLastLabyChatSubServer(subServer);
 				serverMessage.addProperty("show_gamemode", true);
 				serverMessage.addProperty("gamemode_name", "GrieferGames "+subServer);
 				LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
 			}
 		} else {
-			getGG().getGGServer().setLastLabyChatSubServer("");
+			getGG().setLastLabyChatSubServer("");
 			serverMessage.addProperty("show_gamemode", false);
 			LabyMod.getInstance().getLabyConnect().onServerMessage("server_gamemode", serverMessage);
 		}
@@ -446,11 +433,11 @@ public class Helper {
 		JsonObject serverMessage = new JsonObject();
 
 		if(!subServerName.equals("reset")) {
-			String subServer = getGG().getHelper().getServerMessageName(subServerName);
+			String subServer = formatServerName(subServerName);
 			if(subServer.equals("")) subServer = "GrieferGames";
 
-			if(!getGG().getGGServer().getLastDiscordSubServer().equals(subServer)) {
-				getGG().getGGServer().setLastDiscordSubServer(subServer);
+			if(!getGG().getLastDiscordSubServer().equals(subServer)) {
+				getGG().setLastDiscordSubServer(subServer);
 				serverMessage.addProperty("hasGame", true);
 				serverMessage.addProperty("game_mode", subServer);
 				serverMessage.addProperty("game_startTime", System.currentTimeMillis());
@@ -458,7 +445,7 @@ public class Helper {
 				LabyMod.getInstance().getDiscordApp().onServerMessage("discord_rpc", serverMessage);
 			}
 		} else {
-			getGG().getGGServer().setLastDiscordSubServer("");
+			getGG().setLastDiscordSubServer("");
 			serverMessage.addProperty("hasGame", false);
 			LabyMod.getInstance().getDiscordApp().onServerMessage("discord_rpc", serverMessage);
 		}

@@ -24,7 +24,7 @@ public class PreRenderListener {
 	public void onPreRender(RenderGameOverlayEvent event) {
 		if (Minecraft.getMinecraft().gameSettings.keyBindPlayerList.isKeyDown()
 				&& !Minecraft.getMinecraft().isIntegratedServerRunning()
-				&& GrieferGames.getSettings().isAMPEnabled()) {
+				&& getGG().getSettings().isAMPEnabled()) {
 
 			ScoreObjective scoreobjective = LabyModCore.getMinecraft().getWorld().getScoreboard()
 					.getObjectiveInDisplaySlot(0);
@@ -36,7 +36,7 @@ public class PreRenderListener {
 						IChatComponent playerDisplayName = player.getDisplayName();
 
 						if (playerDisplayName.getUnformattedText().length() > 0
-								&& GrieferGames.getSettings().isAMPEnabled()) {
+								&& getGG().getSettings().isAMPEnabled()) {
 							String oldPlayerDisplayName = GrieferGames.getGriefergames().getHelper()
 									.getProperTextFormat(playerDisplayName.getFormattedText());
 							if (oldPlayerDisplayName.contains("§k")) {
@@ -53,7 +53,7 @@ public class PreRenderListener {
 
 											ChatStyle playerDisplayNameStyling = displayName.getChatStyle()
 													.createDeepCopy().setObfuscated(false);
-											String chatRepText = GrieferGames.getSettings().getAMPTablistReplacement();
+											String chatRepText = getGG().getSettings().getAMPTablistReplacement();
 
 											if (!chatRepText.contains("%CLEAN%") && !chatRepText.contains("%clean%")) {
 												chatRepText = ModSettings.DEFAULT_AMP_REPLACEMENT_TABLIST;
@@ -84,5 +84,9 @@ public class PreRenderListener {
 				}
 			}
 		}
+	}
+
+	private GrieferGames getGG() {
+		return GrieferGames.getGriefergames();
 	}
 }

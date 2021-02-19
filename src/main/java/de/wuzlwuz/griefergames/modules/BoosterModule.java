@@ -127,7 +127,7 @@ public class BoosterModule extends Module {
 	}
 
 	public boolean isShown() {
-		return GrieferGames.getSettings().isModEnabled() && getGG().isShowModules();
+		return getGG().getSettings().isModEnabled() && getGG().isShowModules();
 	}
 
 	protected boolean supportsRescale() {

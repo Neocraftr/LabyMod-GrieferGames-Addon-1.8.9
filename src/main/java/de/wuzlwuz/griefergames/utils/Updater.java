@@ -30,7 +30,7 @@ public class Updater {
         checkForUpdates();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if(updateAvailable && GrieferGames.getSettings().isAutoUpdate()) {
+            if(updateAvailable && GrieferGames.getGriefergames().getSettings().isAutoUpdate()) {
                 update();
             }
         }));
