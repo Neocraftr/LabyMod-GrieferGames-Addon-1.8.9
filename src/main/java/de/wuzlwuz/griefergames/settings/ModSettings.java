@@ -97,6 +97,7 @@ public class ModSettings {
 	private boolean autoUpdate = true;
 	private boolean vanishOnJoin = false;
 	private boolean flyOnJoin = false;
+	private boolean logTransactions = true;
 
 
 	private GrieferGames getGG() {
@@ -350,6 +351,10 @@ public class ModSettings {
 		return flyOnJoin;
 	}
 
+	public boolean isLogTransactions() {
+		return logTransactions;
+	}
+
 	public void loadConfig() {
 		if (getConfig().has("modEnabled"))
 			modEnabled = getConfig().get("modEnabled").getAsBoolean();
@@ -519,6 +524,9 @@ public class ModSettings {
 
 		if (getConfig().has("flyOnJoin"))
 			flyOnJoin = getConfig().get("flyOnJoin").getAsBoolean();
+
+		if (getConfig().has("logTransactions"))
+			logTransactions = getConfig().get("logTransactions").getAsBoolean();
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -546,6 +554,29 @@ public class ModSettings {
 			}
 		}, autoUpdate);
 		settings.add(autoUpdateBtn);
+
+		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_logging")));
+		final BooleanElement logTransactionsBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_logTransactions"),
+				new ControlElement.IconData("labymod/textures/settings/settings/playermenueditor.png"),
+				new Consumer<Boolean>() {
+					@Override
+					public void accept(Boolean value) {
+						logTransactions = value;
+						getConfig().addProperty("logTransactions", value);
+						saveConfig();
+					}
+				}, logTransactions);
+		settings.add(logTransactionsBtn);
+
+		final ButtonElement openTransactionsLogBtn = new ButtonElement(LanguageManager.translateOrReturnKey("settings_gg_openTransactions"),
+				LanguageManager.translateOrReturnKey("settings_gg_openTransactionsBtn"), new ControlElement.IconData("labymod/textures/settings/category/ingame_gui.png"),
+				new Runnable() {
+					@Override
+					public void run() {
+						getGG().getFileManager().openTransactionsFile();
+					}
+				});
+		settings.add(openTransactionsLogBtn);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_language")));
 		final DropDownMenu<EnumLanguages> languageDropDownMenu = new DropDownMenu<EnumLanguages>(

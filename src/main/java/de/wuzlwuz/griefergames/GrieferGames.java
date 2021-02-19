@@ -13,6 +13,7 @@ import de.wuzlwuz.griefergames.booster.Booster;
 import de.wuzlwuz.griefergames.chat.Chat;
 import de.wuzlwuz.griefergames.enums.EnumLanguages;
 import de.wuzlwuz.griefergames.listener.SubServerListener;
+import de.wuzlwuz.griefergames.utils.FileManager;
 import de.wuzlwuz.griefergames.utils.Helper;
 import de.wuzlwuz.griefergames.server.GrieferGamesServer;
 import de.wuzlwuz.griefergames.settings.ModSettings;
@@ -38,6 +39,7 @@ public class GrieferGames extends LabyModAddon {
 	private GrieferGamesServer ggserver;
 	private Updater updater;
 	private Helper helper;
+	private FileManager fileManager;
 
 	private boolean showModules = false;
 	private boolean showBoosterDummy = false;
@@ -72,6 +74,7 @@ public class GrieferGames extends LabyModAddon {
 		updater = new Updater();
 		helper = new Helper();
 		settings = new ModSettings();
+		fileManager = new FileManager();
 
 		System.out.println("[GrieferGames-Addon] enabled.");
 	}
@@ -164,6 +167,10 @@ public class GrieferGames extends LabyModAddon {
 
 	public Helper getHelper() {
 		return helper;
+	}
+
+	public FileManager getFileManager() {
+		return fileManager;
 	}
 
 	public boolean isShowModules() {

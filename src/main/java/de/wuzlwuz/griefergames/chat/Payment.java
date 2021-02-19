@@ -20,12 +20,9 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
 public class Payment extends Chat {
-	private static Pattern getMoneyValidRegex = Pattern.compile(
-			"^([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) hat dir \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
-	private static Pattern payedMoneyRegex = Pattern.compile(
-			"^Du hast ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
-	private static Pattern earnedMoneyRegex = Pattern
-			.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) wurde zu deinem Konto hinzugef\\u00FCgt");
+	private static Pattern getMoneyValidRegex = Pattern.compile("^([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) hat dir \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
+	private static Pattern payedMoneyRegex = Pattern.compile("^Du hast ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
+	private static Pattern earnedMoneyRegex = Pattern.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) wurde zu deinem Konto hinzugef\\u00FCgt");
 	private static Pattern getMoneyRegex = Pattern.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?)");
 
 	@Override
@@ -38,19 +35,32 @@ public class Payment extends Chat {
 		if (!getHelper().getProperTextFormat(formatted).contains("§r§f §r§ahat dir $")) {
 			Matcher matcher = getMoneyValidRegex.matcher(unformatted);
 			if (matcher.find()) {
-				getGG().setIncome(getGG().getIncome() + getMoneyPay(unformatted));
+				String name = getHelper().getPlayerName(unformatted);
+				double amount = getMoneyPay(unformatted);
+				getGG().setIncome(getGG().getIncome() + amount);
+				getGG().getFileManager().logTransaction(name, amount, true);
+
 				return getSettings().isPayChatRight();
 			}
 		}
 
 		Matcher payedMoney = payedMoneyRegex.matcher(unformatted);
 		Matcher earnedMoney = earnedMoneyRegex.matcher(unformatted);
+
+
 		if(payedMoney.find()) {
-			getGG().setIncome(getGG().getIncome() - getMoneyPay(unformatted));
+			String name = getHelper().getPlayerName(unformatted);
+			double amount = getMoneyPay(unformatted);
+			getGG().setIncome(getGG().getIncome() - amount);
+			getGG().getFileManager().logTransaction(name, amount, false);
+
 			return getSettings().isPayChatRight();
 		}
 		if(earnedMoney.find()) {
+			double amount = getMoneyPay(unformatted);
 			getGG().setIncome(getGG().getIncome() + getMoneyPay(unformatted));
+			getGG().getFileManager().logTransaction("Moneydrop", amount, true);
+
 			return getSettings().isPayChatRight();
 		}
 		return false;
