@@ -19,7 +19,7 @@ public class Nickname extends Chat {
 		if (unformatted.trim().length() > 0) {
 			Matcher nicknameMsg = nicknameMsgRegex.matcher(unformatted);
 			if (nicknameMsg.find()) {
-				getGG().setNickname(nicknameMsg.group(3));
+				getGG().setNickname(nicknameMsg.group(1));
 			} else if (unformatted.trim().equalsIgnoreCase("[Nick] Dein Name wurde zurückgesetzt.")) {
 				getGG().setNickname("");
 			}

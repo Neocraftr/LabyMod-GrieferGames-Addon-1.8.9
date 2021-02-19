@@ -50,6 +50,7 @@ public class GrieferGamesServer extends Server {
 	private long lastActiveTime = System.currentTimeMillis();
 	private boolean modulesLoaded = false;
 	private boolean listenerLoaded = false;
+	private boolean firstJoin = false;
 
 	private GrieferGames getGG() {
 		return GrieferGames.getGriefergames();
@@ -164,7 +165,7 @@ public class GrieferGamesServer extends Server {
 												new VanishModule();
 											}
 										}
-										if(getSettings().isAutoPortl()) {
+										if(firstJoin && getSettings().isAutoPortl()) {
 											Minecraft.getMinecraft().thePlayer.sendChatMessage("/portal");
 										}
 										break;
@@ -180,14 +181,11 @@ public class GrieferGamesServer extends Server {
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
+							firstJoin = false;
 						}
 					};
 					thread.start();
-				} else {
-					// Minecraft.getMinecraft().entityRenderer.getMapItemRenderer().clearLoadedMaps();
-					//getGG().setShowBoosterDummy(false);
 				}
-
 				getGG().setGodActive(false);
 				getGG().setVanishActive(getHelper().vanishDefaultState(getGG().getPlayerRank()));
 			}
@@ -385,6 +383,7 @@ public class GrieferGamesServer extends Server {
 
 	@Override
 	public void onJoin(ServerData serverData) {
+		firstJoin = true;
 		subServer = "";
 		lastLabyChatSubServer = "";
 		lastDiscordSubServer = "";
