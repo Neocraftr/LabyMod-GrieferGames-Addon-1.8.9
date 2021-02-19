@@ -12,12 +12,10 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
 public class GlobalMessage extends Chat {
-	// private static Pattern msgUserGlobalChatRegex =
-	// Pattern.compile("^([A-Za-z\\-]+\\+?) \\u2503 (\\w{1,16})\\s\\u00BB");
 	private static Pattern msgUserGlobalChatRegex = Pattern
-			.compile("^([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})\\s\\u00BB");
+			.compile("^([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})\\s[\\u00BB:]\\s");
 	private static Pattern msgUserGlobalChatClanRegex = Pattern
-			.compile("^(\\[[^\\]]+\\])\\s([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})\\s\\u00BB");
+			.compile("^(\\[[^\\]]+\\])\\s([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})\\s[\\u00BB:]\\s");
 
 	@Override
 	public String getName() {
@@ -50,6 +48,7 @@ public class GlobalMessage extends Chat {
 						.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username))
 						.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
 				if(msgs.getUnformattedText().equals("» ")) break;
+				if(msgs.getUnformattedText().equals(": ")) break;
 			}
 		}
 
@@ -65,6 +64,7 @@ public class GlobalMessage extends Chat {
 		} else if (msgUserGlobalChatClan.find()) {
 			displayName = msgUserGlobalChatClan.group(3);
 		}
+		if(displayName.startsWith("~")) displayName = displayName.replaceFirst("~", "");
 		return displayName;
 	}
 }

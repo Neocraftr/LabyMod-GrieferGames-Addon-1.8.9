@@ -126,22 +126,22 @@ public class PrivateMessage extends Chat {
 	}
 
 	private String getSentPrivateMessageName(String unformatted) {
-		String displayName = "";
-
 		Matcher privateMessageSent = privateMessageSentRegex.matcher(unformatted);
 		if (privateMessageSent.find()) {
-			displayName = privateMessageSent.group(2);
+			String msg = privateMessageSent.group(2);
+			if(msg.startsWith("~")) msg = msg.replaceFirst("~", "");
+			return msg;
 		}
-		return displayName;
+		return "";
 	}
 
 	private String getPrivateMessageName(String unformatted) {
-		String displayName = "";
-
 		Matcher privateMessage = privateMessageRegex.matcher(unformatted);
 		if (privateMessage.find()) {
-			displayName = privateMessage.group(2);
+			String msg = privateMessage.group(2);
+			if(msg.startsWith("~")) msg = msg.replaceFirst("~", "");
+			return msg;
 		}
-		return displayName;
+		return "";
 	}
 }

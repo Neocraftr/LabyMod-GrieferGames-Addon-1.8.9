@@ -21,10 +21,7 @@ import net.minecraft.client.Minecraft;
 
 public class Helper {
 	private Pattern subServerCityBuildRegex = Pattern.compile("^cb([0-9]+)$");
-	private Pattern displayNameRegex = Pattern.compile("(([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}))");
-
 	private Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})");
-	private Pattern playerNameRankRegex2 = Pattern.compile("([0-9]+)([A-Za-z\\-]+\\+?)"); // Don't know what that is for
 
 	private Pattern vanishRegex = Pattern
 			.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) : aktiviert$");
@@ -196,33 +193,27 @@ public class Helper {
 	}
 
 	public String getDisplayName(String unformatted) {
-		String displayName = "";
-		Matcher matcher = displayNameRegex.matcher(unformatted);
+		Matcher matcher = playerNameRankRegex.matcher(unformatted);
 		if (matcher.find()) {
-			displayName = matcher.group(1);
+			return matcher.group(1);
 		}
-		return displayName;
+		return "";
 	}
 
 	public String getPlayerName(String unformatted) {
-		String playerName = "";
 		Matcher matcher = playerNameRankRegex.matcher(unformatted);
 		if (matcher.find()) {
-			playerName = matcher.group(2);
+			return matcher.group(2);
 		}
-		return playerName;
+		return "";
 	}
 
 	public String getPlayerRank(String unformatted) {
-		String playerRank = "";
 		Matcher matcher = playerNameRankRegex.matcher(unformatted);
-		Matcher matcher2 = playerNameRankRegex2.matcher(unformatted);
 		if (matcher.find()) {
-			playerRank = matcher.group(1);
-		} else if (matcher2.find()) {
-			playerRank = matcher2.group(2);
+			return matcher.group(1).toLowerCase();
 		}
-		return playerRank.toLowerCase();
+		return "";
 	}
 
 	public int isVanishMessage(String unformatted, String formatted) {
