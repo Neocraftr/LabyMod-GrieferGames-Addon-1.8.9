@@ -11,12 +11,10 @@ import de.wuzlwuz.griefergames.enums.EnumRealnameShown;
 import de.wuzlwuz.griefergames.enums.EnumSounds;
 import net.labymod.gui.elements.ColorPicker;
 import net.labymod.gui.elements.DropDownMenu;
-import net.labymod.main.LabyMod;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.*;
 import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
-import org.apache.commons.codec.language.bm.Lang;
 
 public class ModSettings {
 	public static final String DEFAULT_AMP_REPLACEMENT_CHAT = "[AMP] %CLEAN%",
@@ -636,7 +634,7 @@ public class ModSettings {
 				}, filterDuplicateMessages);
 		settings.add(filterDuplicateMessagesBtn);
 
-		final NumberElement filterDuplicateMessagesTimeNumber = new NumberElement(LanguageManager.translateOrReturnKey("settings_gg_filterDuplicateMessagesTime"),
+		final CustomNumberElement filterDuplicateMessagesTimeNumber = new CustomNumberElement(LanguageManager.translateOrReturnKey("settings_gg_filterDuplicateMessagesTime"),
 				new ControlElement.IconData(Material.WATCH),
 				filterDuplicateMessagesTime);
 		filterDuplicateMessagesTimeNumber.setMinValue(3);
@@ -804,10 +802,10 @@ public class ModSettings {
 		settings.add(mentionsColorBulkElement);
 
 		settings.add(new HeaderElement(LanguageManager.translateOrReturnKey("settings_gg_heads_afk")));
-		final NumberElement afkTimeSetting = new NumberElement(LanguageManager.translateOrReturnKey("settings_gg_afkTime"),
+		final CustomNumberElement afkTimeSetting = new CustomNumberElement(LanguageManager.translateOrReturnKey("settings_gg_afkTime"),
 				new ControlElement.IconData(Material.WATCH),
 				afkTime);
-		afkTimeSetting.setMinValue(1);
+		afkTimeSetting.setMinValue(0);
 		afkTimeSetting.setMaxValue(60);
 		afkTimeSetting.addCallback(new Consumer<Integer>() {
 			@Override
