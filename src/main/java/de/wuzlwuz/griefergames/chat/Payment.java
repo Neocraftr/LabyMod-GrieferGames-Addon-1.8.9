@@ -40,42 +40,27 @@ public class Payment extends Chat {
 				getGG().setIncome(getGG().getIncome() + amount);
 				getGG().getFileManager().logTransaction(name, amount, true);
 
-				return getSettings().isPayChatRight();
+				return true;
 			}
 		}
 
 		Matcher payedMoney = payedMoneyRegex.matcher(unformatted);
-		Matcher earnedMoney = earnedMoneyRegex.matcher(unformatted);
-
-
 		if(payedMoney.find()) {
 			String name = getHelper().getPlayerName(unformatted);
 			double amount = getMoneyPay(unformatted);
 			getGG().setIncome(getGG().getIncome() - amount);
 			getGG().getFileManager().logTransaction(name, amount, false);
 
-			return getSettings().isPayChatRight();
+			return true;
 		}
+
+		Matcher earnedMoney = earnedMoneyRegex.matcher(unformatted);
 		if(earnedMoney.find()) {
 			double amount = getMoneyPay(unformatted);
 			getGG().setIncome(getGG().getIncome() + getMoneyPay(unformatted));
 			getGG().getFileManager().logTransaction("Moneydrop", amount, true);
 
-			return getSettings().isPayChatRight();
-		}
-		return false;
-	}
-
-	@Override
-	public boolean doActionModifyChatMessage(IChatComponent msg) {
-		String unformatted = msg.getUnformattedText();
-		String formatted = msg.getFormattedText();
-
-		if (!getHelper().getProperTextFormat(formatted).contains("§r§f §r§ahat dir $")) {
-			Matcher matcher = getMoneyValidRegex.matcher(unformatted);
-			if (matcher.find()) {
-				return (getSettings().isPayHover() || getSettings().isPayMarker());
-			}
+			return false;
 		}
 
 		return false;
@@ -113,7 +98,24 @@ public class Payment extends Chat {
 			}
 		}
 
-		return ChatDisplayAction.SWAP;
+		if(getSettings().isPayChatRight()) {
+			return ChatDisplayAction.SWAP;
+		}
+
+		return ChatDisplayAction.NORMAL;
+	}
+
+	@Override
+	public boolean doActionModifyChatMessage(IChatComponent msg) {
+		String unformatted = msg.getUnformattedText();
+		String formatted = msg.getFormattedText();
+
+		if (!getHelper().getProperTextFormat(formatted).contains("§r§f §r§ahat dir $")) {
+			Matcher matcher = getMoneyValidRegex.matcher(unformatted);
+			return matcher.find();
+		}
+
+		return false;
 	}
 
 	@Override

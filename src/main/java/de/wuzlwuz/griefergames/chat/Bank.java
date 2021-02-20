@@ -26,20 +26,7 @@ public class Bank extends Chat {
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		if(unformatted.trim().length() > 0) {
-			Matcher bankPayInMessage = bankPayInMessageRegexp.matcher(unformatted);
-			Matcher bankPayOutMessage = bankPayOutMessageRegexp.matcher(unformatted);
-
-			if (bankPayInMessage.find() || bankPayOutMessage.find()) return true;
-
-			if(getSettings().isBankChatRight()) {
-				Matcher bankBalanceMessage = bankBalanceMessageRegexp.matcher(unformatted);
-				Matcher bankMessageOther = bankMessageOtherRegexp.matcher(unformatted);
-
-				return bankBalanceMessage.find() || bankMessageOther.find();
-			}
-		}
-		return false;
+		return true;
 	}
 
 	@Override
@@ -73,7 +60,16 @@ public class Bank extends Chat {
 			return getSettings().isBankChatRight() ? ChatDisplayAction.SWAP : ChatDisplayAction.NORMAL;
 		}
 
-		return ChatDisplayAction.SWAP;
+		if(getSettings().isBankChatRight()) {
+			Matcher bankBalanceMessage = bankBalanceMessageRegexp.matcher(unformatted);
+			Matcher bankMessageOther = bankMessageOtherRegexp.matcher(unformatted);
+
+			if(bankBalanceMessage.find() || bankMessageOther.find()) {
+				return ChatDisplayAction.SWAP;
+			}
+		}
+
+		return ChatDisplayAction.NORMAL;
 	}
 
 	private int getMoneyBank(String unformatted) {
