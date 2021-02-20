@@ -23,20 +23,20 @@ public class IncomeModule extends SimpleModule {
     @Override
     public String getDisplayValue() {
         if(getGG().getIncome() >= 0) {
-            return getGG().getIncome()+"$";
+            return "$"+getGG().getIncome();
         } else {
-            return "§c"+getGG().getIncome()+"$";
+            return "§c$"+getGG().getIncome();
         }
     }
 
     @Override
     public String getDefaultValue() {
-        return "0$";
+        return "$0";
     }
 
     @Override
     public ControlElement.IconData getIconData() {
-        return new ControlElement.IconData("griefergames/textures/icons/module_income.png");
+        return new ControlElement.IconData("labymod/textures/misc/economy_cash.png");
     }
 
     @Override
