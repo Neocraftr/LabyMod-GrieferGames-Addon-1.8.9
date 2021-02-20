@@ -41,7 +41,7 @@ public class GrieferGames extends LabyModAddon {
 	private Helper helper;
 	private FileManager fileManager;
 
-	private boolean showModules = false;
+	private boolean onGrieferGames = false;
 	private boolean showBoosterDummy = false;
 	private boolean vanishActive = false;
 	private boolean auraActive = false;
@@ -173,12 +173,6 @@ public class GrieferGames extends LabyModAddon {
 		return fileManager;
 	}
 
-	public boolean isShowModules() {
-		return showModules;
-	}
-	public void setShowModules(boolean showModules) {
-		this.showModules = showModules;
-	}
 
 	public boolean isShowBoosterDummy() {
 		return showBoosterDummy;
@@ -390,5 +384,13 @@ public class GrieferGames extends LabyModAddon {
 
 	public void setLastLabyChatSubServer(String lastLabyChatSubServer) {
 		this.lastLabyChatSubServer = lastLabyChatSubServer;
+	}
+
+	public boolean isOnGrieferGames() {
+		return onGrieferGames;
+	}
+
+	public void setOnGrieferGames(boolean onGrieferGames) {
+		this.onGrieferGames = onGrieferGames;
 	}
 }

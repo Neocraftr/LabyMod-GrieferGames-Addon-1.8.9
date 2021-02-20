@@ -57,7 +57,7 @@ public class VanishModule extends SimpleModule {
 
 	@Override
 	public boolean isShown() {
-		return getGG().getSettings().isModEnabled() && getGG().isShowModules();
+		return getGG().getSettings().isModEnabled() && getGG().isOnGrieferGames();
 	}
 
 	@Override

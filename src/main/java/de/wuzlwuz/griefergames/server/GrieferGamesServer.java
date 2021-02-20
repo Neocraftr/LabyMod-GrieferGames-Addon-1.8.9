@@ -20,6 +20,7 @@ import net.labymod.main.lang.LanguageManager;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.labymod.servermanager.Server;
 import net.labymod.settings.elements.SettingsElement;
+import net.labymod.utils.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -81,8 +82,7 @@ public class GrieferGamesServer extends Server {
 
 		getApi().getEventManager().register(new MessageSendEvent() {
 			public boolean onSend(String message) {
-
-				if (!getSettings().isModEnabled()) return false;
+				if (!getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return false;
 
 				getGG().setLastActiveTime(System.currentTimeMillis());
 
@@ -100,8 +100,7 @@ public class GrieferGamesServer extends Server {
 		getApi().getEventManager().register(new MessageReceiveEvent() {
 			@Override
 			public boolean onReceive(String formatted, String unformatted) {
-				if (!getSettings().isModEnabled())
-					return false;
+				if (!getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return false;
 
 				if (unformatted.startsWith("[SCAMMER] ")) {
 					String newFormatted = formatted.replaceFirst("((§r)?§6\\[§r§([0-9]|[a-f])§lSCAMMER§r§6\\]§r§r)", "").trim();
@@ -121,81 +120,88 @@ public class GrieferGamesServer extends Server {
 				return false;
 			}
 		});
+
+		getApi().getEventManager().registerOnQuit(new Consumer<net.labymod.utils.ServerData>() {
+			@Override
+			public void accept(net.labymod.utils.ServerData serverData) {
+				getGG().setOnGrieferGames(false);
+			}
+		});
 	}
 
 	@Override
 	public ChatDisplayAction handleChatMessage(String unformatted, String formatted) throws Exception {
-		if (getSettings().isModEnabled()) {
-			try {
-				if (getSettings().isFilterDuplicateMessages() && getGG().getFilterDuplicateLastMessage().equals(formatted)) {
-					return ChatDisplayAction.HIDE;
-				}
-				getGG().setFilterDuplicateLastMessage(formatted);
+		if (!getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return ChatDisplayAction.NORMAL;
 
-				List<Chat> chatModules = getGG().getChatModules();
-				for (Chat chatModule : chatModules) {
-					if (chatModule.doActionHandleChatMessage(unformatted, formatted)) {
-						ChatDisplayAction retVal = chatModule.handleChatMessage(unformatted, formatted);
-						if (retVal != ChatDisplayAction.NORMAL) {
-							return retVal;
-						}
-					}
-				}
-
-				getHelper().checkIfBoosterMessage(unformatted, formatted);
-				getHelper().checkIfBoosterDoneMessage(unformatted, formatted);
-				getHelper().checkIfBoosterMultiDoneMessage(unformatted, formatted);
-				getHelper().checkCurrentBoosters(unformatted, formatted);
-
-				if (getHelper().isSwitcherDoneMsg(unformatted)) {
-					if(getSettings().isUpdateBoosterState()) {
-						getGG().getBoosters().clear();
-						Minecraft.getMinecraft().thePlayer.sendChatMessage("/booster");
-					}
-
-					if(getSettings().isVanishOnJoin() && getHelper().showVanishModule(getGG().getPlayerRank()) && !getGG().isVanishActive()) {
-						Minecraft.getMinecraft().thePlayer.sendChatMessage("/vanish");
-					}
-
-					if(getSettings().isFlyOnJoin() && getHelper().hasFlyPermission(getGG().getPlayerRank())) {
-						new Timer().schedule(new TimerTask() {
-							@Override
-							public void run() {
-								if(!LabyModCore.getMinecraft().getPlayer().capabilities.allowFlying) {
-									Minecraft.getMinecraft().thePlayer.sendChatMessage("/fly");
-								}
-							}
-						}, 5000);
-					}
-				}
-
-				int status = getHelper().isVanishMessage(unformatted);
-				if (status >= 0) {
-					getGG().setVanishActive(status > 0);
-					return ChatDisplayAction.NORMAL;
-				}
-
-				status = getHelper().isGodmodeMessage(unformatted);
-				if (status >= 0) {
-					getGG().setGodActive(status > 0);
-					return ChatDisplayAction.NORMAL;
-				}
-
-				status = getHelper().isAuraMessage(unformatted);
-				if (status >= 0) {
-					getGG().setAuraActive(status > 0);
-					return ChatDisplayAction.NORMAL;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+		try {
+			if (getSettings().isFilterDuplicateMessages() && getGG().getFilterDuplicateLastMessage().equals(formatted)) {
+				return ChatDisplayAction.HIDE;
 			}
+			getGG().setFilterDuplicateLastMessage(formatted);
+
+			List<Chat> chatModules = getGG().getChatModules();
+			for (Chat chatModule : chatModules) {
+				if (chatModule.doActionHandleChatMessage(unformatted, formatted)) {
+					ChatDisplayAction retVal = chatModule.handleChatMessage(unformatted, formatted);
+					if (retVal != ChatDisplayAction.NORMAL) {
+						return retVal;
+					}
+				}
+			}
+
+			getHelper().checkIfBoosterMessage(unformatted, formatted);
+			getHelper().checkIfBoosterDoneMessage(unformatted, formatted);
+			getHelper().checkIfBoosterMultiDoneMessage(unformatted, formatted);
+			getHelper().checkCurrentBoosters(unformatted, formatted);
+
+			if (getHelper().isSwitcherDoneMsg(unformatted)) {
+				if(getSettings().isUpdateBoosterState()) {
+					getGG().getBoosters().clear();
+					Minecraft.getMinecraft().thePlayer.sendChatMessage("/booster");
+				}
+
+				if(getSettings().isVanishOnJoin() && getHelper().showVanishModule(getGG().getPlayerRank()) && !getGG().isVanishActive()) {
+					Minecraft.getMinecraft().thePlayer.sendChatMessage("/vanish");
+				}
+
+				if(getSettings().isFlyOnJoin() && getHelper().hasFlyPermission(getGG().getPlayerRank())) {
+					new Timer().schedule(new TimerTask() {
+						@Override
+						public void run() {
+							if(!LabyModCore.getMinecraft().getPlayer().capabilities.allowFlying) {
+								Minecraft.getMinecraft().thePlayer.sendChatMessage("/fly");
+							}
+						}
+					}, 5000);
+				}
+			}
+
+			int status = getHelper().isVanishMessage(unformatted);
+			if (status >= 0) {
+				getGG().setVanishActive(status > 0);
+				return ChatDisplayAction.NORMAL;
+			}
+
+			status = getHelper().isGodmodeMessage(unformatted);
+			if (status >= 0) {
+				getGG().setGodActive(status > 0);
+				return ChatDisplayAction.NORMAL;
+			}
+
+			status = getHelper().isAuraMessage(unformatted);
+			if (status >= 0) {
+				getGG().setAuraActive(status > 0);
+				return ChatDisplayAction.NORMAL;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
 		return ChatDisplayAction.NORMAL;
 	}
 
 	public Object modifyChatMessage(Object o) {
-		if (!getSettings().isModEnabled())
-			return o;
+		if (!getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return o;
 
 		try {
 			boolean hasPrefix = false;
@@ -229,11 +235,11 @@ public class GrieferGamesServer extends Server {
 
 	@Override
 	public void onJoin(ServerData serverData) {
+		getGG().setOnGrieferGames(true);
 		getGG().setSubServer("");
 		getGG().setLastLabyChatSubServer("");
 		getGG().setLastLabyChatSubServer("");
 		getGG().setNickname("");
-		getGG().setShowModules(true);
 		getGG().setFirstJoin(true);
 	}
 

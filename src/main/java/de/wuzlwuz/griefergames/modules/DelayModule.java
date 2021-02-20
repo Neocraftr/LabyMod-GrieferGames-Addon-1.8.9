@@ -53,7 +53,7 @@ public class DelayModule extends SimpleModule {
 
     @Override
     public boolean isShown() {
-        return getGG().getSettings().isModEnabled() && getGG().isShowModules() && getGG().getTimeToWait() != 0;
+        return getGG().getSettings().isModEnabled() && getGG().isOnGrieferGames() && getGG().getTimeToWait() != 0;
     }
 
     @Override

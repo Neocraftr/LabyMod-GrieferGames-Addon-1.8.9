@@ -22,6 +22,7 @@ public class PreRenderListener {
 
 	@SubscribeEvent
 	public void onPreRender(RenderGameOverlayEvent event) {
+		if (!getGG().getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return;
 		if (Minecraft.getMinecraft().gameSettings.keyBindPlayerList.isKeyDown()
 				&& !Minecraft.getMinecraft().isIntegratedServerRunning()
 				&& getGG().getSettings().isAMPEnabled()) {
