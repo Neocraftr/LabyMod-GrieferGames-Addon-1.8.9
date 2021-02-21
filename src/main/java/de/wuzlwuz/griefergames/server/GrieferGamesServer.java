@@ -65,8 +65,8 @@ public class GrieferGamesServer extends Server {
 		getGG().addChatModule(new Teleport());
 		getGG().addChatModule(new AntiMagicPrefix());
 		getGG().addChatModule(new Nickname());
-		getGG().addChatModule(new ChatTime());
 		getGG().addChatModule(new Mention());
+		getGG().addChatModule(new ChatTime());
 
 		getApi().registerForgeListener(new PreRenderListener());
 		getApi().registerForgeListener(new OnTickListener());
@@ -174,6 +174,10 @@ public class GrieferGamesServer extends Server {
 						}
 					}, 5000);
 				}
+			}
+
+			if(getHelper().isResetWaitTime(unformatted)) {
+				getGG().setTimeToWait(12);
 			}
 
 			int status = getHelper().isVanishMessage(unformatted);

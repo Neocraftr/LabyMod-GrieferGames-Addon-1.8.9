@@ -41,9 +41,6 @@ public class Helper {
 	private Pattern getBoosterMultiDoneValidRegexp = Pattern.compile("^\\[Booster\\] Der ([A-z]+\\-Booster) \\(Stufe [1-6]\\) von ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) ist abgelaufen.$");
 	private Pattern getCurrentBoosters = Pattern.compile("^([A-z]+\\-Booster): ([0-9])x Multiplikator ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
 
-	private Pattern switcherRegexp = Pattern.compile("^\\[Switcher\\] Daten heruntergeladen!$");
-
-
 	public String getProperTextFormat(String formatted) {
 		return formatted.replaceAll("\u00A7", "§");
 	}
@@ -304,11 +301,12 @@ public class Helper {
 	}
 
 	public boolean isSwitcherDoneMsg(String unformatted) {
-		if (unformatted.trim().length() < 0) return false;
+		return unformatted.equalsIgnoreCase("[Switcher] Daten heruntergeladen!");
+	}
 
-		String uMsg = unformatted.trim();
-		Matcher matcher = switcherRegexp.matcher(uMsg);
-		return matcher.find();
+	public boolean isResetWaitTime(String unformatted) {
+		if(unformatted.startsWith("Der Server ist voll.")) return true;
+		return unformatted.equalsIgnoreCase("Der Server ist gerade im Wartungsmodus.");
 	}
 
 	public boolean loadPlayerRank() {
