@@ -874,8 +874,8 @@ public class ModSettings {
 		automationsCategory.getSubSettings().add(flyOnJoinBtn);
 
 		// Title: AFK
-		chatCategory.getSubSettings().add(new HeaderElement(""));
-		chatCategory.getSubSettings().add(new HeaderElement("§b§l"+LanguageManager.translateOrReturnKey("settings_gg_heads_afk")));
+		automationsCategory.getSubSettings().add(new HeaderElement(""));
+		automationsCategory.getSubSettings().add(new HeaderElement("§b§l"+LanguageManager.translateOrReturnKey("settings_gg_heads_afk")));
 
 		// AFK time
 		final CustomNumberElement afkTimeSetting = new CustomNumberElement(LanguageManager.translateOrReturnKey("settings_gg_afkTime"),
@@ -890,7 +890,7 @@ public class ModSettings {
 				saveConfig();
 			}
 		});
-		chatCategory.getSubSettings().add(afkTimeSetting);
+		automationsCategory.getSubSettings().add(afkTimeSetting);
 
 		// AFK nick
 		final BooleanElement afkNickBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_afkNick"),
@@ -903,7 +903,7 @@ public class ModSettings {
 						saveConfig();
 					}
 				}, afkNick);
-		chatCategory.getSubSettings().add(afkNickBtn);
+		automationsCategory.getSubSettings().add(afkNickBtn);
 
 		// AFK nickname
 		final StringElement afkNicknameSetting = new StringElement(LanguageManager.translateOrReturnKey("settings_gg_afkNickname"),
@@ -915,7 +915,7 @@ public class ModSettings {
 				saveConfig();
 			}
 		});
-		chatCategory.getSubSettings().add(afkNicknameSetting);
+		automationsCategory.getSubSettings().add(afkNicknameSetting);
 
 		// AFK answear
 		final BooleanElement afkMsgAnswearBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_afkMsgAnswear"),
@@ -928,7 +928,7 @@ public class ModSettings {
 						saveConfig();
 					}
 				}, afkMsgAnswear);
-		chatCategory.getSubSettings().add(afkMsgAnswearBtn);
+		automationsCategory.getSubSettings().add(afkMsgAnswearBtn);
 
 		// AFK message
 		final StringElement afkMsgTextSetting = new StringElement(LanguageManager.translateOrReturnKey("settings_gg_afkMsgText"),
@@ -940,7 +940,7 @@ public class ModSettings {
 				saveConfig();
 			}
 		});
-		chatCategory.getSubSettings().add(afkMsgTextSetting);
+		automationsCategory.getSubSettings().add(afkMsgTextSetting);
 
 		// Category: Friends
 		final ListContainerElement friendsCategory = new ListContainerElement("§b§l"+LanguageManager.translateOrReturnKey("settings_gg_category_friends"),
@@ -981,6 +981,9 @@ public class ModSettings {
 		}, discordShowSubServerEnabled);
 		friendsCategory.getSubSettings().add(discordShowSubServerEnabledBtn);
 
+		String commandsInfoText = "§7"+LanguageManager.translateOrReturnKey("settings_gg_cmdinfo");
+		commandsInfoText += "\n§e/resetincome §8- §7"+LanguageManager.translateOrReturnKey("settings_gg_cmdinfo_resetincome");
+		settings.add(new TextElement(commandsInfoText));
 
 		infoText = new TextElement("");
 		updateInfo();
@@ -988,7 +991,7 @@ public class ModSettings {
 	}
 
 	private void updateInfo() {
-		String text = "§7Version: §e"+GrieferGames.VERSION;
+		String text = "§7Version: §a"+GrieferGames.VERSION;
 		if(getGG().getUpdater().isUpdateAvailable()) {
 			text += " §c(";
 			if(autoUpdate) {

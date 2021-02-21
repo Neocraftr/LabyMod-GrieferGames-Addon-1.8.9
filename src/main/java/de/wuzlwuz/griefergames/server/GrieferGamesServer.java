@@ -86,6 +86,12 @@ public class GrieferGamesServer extends Server {
 
 				getGG().setLastActiveTime(System.currentTimeMillis());
 
+				if(message.toLowerCase().startsWith("/ggdebug")) {
+					getGG().getApi().displayMessageInChat("§7----------- "+GrieferGames.PREFIX+"§7----------- ");
+					getGG().getApi().displayMessageInChat("§7Rank: §e" +getGG().getPlayerRank());
+					return true;
+				}
+
 				List<Chat> chatModules = getGG().getChatModules();
 				for (Chat chatModule : chatModules) {
 					if (chatModule.doActionCommandMessage(message)) {

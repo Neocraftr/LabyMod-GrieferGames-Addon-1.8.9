@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import com.mojang.authlib.GameProfile;
 
+import de.wuzlwuz.griefergames.GrieferGames;
 import net.labymod.main.LabyMod;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.servermanager.ChatDisplayAction;
@@ -145,7 +146,7 @@ public class Payment extends Chat {
 
 		if(unformatted.toLowerCase().startsWith("/resetincome")) {
 			getGG().setIncome(0);
-			getGG().getApi().displayMessageInChat(ModColor.GREEN+LanguageManager.translateOrReturnKey("message_gg_income_reset"));
+			getGG().getApi().displayMessageInChat(GrieferGames.PREFIX+ModColor.GRAY+LanguageManager.translateOrReturnKey("message_gg_income_reset"));
 			return true;
 		}
 		return false;
