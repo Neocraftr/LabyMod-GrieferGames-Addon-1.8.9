@@ -33,8 +33,9 @@ public class Mention extends Chat {
         short r = (short) getSettings().getMentionsColor().getRed();
         short g = (short) getSettings().getMentionsColor().getGreen();
         short b = (short) getSettings().getMentionsColor().getBlue();
+        String soundPath = getHelper().getSoundPath(getSettings().getMentionSound());
         Filters.Filter filter = new Filters.Filter("GrieferGames Addon Mention", new String[] {unformatted}, new String[0],
-                false, "", true, r, g, b, false, false, false, "Global");
+                getSettings().isMentionSound(), soundPath, true, r, g, b, false, false, false, "Global");
 
         LabyMod.getInstance().getChatToolManager().getFilters().add(filter);
         new Timer().schedule(new TimerTask() {
@@ -43,6 +44,7 @@ public class Mention extends Chat {
                 LabyMod.getInstance().getChatToolManager().getFilters().remove(filter);
             }
         }, 2000);
+
         return false;
     }
 }

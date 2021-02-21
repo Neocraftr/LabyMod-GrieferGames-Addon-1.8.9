@@ -65,8 +65,7 @@ public class PrivateMessage extends Chat {
 
 		if (privateMessage.find()) {
 			if (getSettings().isPrivateChatSound()) {
-				LabyModCore.getMinecraft().playSound(new ResourceLocation(getSettings().getPrivateChatSoundPath()),
-						1.0F);
+				LabyModCore.getMinecraft().playSound(new ResourceLocation(getHelper().getSoundPath(getSettings().getPrivateChatSound())), 1.0F);
 			}
 
 			if (getSettings().isMsgDisplayNameClick()) {

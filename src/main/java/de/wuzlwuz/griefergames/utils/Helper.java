@@ -13,6 +13,7 @@ import de.wuzlwuz.griefergames.booster.DropBooster;
 import de.wuzlwuz.griefergames.booster.ExperienceBooster;
 import de.wuzlwuz.griefergames.booster.FlyBooster;
 import de.wuzlwuz.griefergames.booster.MobBooster;
+import de.wuzlwuz.griefergames.enums.EnumSounds;
 import net.labymod.core.LabyModCore;
 import net.labymod.ingamechat.tools.filter.Filters;
 import net.labymod.ingamechat.tools.filter.Filters.Filter;
@@ -253,6 +254,27 @@ public class Helper {
 			return matcher.group(1).toLowerCase();
 		}
 		return "";
+	}
+
+	public String getSoundPath(EnumSounds sound) {
+		switch (sound) {
+			case BASS:
+				return "note.bass";
+			case BASSDRUM:
+				return "note.bd";
+			case HARP:
+				return "note.harp";
+			case HAT:
+				return "note.hat";
+			case PLING:
+				return "note.pling";
+			case POP:
+				return "random.pop";
+			case SNARE:
+				return "note.snare";
+			default:
+				return "";
+		}
 	}
 
 	public int isVanishMessage(String unformatted) {

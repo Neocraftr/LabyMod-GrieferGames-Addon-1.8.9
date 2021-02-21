@@ -9,6 +9,7 @@ import de.wuzlwuz.griefergames.GrieferGames;
 import de.wuzlwuz.griefergames.enums.EnumLanguages;
 import de.wuzlwuz.griefergames.enums.EnumRealnameShown;
 import de.wuzlwuz.griefergames.enums.EnumSounds;
+import net.labymod.core.LabyModCore;
 import net.labymod.gui.elements.ColorPicker;
 import net.labymod.gui.elements.DropDownMenu;
 import net.labymod.main.lang.LanguageManager;
@@ -16,6 +17,7 @@ import net.labymod.settings.Settings;
 import net.labymod.settings.elements.*;
 import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
+import net.minecraft.util.ResourceLocation;
 
 public class ModSettings {
 	public static final String DEFAULT_AMP_REPLACEMENT_CHAT = "[AMP] %CLEAN%",
@@ -25,15 +27,11 @@ public class ModSettings {
 	private TextElement infoText;
 
 	private boolean modEnabled = true;
-
 	private EnumLanguages language = EnumLanguages.GAMELANGUAGE;
-
 	private String overrideRank = null;
-
 	private boolean showChatTime = false;
 	private boolean chatTimeShortFormat = true;
 	private boolean chatTimeAfterMessage = false;
-
 	private boolean privateChatRight = true;
 	private boolean plotChatRight = true;
 	private EnumSounds privateChatSound = EnumSounds.NONE;
@@ -42,331 +40,52 @@ public class ModSettings {
 	private boolean msgDisplayNameClick = true;
 	private boolean filterDuplicateMessages = false;
 	private Integer filterDuplicateMessagesTime = 5;
-
 	private boolean cleanBlanks = false;
 	private boolean cleanSupremeBlanks = false;
-
 	private boolean highlightMentions = true;
 	private Color mentionsColor = new Color(121, 178, 255);
-
+	private EnumSounds mentionSound = EnumSounds.NONE;
 	private boolean afkNick = false;
 	private String afkNickname = DEFAULT_AFK_NICKNAME;
 	private int afkTime = 15;
 	private boolean afkMsgAnswear = false;
 	private String afkMsgText = "Ich bin momentan AFK ;)";
-
 	private boolean payChatRight = true;
 	private boolean payAchievement = false;
 	private boolean payMarker = false;
 	private boolean payHover = false;
-
 	private boolean bankChatRight = true;
 	private boolean bankAchievement = false;
-
 	private boolean itemRemoverChatRight = false;
 	private boolean itemRemoverLastTimeHover = true;
-
 	private boolean mobRemoverChatRight = false;
 	private boolean mobRemoverLastTimeHover = true;
-
 	private boolean betterIgnoreList = true;
-
 	private boolean ampEnabled = true;
 	private boolean ampClanEnabled = false;
 	private String ampChatReplacement = DEFAULT_AMP_REPLACEMENT_CHAT;
 	private String ampTablistReplacement = DEFAULT_AMP_REPLACEMENT_TABLIST;
-
 	private boolean preventCommandFailure = false;
-
 	private boolean markTPAMsg = true;
-
 	private boolean cleanVoteMsg = false;
-
 	private boolean cleanNewsMsg = false;
-
 	private boolean updateBoosterState = true;
-
 	private boolean clearMapCache = false;
-
 	private boolean labyChatShowSubServerEnabled = true;
 	private boolean discordShowSubServerEnabled = true;
-
 	private boolean autoPortal = false;
-
 	private boolean hideBoosterMenu = true;
-
 	private boolean autoUpdate = true;
 	private boolean vanishOnJoin = false;
 	private boolean flyOnJoin = false;
 	private boolean logTransactions = true;
 
-
-	private GrieferGames getGG() {
-		return GrieferGames.getGriefergames();
-	}
-
-	private JsonObject getConfig() {
-		return getGG().getConfig();
-	}
-	private void saveConfig() {
-		getGG().saveConfig();
-	}
-
-	public boolean isModEnabled() {
-		return this.modEnabled;
-	}
-
-	public EnumLanguages getLanguage() {
-		return language;
-	}
-
-	public String getOverrideRank() {
-		return overrideRank;
-	}
-
-	public boolean isShowChatTime() {
-		return this.showChatTime;
-	}
-
-	public boolean isChatTimeAfterMessage() {
-		return chatTimeAfterMessage;
-	}
-
-	public boolean isChatTimeShortFormat() {
-		return chatTimeShortFormat;
-	}
-
-	public boolean isPrivateChatRight() {
-		return this.privateChatRight;
-	}
-
-	public boolean isPlotChatRight() {
-		return this.plotChatRight;
-	}
-
-	public EnumSounds getPrivateChatSound() {
-		return this.privateChatSound;
-	}
-
-	public boolean isPrivateChatSound() {
-		return (getPrivateChatSoundPath().length() > 0);
-	}
-
-	public String getPrivateChatSoundPath() {
-		switch (this.privateChatSound) {
-		case BASS:
-			return "note.bass";
-		case BASSDRUM:
-			return "note.bd";
-		case HARP:
-			return "note.harp";
-		case HAT:
-			return "note.hat";
-		case PLING:
-			return "note.pling";
-		case POP:
-			return "random.pop";
-		case SNARE:
-			return "note.snare";
-		default:
-			return "";
-		}
-	}
-
-	public EnumRealnameShown getRealname() {
-		return this.realname;
-	}
-
-	public boolean isRealnameRight() {
-		return (this.realname.equals(EnumRealnameShown.SECONDCHAT) || this.realname.equals(EnumRealnameShown.BOTH));
-	}
-
-	public boolean isRealnameBoth() {
-		return this.realname.equals(EnumRealnameShown.BOTH);
-	}
-
-	/*
-	 * private void setRealnameClick(boolean realnameClick) { this.realnameClick =
-	 * realnameClick; }
-	 * 
-	 * public boolean isRealnameClick() { return this.realnameClick; }
-	 */
-
-	public boolean isMsgDisplayNameClick() {
-		return this.msgDisplayNameClick;
-	}
-
-	public boolean isPreventCommandFailure() {
-		return this.preventCommandFailure;
-	}
-
-	public boolean isFilterDuplicateMessages() {
-		return this.filterDuplicateMessages;
-	}
-
-	public Integer getFilterDuplicateMessagesTime() {
-		return filterDuplicateMessagesTime;
-	}
-
-	public boolean isCleanBlanks() {
-		return this.cleanBlanks;
-	}
-
-	public boolean isCleanSupremeBlanks() {
-		return this.cleanSupremeBlanks;
-	}
-
-	public boolean isHighlightMentions() {
-		return highlightMentions;
-	}
-
-	public Color getMentionsColor() {
-		return mentionsColor;
-	}
-
-	public boolean isPayChatRight() {
-		return this.payChatRight;
-	}
-
-	public boolean isPayAchievement() {
-		return this.payAchievement;
-	}
-
-	public boolean isPayMarker() {
-		return this.payMarker;
-	}
-
-	public boolean isPayHover() {
-		return this.payHover;
-	}
-
-	public boolean isAfkNick() {
-		return afkNick;
-	}
-
-	public boolean isAfkMsgAnswear() {
-		return afkMsgAnswear;
-	}
-
-	public String getAfkMsgText() {
-		return afkMsgText;
-	}
-
-	public String getAfkNickname() {
-		return afkNickname;
-	}
-
-	public int getAfkTime() {
-		return afkTime;
-	}
-
-	public boolean isBankChatRight() {
-		return this.bankChatRight;
-	}
-
-	public boolean isBankAchievement() {
-		return this.bankAchievement;
-	}
-
-	public boolean isItemRemoverChatRight() {
-		return this.itemRemoverChatRight;
-	}
-
-	public boolean isItemRemoverLastTimeHover() {
-		return this.itemRemoverLastTimeHover;
-	}
-
-	public boolean isMobRemoverChatRight() {
-		return this.mobRemoverChatRight;
-	}
-
-	public boolean isMobRemoverLastTimeHover() {
-		return this.mobRemoverLastTimeHover;
-	}
-
-	public boolean isBetterIgnoreList() {
-		return this.betterIgnoreList;
-	}
-
-	public boolean isAMPEnabled() {
-		return this.ampEnabled;
-	}
-
-	public boolean isAMPClanEnabled() {
-		return this.ampClanEnabled;
-	}
-
-	public String getAMPChatReplacement() {
-		return ampChatReplacement;
-	}
-
-	public String getAMPTablistReplacement() {
-		return ampTablistReplacement;
-	}
-
-	public boolean isMarkTPAMsg() {
-		return markTPAMsg;
-	}
-
-	public boolean isCleanVoteMsg() {
-		return cleanVoteMsg;
-	}
-
-	public boolean isCleanNewsMsg() {
-		return cleanNewsMsg;
-	}
-
-	public boolean isUpdateBoosterState() {
-		return updateBoosterState;
-	}
-
-	public boolean isClearMapCache() {
-		return clearMapCache;
-	}
-
-	public boolean isLabyChatShowSubServerEnabled() {
-		return labyChatShowSubServerEnabled;
-	}
-
-	public boolean isDiscordShowSubServerEnabled() {
-		return discordShowSubServerEnabled;
-	}
-
-	public boolean isAutoPortl() {
-		return autoPortal;
-	}
-
-	public boolean isHideBoosterMenu() {
-		return hideBoosterMenu;
-	}
-
-	public boolean isAutoUpdate() {
-		return autoUpdate;
-	}
-
-	public boolean isVanishOnJoin() {
-		return vanishOnJoin;
-	}
-
-	public boolean isFlyOnJoin() {
-		return flyOnJoin;
-	}
-
-	public boolean isLogTransactions() {
-		return logTransactions;
-	}
-
 	public void loadConfig() {
 		if (getConfig().has("modEnabled"))
 			modEnabled = getConfig().get("modEnabled").getAsBoolean();
 
-		if (getConfig().has("language")) {
-			for (EnumLanguages enumLanguage : EnumLanguages.values()) {
-				if (enumLanguage.name().equalsIgnoreCase(getConfig().get("language").getAsString())) {
-					language = enumLanguage;
-				}
-			}
-		}
+		if (getConfig().has("language"))
+			language = EnumLanguages.valueOf(getConfig().get("language").getAsString());
 
 		if(getConfig().has("overrideRank"))
 			overrideRank = getConfig().get("overrideRank").getAsString();
@@ -383,13 +102,8 @@ public class ModSettings {
 		if (getConfig().has("privateChatRight"))
 			privateChatRight = getConfig().get("privateChatRight").getAsBoolean();
 
-		if (getConfig().has("privateChatSound")) {
-			for (EnumSounds sound : EnumSounds.values()) {
-				if (sound.name().equalsIgnoreCase(getConfig().get("privateChatSound").getAsString())) {
-					privateChatSound = sound;
-				}
-			}
-		}
+		if (getConfig().has("privateChatSound"))
+			privateChatSound = EnumSounds.valueOf(getConfig().get("privateChatSound").getAsString());
 
 		if (getConfig().has("msgDisplayNameClick"))
 			msgDisplayNameClick = getConfig().get("msgDisplayNameClick").getAsBoolean();
@@ -411,6 +125,9 @@ public class ModSettings {
 
 		if(getConfig().has("mentionsColor"))
 			mentionsColor = new Color(getConfig().get("mentionsColor").getAsInt());
+
+		if(getConfig().has("mentionSound"))
+			mentionSound = EnumSounds.valueOf(getConfig().get("mentionSound").getAsString());
 
 		if (getConfig().has("payChatRight"))
 			payChatRight = getConfig().get("payChatRight").getAsBoolean();
@@ -448,13 +165,8 @@ public class ModSettings {
 		if (getConfig().has("plotChatRight"))
 			plotChatRight = getConfig().get("plotChatRight").getAsBoolean();
 
-		if (getConfig().has("realname")) {
-			for (EnumRealnameShown enumRealname : EnumRealnameShown.values()) {
-				if (enumRealname.name().equalsIgnoreCase(getConfig().get("realname").getAsString())) {
-					realname = enumRealname;
-				}
-			}
-		}
+		if (getConfig().has("realname"))
+			realname = EnumRealnameShown.valueOf(getConfig().get("realname").getAsString());
 
 		/*
 		 * if (getConfig().has("realnameClick"))
@@ -662,6 +374,9 @@ public class ModSettings {
 				privateChatSound = value;
 				getConfig().addProperty("privateChatSound", value.name());
 				saveConfig();
+				if (value != EnumSounds.NONE) {
+					LabyModCore.getMinecraft().playSound(new ResourceLocation(getGG().getHelper().getSoundPath(value)), 1.0F);
+				}
 			}
 		});
 		chatCategory.getSubSettings().add(privateChatSoundDropDown);
@@ -714,6 +429,28 @@ public class ModSettings {
 		});
 		mentionsColorBulkElement.addColorPicker(mentionsColorPicker);
 		chatCategory.getSubSettings().add(mentionsColorBulkElement);
+
+		// Mentions sound
+		final DropDownMenu<EnumSounds> mentionsSoundDropDownMenu = new DropDownMenu<EnumSounds>(
+				LanguageManager.translateOrReturnKey("settings_gg_mentionSound"), 0, 0, 0, 0).fill(EnumSounds.values());
+
+		final DropDownElement<EnumSounds> mentionsSoundDropDown = new DropDownElement<EnumSounds>(
+				LanguageManager.translateOrReturnKey("settings_gg_mentionSound"), mentionsSoundDropDownMenu);
+
+		mentionsSoundDropDownMenu.setSelected(mentionSound);
+
+		mentionsSoundDropDown.setChangeListener(new Consumer<EnumSounds>() {
+			@Override
+			public void accept(EnumSounds value) {
+				mentionSound = value;
+				getConfig().addProperty("mentionSound", value.name());
+				saveConfig();
+				if (value != EnumSounds.NONE) {
+					LabyModCore.getMinecraft().playSound(new ResourceLocation(getGG().getHelper().getSoundPath(value)), 1.0F);
+				}
+			}
+		});
+		chatCategory.getSubSettings().add(mentionsSoundDropDown);
 
 		// Highlight tpa messages
 		final BooleanElement markTPAMsgBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_highlightTpaMessages"),
@@ -1263,5 +1000,251 @@ public class ModSettings {
 
 		text += "\n§7GitHub: §ahttps://github.com/Neocraftr/LabyMod-GrieferGames-Addon-1.8.9";
 		infoText.setText(text);
+	}
+
+	private GrieferGames getGG() {
+		return GrieferGames.getGriefergames();
+	}
+
+	private JsonObject getConfig() {
+		return getGG().getConfig();
+	}
+	private void saveConfig() {
+		getGG().saveConfig();
+	}
+
+	public boolean isModEnabled() {
+		return this.modEnabled;
+	}
+
+	public EnumLanguages getLanguage() {
+		return language;
+	}
+
+	public String getOverrideRank() {
+		return overrideRank;
+	}
+
+	public boolean isShowChatTime() {
+		return this.showChatTime;
+	}
+
+	public boolean isChatTimeAfterMessage() {
+		return chatTimeAfterMessage;
+	}
+
+	public boolean isChatTimeShortFormat() {
+		return chatTimeShortFormat;
+	}
+
+	public boolean isPrivateChatRight() {
+		return this.privateChatRight;
+	}
+
+	public boolean isPlotChatRight() {
+		return this.plotChatRight;
+	}
+
+	public EnumSounds getPrivateChatSound() {
+		return this.privateChatSound;
+	}
+
+	public boolean isPrivateChatSound() {
+		return privateChatSound != EnumSounds.NONE;
+	}
+
+	public EnumRealnameShown getRealname() {
+		return this.realname;
+	}
+
+	public boolean isRealnameRight() {
+		return realname == EnumRealnameShown.SECONDCHAT || realname == EnumRealnameShown.BOTH;
+	}
+
+	public boolean isRealnameBoth() {
+		return this.realname.equals(EnumRealnameShown.BOTH);
+	}
+
+	/*
+	 * private void setRealnameClick(boolean realnameClick) { this.realnameClick =
+	 * realnameClick; }
+	 *
+	 * public boolean isRealnameClick() { return this.realnameClick; }
+	 */
+
+	public boolean isMsgDisplayNameClick() {
+		return this.msgDisplayNameClick;
+	}
+
+	public boolean isPreventCommandFailure() {
+		return this.preventCommandFailure;
+	}
+
+	public boolean isFilterDuplicateMessages() {
+		return this.filterDuplicateMessages;
+	}
+
+	public Integer getFilterDuplicateMessagesTime() {
+		return filterDuplicateMessagesTime;
+	}
+
+	public boolean isCleanBlanks() {
+		return this.cleanBlanks;
+	}
+
+	public boolean isCleanSupremeBlanks() {
+		return this.cleanSupremeBlanks;
+	}
+
+	public boolean isHighlightMentions() {
+		return highlightMentions;
+	}
+
+	public Color getMentionsColor() {
+		return mentionsColor;
+	}
+
+	public EnumSounds getMentionSound() {
+		return mentionSound;
+	}
+
+	public boolean isMentionSound() {
+		return mentionSound != EnumSounds.NONE;
+	}
+
+	public void setMentionSound(EnumSounds mentionSound) {
+		this.mentionSound = mentionSound;
+	}
+
+	public boolean isPayChatRight() {
+		return this.payChatRight;
+	}
+
+	public boolean isPayAchievement() {
+		return this.payAchievement;
+	}
+
+	public boolean isPayMarker() {
+		return this.payMarker;
+	}
+
+	public boolean isPayHover() {
+		return this.payHover;
+	}
+
+	public boolean isAfkNick() {
+		return afkNick;
+	}
+
+	public boolean isAfkMsgAnswear() {
+		return afkMsgAnswear;
+	}
+
+	public String getAfkMsgText() {
+		return afkMsgText;
+	}
+
+	public String getAfkNickname() {
+		return afkNickname;
+	}
+
+	public int getAfkTime() {
+		return afkTime;
+	}
+
+	public boolean isBankChatRight() {
+		return this.bankChatRight;
+	}
+
+	public boolean isBankAchievement() {
+		return this.bankAchievement;
+	}
+
+	public boolean isItemRemoverChatRight() {
+		return this.itemRemoverChatRight;
+	}
+
+	public boolean isItemRemoverLastTimeHover() {
+		return this.itemRemoverLastTimeHover;
+	}
+
+	public boolean isMobRemoverChatRight() {
+		return this.mobRemoverChatRight;
+	}
+
+	public boolean isMobRemoverLastTimeHover() {
+		return this.mobRemoverLastTimeHover;
+	}
+
+	public boolean isBetterIgnoreList() {
+		return this.betterIgnoreList;
+	}
+
+	public boolean isAMPEnabled() {
+		return this.ampEnabled;
+	}
+
+	public boolean isAMPClanEnabled() {
+		return this.ampClanEnabled;
+	}
+
+	public String getAMPChatReplacement() {
+		return ampChatReplacement;
+	}
+
+	public String getAMPTablistReplacement() {
+		return ampTablistReplacement;
+	}
+
+	public boolean isMarkTPAMsg() {
+		return markTPAMsg;
+	}
+
+	public boolean isCleanVoteMsg() {
+		return cleanVoteMsg;
+	}
+
+	public boolean isCleanNewsMsg() {
+		return cleanNewsMsg;
+	}
+
+	public boolean isUpdateBoosterState() {
+		return updateBoosterState;
+	}
+
+	public boolean isClearMapCache() {
+		return clearMapCache;
+	}
+
+	public boolean isLabyChatShowSubServerEnabled() {
+		return labyChatShowSubServerEnabled;
+	}
+
+	public boolean isDiscordShowSubServerEnabled() {
+		return discordShowSubServerEnabled;
+	}
+
+	public boolean isAutoPortl() {
+		return autoPortal;
+	}
+
+	public boolean isHideBoosterMenu() {
+		return hideBoosterMenu;
+	}
+
+	public boolean isAutoUpdate() {
+		return autoUpdate;
+	}
+
+	public boolean isVanishOnJoin() {
+		return vanishOnJoin;
+	}
+
+	public boolean isFlyOnJoin() {
+		return flyOnJoin;
+	}
+
+	public boolean isLogTransactions() {
+		return logTransactions;
 	}
 }
