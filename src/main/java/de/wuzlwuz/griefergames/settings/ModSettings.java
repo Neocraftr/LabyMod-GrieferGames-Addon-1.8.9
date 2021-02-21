@@ -416,15 +416,20 @@ public class ModSettings {
 		chatCategory.getSubSettings().add(highlightMentionsBtn);
 
 		// Mentions color
+		final Color[] prevMentionsColor = {mentionsColor};
 		final ColorPickerCheckBoxBulkElement mentionsColorBulkElement = new ColorPickerCheckBoxBulkElement("");
 		final ColorPicker mentionsColorPicker = new ColorPicker(LanguageManager.translateOrReturnKey("settings_gg_mentionColor"), mentionsColor, null, 0, 0, 0, 0);
 		mentionsColorPicker.setHasAdvanced(true);
 		mentionsColorPicker.setUpdateListener(new Consumer<Color>() {
 			@Override
 			public void accept(Color value) {
-				mentionsColor = value;
-				getConfig().addProperty("mentionsColor", value.getRGB());
-				saveConfig();
+				if(prevMentionsColor[0].getRGB() != value.getRGB()) {
+					prevMentionsColor[0] = value;
+					mentionsColor = value;
+					getConfig().addProperty("mentionsColor", value.getRGB());
+					saveConfig();
+					System.out.println(value);
+				}
 			}
 		});
 		mentionsColorBulkElement.addColorPicker(mentionsColorPicker);

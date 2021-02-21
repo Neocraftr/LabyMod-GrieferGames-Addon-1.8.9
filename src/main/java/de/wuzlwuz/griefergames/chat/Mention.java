@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Mention extends Chat {
-    private Pattern msgUserGlobalChatRegex = Pattern.compile("^(?:\\[.+\\] )?([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})\\s[\\u00BB:]\\s");
+    private Pattern msgUserGlobalChatRegex = Pattern.compile("^(?:\\[.+\\] )?([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})\\s[\\u00BB:]\\s(.+)");
 
     @Override
     public String getName() {
@@ -21,9 +21,10 @@ public class Mention extends Chat {
     public boolean doActionReceiveMessage(String formatted, String unformatted) {
         if(!getSettings().isHighlightMentions()) return false;
 
-        if(unformatted.trim().length() > 0 && unformatted.toLowerCase().contains(LabyMod.getInstance().getPlayerName().toLowerCase())) {
-            Matcher matcher = msgUserGlobalChatRegex.matcher(unformatted);
-            return matcher.find() && !matcher.group(2).equalsIgnoreCase(LabyMod.getInstance().getPlayerName());
+        Matcher matcher = msgUserGlobalChatRegex.matcher(unformatted);
+        if(unformatted.trim().length() > 0 && matcher.find()) {
+            return matcher.group(4).toLowerCase().contains(LabyMod.getInstance().getPlayerName().toLowerCase()) &&
+                    !matcher.group(2).equalsIgnoreCase(LabyMod.getInstance().getPlayerName());
         }
         return false;
     }
