@@ -50,6 +50,7 @@ public class GrieferGames extends LabyModAddon {
 	private boolean newsStart = false;
 	private boolean afk = false;
 	private boolean firstJoin = false;
+	private boolean hideBoosterMenu = false;
 	private ModuleCategory moduleCategory;
 	private List<Booster> boosters = new ArrayList<Booster>();
 	private List<Chat> chatModules = new ArrayList<Chat>();
@@ -392,5 +393,13 @@ public class GrieferGames extends LabyModAddon {
 
 	public void setOnGrieferGames(boolean onGrieferGames) {
 		this.onGrieferGames = onGrieferGames;
+	}
+
+	public boolean isHideBoosterMenu() {
+		return hideBoosterMenu;
+	}
+
+	public void setHideBoosterMenu(boolean hideBoosterMenu) {
+		this.hideBoosterMenu = hideBoosterMenu;
 	}
 }

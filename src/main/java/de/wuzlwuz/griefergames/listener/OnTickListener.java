@@ -113,12 +113,13 @@ public class OnTickListener {
 				}
 			}
 
-			if(getGG().getSettings().isHideBoosterMenu()) {
+			if(getGG().getSettings().isHideBoosterMenu() || getGG().isHideBoosterMenu()) {
 				Container cont = Minecraft.getMinecraft().thePlayer.openContainer;
 				if(cont instanceof ContainerChest) {
 					ContainerChest chest = (ContainerChest) cont;
 					IInventory inv = chest.getLowerChestInventory();
 					if(inv.getName().equals("§6Booster - Übersicht")) {
+						getGG().setHideBoosterMenu(false);
 						Minecraft.getMinecraft().thePlayer.closeScreen();
 					}
 				}

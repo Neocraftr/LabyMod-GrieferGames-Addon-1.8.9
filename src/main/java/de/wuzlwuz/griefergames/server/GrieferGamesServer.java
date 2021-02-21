@@ -156,6 +156,7 @@ public class GrieferGamesServer extends Server {
 
 			if (getHelper().isSwitcherDoneMsg(unformatted)) {
 				if(getSettings().isUpdateBoosterState()) {
+					getGG().setHideBoosterMenu(true);
 					getGG().getBoosters().clear();
 					Minecraft.getMinecraft().thePlayer.sendChatMessage("/booster");
 				}
