@@ -2,9 +2,9 @@
 	"uuid":"%uuid%",
 	"name":"GrieferGames",
 	"icon": "https://raw.githubusercontent.com/Neocraftr/LabyMod-GrieferGames-Addon-1.8.9/master/icons/griefergames.png",
-	"mainClass":"de.wuzlwuz.griefergames.GrieferGames",
-	"description": "This add-on helps you to get a much better gaming experience on GrieferGames.net",
+	"mainClass":"de.neocraftr.griefergames.GrieferGames",
+	"description": "This add-on adds many useful features for GrieferGames.net server.",
 	"version": 1,
-	"author": "wuzlwuz & Neocraftr",
+	"author": "Neocraftr",
 	"category": 3
 }
