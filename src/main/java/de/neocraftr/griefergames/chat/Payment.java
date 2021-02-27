@@ -61,7 +61,7 @@ public class Payment extends Chat {
 			getGG().setIncome(getGG().getIncome() + getMoneyPay(unformatted));
 			getGG().getFileManager().logTransaction("Moneydrop", amount, true);
 
-			return false;
+			return true;
 		}
 
 		return false;
@@ -72,29 +72,31 @@ public class Payment extends Chat {
 		if (getSettings().isPayAchievement()) {
 			String payerName = getHelper().getPlayerName(unformatted);
 			String displayName = getHelper().getDisplayName(unformatted);
-			UUID playerUUID = UUIDFetcher.getUUID(payerName);
-			double money = getMoneyPay(unformatted);
-			if (money > 0) {
-				DecimalFormat moneyFormat = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.ENGLISH);
+			if(!payerName.equals("") && !displayName.equals("")) {
+				UUID playerUUID = UUIDFetcher.getUUID(payerName);
+				double money = getMoneyPay(unformatted);
+				if (money > 0) {
+					DecimalFormat moneyFormat = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.ENGLISH);
 
-				String title = LanguageManager.translateOrReturnKey("message_gg_gotMoney");
-				String desc = LanguageManager.translateOrReturnKey("message_gg_gotMoneyFrom");
+					String title = LanguageManager.translateOrReturnKey("message_gg_gotMoney");
+					String desc = LanguageManager.translateOrReturnKey("message_gg_gotMoneyFrom");
 
-				Matcher payedMoney = payedMoneyRegex.matcher(unformatted);
-				if (payedMoney.find()) {
-					title = LanguageManager.translateOrReturnKey("message_gg_paidMoney");
-					desc = LanguageManager.translateOrReturnKey("message_gg_paidMoneyTo");
-				}
+					Matcher payedMoney = payedMoneyRegex.matcher(unformatted);
+					if (payedMoney.find()) {
+						title = LanguageManager.translateOrReturnKey("message_gg_paidMoney");
+						desc = LanguageManager.translateOrReturnKey("message_gg_paidMoneyTo");
+					}
 
-				title = title.replace("{money}", moneyFormat.format(money));
-				desc = desc.replace("{money}", moneyFormat.format(money));
-				desc = desc.replace("{name}", displayName);
+					title = title.replace("{money}", moneyFormat.format(money));
+					desc = desc.replace("{money}", moneyFormat.format(money));
+					desc = desc.replace("{name}", displayName);
 
-				if (playerUUID == null) {
-					LabyMod.getInstance().getGuiCustomAchievement().displayAchievement(title, desc);
-				} else {
-					LabyMod.getInstance().getGuiCustomAchievement()
-							.displayAchievement(new GameProfile(playerUUID, payerName), title, desc);
+					if (playerUUID == null) {
+						LabyMod.getInstance().getGuiCustomAchievement().displayAchievement(title, desc);
+					} else {
+						LabyMod.getInstance().getGuiCustomAchievement()
+								.displayAchievement(new GameProfile(playerUUID, payerName), title, desc);
+					}
 				}
 			}
 		}
