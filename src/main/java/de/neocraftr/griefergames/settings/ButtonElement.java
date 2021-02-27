@@ -36,7 +36,7 @@ public class ButtonElement extends ControlElement {
     public void draw(int x, int y, int maxX, int maxY, int mouseX, int mouseY) {
         super.draw(x, y, maxX, maxY, mouseX, mouseY);
 
-        LabyModCore.getMinecraft().setButtonXPosition(button, maxX - button.width - 2);
+        LabyModCore.getMinecraft().setButtonXPosition(button, maxX - button.getButtonWidth() - 2);
         LabyModCore.getMinecraft().setButtonYPosition(button, y + 1);
         LabyModCore.getMinecraft().drawButton(button, mouseX, mouseY);
 

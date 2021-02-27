@@ -427,7 +427,6 @@ public class ModSettings {
 					mentionsColor = value;
 					getConfig().addProperty("mentionsColor", value.getRGB());
 					saveConfig();
-					System.out.println(value);
 				}
 			}
 		});
