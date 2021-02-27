@@ -32,15 +32,15 @@ public class ModSettings {
 	private boolean chatTimeShortFormat = true;
 	private boolean chatTimeAfterMessage = false;
 	private boolean privateChatRight = true;
-	private boolean plotChatRight = true;
+	private boolean plotChatRight = false;
 	private EnumSounds privateChatSound = EnumSounds.NONE;
 	private EnumRealnameShown realname = EnumRealnameShown.DEFAULT;
 	// private boolean realnameClick = false;
 	private boolean msgDisplayNameClick = true;
 	private boolean filterDuplicateMessages = false;
 	private Integer filterDuplicateMessagesTime = 5;
-	private boolean cleanBlanks = false;
-	private boolean cleanSupremeBlanks = false;
+	private boolean cleanBlanks = true;
+	private boolean cleanSupremeBlanks = true;
 	private boolean highlightMentions = true;
 	private Color mentionsColor = new Color(121, 178, 255);
 	private EnumSounds mentionSound = EnumSounds.NONE;
@@ -64,20 +64,20 @@ public class ModSettings {
 	private boolean ampClanEnabled = false;
 	private String ampChatReplacement = DEFAULT_AMP_REPLACEMENT_CHAT;
 	private String ampTablistReplacement = DEFAULT_AMP_REPLACEMENT_TABLIST;
-	private boolean preventCommandFailure = false;
+	private boolean preventCommandFailure = true;
 	private boolean markTPAMsg = true;
-	private boolean cleanVoteMsg = false;
+	private boolean cleanVoteMsg = true;
 	private boolean cleanNewsMsg = false;
 	private boolean updateBoosterState = true;
 	private boolean clearMapCache = false;
 	private boolean labyChatShowSubServerEnabled = true;
 	private boolean discordShowSubServerEnabled = true;
 	private boolean autoPortal = false;
-	private boolean hideBoosterMenu = true;
+	private boolean hideBoosterMenu = false;
 	private boolean autoUpdate = true;
 	private boolean vanishOnJoin = false;
 	private boolean flyOnJoin = false;
-	private boolean logTransactions = true;
+	private boolean logTransactions = false;
 
 	public void loadConfig() {
 		if (getConfig().has("modEnabled"))
@@ -511,11 +511,11 @@ public class ModSettings {
 				new ControlElement.IconData("labymod/textures/settings/settings/afecentityinterval.png"), new Consumer<Boolean>() {
 			@Override
 			public void accept(Boolean value) {
-				mobRemoverChatRight = value;
+				mobRemoverLastTimeHover = value;
 				getConfig().addProperty("mobRemoverLastTimeHover", value);
 				saveConfig();
 			}
-		}, mobRemoverChatRight);
+		}, mobRemoverLastTimeHover);
 		chatCategory.getSubSettings().add(mobRemoverLastTimeHoverBtn);
 
 		// Title: Block messages
