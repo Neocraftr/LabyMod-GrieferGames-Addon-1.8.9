@@ -2,6 +2,7 @@ package de.neocraftr.griefergames.settings;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Locale;
 
 import com.google.gson.JsonObject;
 
@@ -19,9 +20,10 @@ import net.labymod.utils.Material;
 import net.minecraft.util.ResourceLocation;
 
 public class ModSettings {
-	public static final String DEFAULT_AMP_REPLACEMENT_CHAT = "[AMP] %CLEAN%",
-			DEFAULT_AMP_REPLACEMENT_TABLIST = "[AMP] %CLEAN%",
-			DEFAULT_AFK_NICKNAME = "AFK_%name%";
+	public static final String DEFAULT_AMP_REPLACEMENT_CHAT = "[AMP] %clean%",
+			DEFAULT_AMP_REPLACEMENT_TABLIST = "[AMP] %clean%",
+			DEFAULT_AFK_NICKNAME = "AFK_%name%",
+			DEFAULT_CHATTIME_FORMAT = "&8[&3%h%&7:&3%m%&7:&3%s%&8]";
 
 	private TextElement infoText;
 
@@ -29,8 +31,8 @@ public class ModSettings {
 	private EnumLanguages language = EnumLanguages.GAMELANGUAGE;
 	private String overrideRank = null;
 	private boolean showChatTime = false;
-	private boolean chatTimeShortFormat = true;
 	private boolean chatTimeAfterMessage = false;
+	private String chatTimeFormat = DEFAULT_CHATTIME_FORMAT;
 	private boolean privateChatRight = true;
 	private boolean plotChatRight = false;
 	private EnumSounds privateChatSound = EnumSounds.NONE;
@@ -95,9 +97,6 @@ public class ModSettings {
 		if (getConfig().has("chatTimeAfterMessage"))
 			chatTimeAfterMessage = getConfig().get("chatTimeAfterMessage").getAsBoolean();
 
-		if (getConfig().has("chatTimeShortFormat"))
-			chatTimeShortFormat = getConfig().get("chatTimeShortFormat").getAsBoolean();
-
 		if (getConfig().has("privateChatRight"))
 			privateChatRight = getConfig().get("privateChatRight").getAsBoolean();
 
@@ -149,7 +148,7 @@ public class ModSettings {
 		if(getConfig().has("afkMsgText"))
 			afkMsgText = getConfig().get("afkMsgText").getAsString();
 
-		if(getConfig().has("afkNickname"))
+		if(getConfig().has("afkNickname") && getConfig().get("afkNickname").getAsString().trim().length() > 0)
 			afkNickname = getConfig().get("afkNickname").getAsString();
 
 		if(getConfig().has("afkTime"))
@@ -193,11 +192,22 @@ public class ModSettings {
 		if (getConfig().has("ampClanEnabled"))
 			ampClanEnabled = getConfig().get("ampClanEnabled").getAsBoolean();
 
-		if (getConfig().has("chatReplacement"))
-			ampChatReplacement = getConfig().get("chatReplacement").getAsString();
+		if (getConfig().has("chatReplacement") && getConfig().get("chatReplacement").getAsString().trim().length() > 0) {
+			String replacement = getConfig().get("chatReplacement").getAsString();
+			if(replacement.trim().length() > 0 && (replacement.contains("%CLEAN%") || replacement.contains("%clean%"))) {
+				ampChatReplacement = replacement;
+			}
+		}
 
-		if (getConfig().has("tablistReplacement"))
-			ampTablistReplacement = getConfig().get("tablistReplacement").getAsString();
+		if (getConfig().has("tablistReplacement")) {
+			String replacement = getConfig().get("tablistReplacement").getAsString();
+			if(replacement.trim().length() > 0 && (replacement.contains("%CLEAN%") || replacement.contains("%clean%"))) {
+				ampTablistReplacement = replacement;
+			}
+		}
+
+		if (getConfig().has("chatTimeFormat") && getConfig().get("chatTimeFormat").getAsString().trim().length() > 0)
+			chatTimeFormat = getConfig().get("chatTimeFormat").getAsString();
 
 		if (getConfig().has("preventCommandFailure"))
 			preventCommandFailure = getConfig().get("preventCommandFailure").getAsBoolean();
@@ -667,18 +677,6 @@ public class ModSettings {
 		}, showChatTime);
 		chatCategory.getSubSettings().add(showChatTimeBtn);
 
-		// Chat time short format
-		final BooleanElement chatTimeShortFormatBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_chatTimeShortVersion"),
-				new ControlElement.IconData("labymod/textures/settings/modules/range.png"), new Consumer<Boolean>() {
-			@Override
-			public void accept(Boolean value) {
-				chatTimeShortFormat = value;
-				getConfig().addProperty("chatTimeShortFormat", value);
-				saveConfig();
-			}
-		}, chatTimeShortFormat);
-		chatCategory.getSubSettings().add(chatTimeShortFormatBtn);
-
 		// Chat time after message
 		final BooleanElement chatTimeAfterMessageBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_chatTimeAfterMessage"),
 				new ControlElement.IconData("labymod/textures/settings/settings/discordallowjoining.png"), new Consumer<Boolean>() {
@@ -690,6 +688,18 @@ public class ModSettings {
 			}
 		}, chatTimeAfterMessage);
 		chatCategory.getSubSettings().add(chatTimeAfterMessageBtn);
+
+		// Chat time format
+		final StringElement chatTimeFormatSetting = new StringElement(LanguageManager.translateOrReturnKey("settings_gg_chatTimeFormat"),
+				new ControlElement.IconData("labymod/textures/chat/gui_editor.png"), chatTimeFormat, new Consumer<String>() {
+			@Override
+			public void accept(String value) {
+				chatTimeFormat = value;
+				getConfig().addProperty("chatTimeFormat", value);
+				saveConfig();
+			}
+		});
+		chatCategory.getSubSettings().add(chatTimeFormatSetting);
 
 		// Category: Payment
 		final ListContainerElement paymentCategory = new ListContainerElement("§b§l"+LanguageManager.translateOrReturnKey("settings_gg_category_payment"),
@@ -1039,8 +1049,8 @@ public class ModSettings {
 		return chatTimeAfterMessage;
 	}
 
-	public boolean isChatTimeShortFormat() {
-		return chatTimeShortFormat;
+	public String getChatTimeFormat() {
+		return chatTimeFormat;
 	}
 
 	public boolean isPrivateChatRight() {
