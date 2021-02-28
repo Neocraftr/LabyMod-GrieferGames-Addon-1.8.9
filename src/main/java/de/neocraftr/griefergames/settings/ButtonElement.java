@@ -51,6 +51,10 @@ public class ButtonElement extends ControlElement {
         button.enabled = enabled;
     }
 
+    public String getButtonText() {
+        return button.displayString;
+    }
+
     public void setButtonText(String buttonText) {
         button.displayString = buttonText;
     }

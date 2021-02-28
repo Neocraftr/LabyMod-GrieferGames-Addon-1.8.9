@@ -3,6 +3,8 @@ package de.neocraftr.griefergames.settings;
 import java.awt.*;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.google.gson.JsonObject;
 
@@ -283,9 +285,22 @@ public class ModSettings {
 		resetSettingsBtn.setClickCallback(new Runnable() {
 			@Override
 			public void run() {
-				getConfig().entrySet().clear();
-				saveConfig();
-				resetSettingsBtn.setEnabled(false);
+				if(resetSettingsBtn.getButtonText().equals(LanguageManager.translateOrReturnKey("settings_gg_resetSettingsConfirm"))) {
+					getConfig().entrySet().clear();
+					saveConfig();
+					resetSettingsBtn.setButtonText(LanguageManager.translateOrReturnKey("settings_gg_resetSettingsBtn"));
+					resetSettingsBtn.setEnabled(false);
+				} else {
+					resetSettingsBtn.setButtonText(LanguageManager.translateOrReturnKey("settings_gg_resetSettingsConfirm"));
+					new Timer().schedule(new TimerTask() {
+						@Override
+						public void run() {
+							if(resetSettingsBtn.isEnabled()) {
+								resetSettingsBtn.setButtonText(LanguageManager.translateOrReturnKey("settings_gg_resetSettingsBtn"));
+							}
+						}
+					}, 3000);
+				}
 			}
 		});
 		settings.add(resetSettingsBtn);
