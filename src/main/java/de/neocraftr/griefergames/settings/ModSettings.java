@@ -277,6 +277,19 @@ public class ModSettings {
 		}, autoUpdate);
 		settings.add(autoUpdateBtn);
 
+		final ButtonElement resetSettingsBtn = new ButtonElement(LanguageManager.translateOrReturnKey("settings_gg_resetSettings"),
+				LanguageManager.translateOrReturnKey("settings_gg_resetSettingsBtn"),
+				new ControlElement.IconData("griefergames/textures/icons/trash.png"), null);
+		resetSettingsBtn.setClickCallback(new Runnable() {
+			@Override
+			public void run() {
+				getConfig().entrySet().clear();
+				saveConfig();
+				resetSettingsBtn.setEnabled(false);
+			}
+		});
+		settings.add(resetSettingsBtn);
+
 		// Language
 		final DropDownMenu<EnumLanguages> languageDropDownMenu = new DropDownMenu<EnumLanguages>(
 				LanguageManager.translateOrReturnKey("settings_gg_addonLanguage"), 0, 0, 0, 0).fill(EnumLanguages.values());
