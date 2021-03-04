@@ -34,7 +34,7 @@ public class ChatTime extends Chat {
 		if(timeMsg.trim().length() == 0) {
 			timeMsg = ModSettings.DEFAULT_CHATTIME_FORMAT;
 		}
-		timeMsg = timeMsg.replace("&", "§");
+		timeMsg = getHelper().colorize(timeMsg);
 		timeMsg = timeMsg.replace("%h%", time[0]);
 		timeMsg = timeMsg.replace("%m%", time[1]);
 		timeMsg = timeMsg.replace("%s%", time[2]);

@@ -89,6 +89,11 @@ public class GrieferGamesServer extends Server {
 					return true;
 				}
 
+				if(message.toLowerCase().startsWith("/ggmessage")) {
+					getGG().getApi().displayMessageInChat(getHelper().colorize(message.replace("/ggmessage", "").trim()));
+					return true;
+				}
+
 				List<Chat> chatModules = getGG().getChatModules();
 				for (Chat chatModule : chatModules) {
 					if (chatModule.doActionCommandMessage(message)) {
