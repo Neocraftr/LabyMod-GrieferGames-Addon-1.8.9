@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Mention extends Chat {
-    private Pattern msgUserGlobalChatRegex = Pattern.compile("^(?:\\[.+\\] )?([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})\\s[\\u00BB:]\\s(.+)");
+    private Pattern msgUserGlobalChatRegex = Pattern.compile("^(?:\\[.+\\] )?([A-Za-z\\-]+\\+?) \\u2503 (\\u007E?\\!?\\w{1,16})\\s[\\u00BB:]\\s(.+)");
 
     @Override
     public String getName() {
@@ -19,12 +19,15 @@ public class Mention extends Chat {
 
     @Override
     public boolean doActionReceiveMessage(String formatted, String unformatted) {
-        if(!getSettings().isHighlightMentions()) return false;
+        if(!getSettings().isHighlightMentions() && !getSettings().isMentionSound()) return false;
 
         Matcher matcher = msgUserGlobalChatRegex.matcher(unformatted);
         if(unformatted.trim().length() > 0 && matcher.find()) {
-            return matcher.group(4).toLowerCase().contains(LabyMod.getInstance().getPlayerName().toLowerCase()) &&
-                    !matcher.group(2).equalsIgnoreCase(LabyMod.getInstance().getPlayerName());
+            if(!matcher.group(2).equalsIgnoreCase(LabyMod.getInstance().getPlayerName())) {
+                for(String word : matcher.group(3).split(" ")) {
+                    if(word.equalsIgnoreCase(LabyMod.getInstance().getPlayerName().toLowerCase())) return true;
+                }
+            }
         }
         return false;
     }
@@ -36,7 +39,8 @@ public class Mention extends Chat {
         short b = (short) getSettings().getMentionsColor().getBlue();
         String soundPath = getHelper().getSoundPath(getSettings().getMentionSound());
         Filters.Filter filter = new Filters.Filter("GrieferGames Addon Mention", new String[] {unformatted}, new String[0],
-                getSettings().isMentionSound(), soundPath, true, r, g, b, false, false, false, "Global");
+                getSettings().isMentionSound(), soundPath, getSettings().isHighlightMentions(), r, g, b,
+                false, false, false, "Global");
 
         LabyMod.getInstance().getChatToolManager().getFilters().add(filter);
         new Timer().schedule(new TimerTask() {
