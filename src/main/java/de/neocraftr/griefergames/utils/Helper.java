@@ -2,9 +2,11 @@ package de.neocraftr.griefergames.utils;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Iterables;
 import com.google.gson.JsonObject;
 import de.neocraftr.griefergames.GrieferGames;
 import de.neocraftr.griefergames.booster.Booster;
@@ -16,14 +18,18 @@ import de.neocraftr.griefergames.booster.MobBooster;
 import de.neocraftr.griefergames.enums.EnumSounds;
 import net.labymod.core.LabyModCore;
 import net.labymod.main.LabyMod;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
 public class Helper {
 
 	private Pattern subServerCityBuildRegex = Pattern.compile("^cb([0-9]+)$");
 	private Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})");
+	private Pattern tablistColoredPrefixRegex = Pattern.compile("(.+\\u2503 (?:§.)+)");
 
 	private Pattern vanishRegex = Pattern.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) : aktiviert$");
 	private Pattern vanishRegex2 = Pattern.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) : deaktiviert$");
@@ -371,6 +377,30 @@ public class Helper {
 		}
 	}
 
+	public void colorizePlayerNames() {
+		NetHandlerPlayClient handler = LabyModCore.getMinecraft().getPlayer().sendQueue;
+		Collection<NetworkPlayerInfo> players = handler.getPlayerInfoMap();
+
+		for(ScorePlayerTeam team : Minecraft.getMinecraft().theWorld.getScoreboard().getTeams()) {
+			if(team.getMembershipCollection().size() == 0) continue;
+			String name = Iterables.get(team.getMembershipCollection(), 0);
+			if(name.startsWith("§")) continue;
+
+			for(NetworkPlayerInfo player : players) {
+				if(player.getGameProfile().getName().equals(name)) {
+					if(player.getDisplayName() != null) {
+						String displayName = player.getDisplayName().getFormattedText();
+						Matcher matcher = tablistColoredPrefixRegex.matcher(displayName);
+						if(matcher.find()) {
+							team.setNamePrefix(matcher.group(1));
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
+
 	public boolean showVanishModule(String playerRank) {
 		List<String> vanishRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
 				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "youtuber+", "yt+");
@@ -482,5 +512,29 @@ public class Helper {
 
 	private GrieferGames getGG() {
 		return GrieferGames.getGriefergames();
+	}
+
+	public IChatComponent toSingleSibbling(IChatComponent text) {
+		IChatComponent newText = new ChatComponentText("");
+		if(text == null) return newText;
+
+		IChatComponent newSibbling = text.createCopy();
+		newSibbling.getSiblings().clear();
+		if(newSibbling.getUnformattedText().length() > 0)
+			newText.appendSibling(newSibbling);
+
+		appendSibblings(newText, text);
+		return newText;
+	}
+	private void appendSibblings(IChatComponent baseComponent, IChatComponent text) {
+		for(IChatComponent sibbling : text.getSiblings()) {
+
+			IChatComponent newSibbling = sibbling.createCopy();
+			newSibbling.getSiblings().clear();
+			if(newSibbling.getUnformattedText().length() > 0)
+				baseComponent.appendSibling(newSibbling);
+
+			appendSibblings(baseComponent, sibbling);
+		}
 	}
 }

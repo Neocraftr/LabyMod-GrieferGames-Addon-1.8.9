@@ -82,6 +82,7 @@ public class ModSettings {
 	private boolean vanishOnJoin = false;
 	private boolean flyOnJoin = false;
 	private boolean logTransactions = false;
+	private boolean showPrefixInDisplayName = true;
 
 	public void loadConfig() {
 		if (getConfig().has("modEnabled"))
@@ -251,6 +252,9 @@ public class ModSettings {
 
 		if (getConfig().has("logTransactions"))
 			logTransactions = getConfig().get("logTransactions").getAsBoolean();
+
+		if (getConfig().has("showPrefixInDisplayName"))
+			showPrefixInDisplayName = getConfig().get("showPrefixInDisplayName").getAsBoolean();
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -365,6 +369,18 @@ public class ModSettings {
 			}
 		}, betterIgnoreList);
 		chatCategory.getSubSettings().add(betterIgnoreListBtn);
+
+		// Show prefix in display name
+		final BooleanElement showPrefixInDisplayNameBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_showPrefixInDisplayName"),
+				new ControlElement.IconData("labymod/textures/settings/settings/showmyname.png"), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean value) {
+				showPrefixInDisplayName = value;
+				getConfig().addProperty("showPrefixInDisplayName", value);
+				saveConfig();
+			}
+		}, showPrefixInDisplayName);
+		chatCategory.getSubSettings().add(showPrefixInDisplayNameBtn);
 
 		// Title: Chat highlight
 		chatCategory.getSubSettings().add(new HeaderElement(""));
@@ -1290,5 +1306,9 @@ public class ModSettings {
 
 	public boolean isLogTransactions() {
 		return logTransactions;
+	}
+
+	public boolean isShowPrefixInDisplayName() {
+		return showPrefixInDisplayName;
 	}
 }

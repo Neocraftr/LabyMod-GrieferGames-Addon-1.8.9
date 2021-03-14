@@ -15,6 +15,10 @@ public class SubServerListener {
         getGG().setNickname("");
         getGG().setNewsStart(false);
 
+        if(getGG().getSettings().isShowPrefixInDisplayName()) {
+            getGG().getHelper().colorizePlayerNames();
+        }
+
         if(getGG().getSettings().isLabyChatShowSubServerEnabled()) {
             getGG().getHelper().updateLabyChatSubServer(subServerName);
         }
