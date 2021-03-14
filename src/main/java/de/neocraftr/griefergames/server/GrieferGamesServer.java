@@ -217,12 +217,10 @@ public class GrieferGamesServer extends Server {
 		if (!getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return o;
 
 		try {
-			boolean hasPrefix = false;
 			IChatComponent msg = (IChatComponent) o;
 			IChatComponent prefix = new ChatComponentText("");
 
 			if (msg.getUnformattedText().startsWith("[SCAMMER] ")) {
-				hasPrefix = true;
 				for (int i = 0; i < (msg.getSiblings().size() - 1); i++) {
 					prefix.appendSibling(msg.getSiblings().get(i));
 				}
@@ -232,9 +230,6 @@ public class GrieferGamesServer extends Server {
 			List<Chat> chatModules = getGG().getChatModules();
 			for (Chat chatModule : chatModules) {
 				if (chatModule.doActionModifyChatMessage(msg)) {
-					if (chatModule.getName().equalsIgnoreCase("chatTime") && hasPrefix) {
-						msg = prefix.appendSibling(msg);
-					}
 					msg = chatModule.modifyChatMessage(msg);
 				}
 			}
