@@ -27,7 +27,7 @@ public class OnTickListener {
 	private long nextCheckFly = System.currentTimeMillis() + 1000L;
 	private long nextUpdateTimeToWait = System.currentTimeMillis() + 1000L;
 	private long nextCheckAFKTime = System.currentTimeMillis() + 2000L;
-	private long nextColorizePlayerNames = System.currentTimeMillis() + 10000L;
+	private long nextColorizePlayerNames = System.currentTimeMillis() + 20000L;
 
 	@SubscribeEvent
 	public void onTick(TickEvent.ClientTickEvent event) {
@@ -68,7 +68,7 @@ public class OnTickListener {
 			}
 
 			if(getGG().getSettings().isShowPrefixInDisplayName() && now > nextColorizePlayerNames) {
-				nextColorizePlayerNames = now + 10000L;
+				nextColorizePlayerNames = now + 20000L;
 				getGG().getHelper().colorizePlayerNames();
 			}
 

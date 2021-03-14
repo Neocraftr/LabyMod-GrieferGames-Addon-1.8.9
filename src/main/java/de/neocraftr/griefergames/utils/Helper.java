@@ -389,10 +389,12 @@ public class Helper {
 			for(NetworkPlayerInfo player : players) {
 				if(player.getGameProfile().getName().equals(name)) {
 					if(player.getDisplayName() != null) {
-						String displayName = player.getDisplayName().getFormattedText();
-						Matcher matcher = tablistColoredPrefixRegex.matcher(displayName);
-						if(matcher.find()) {
-							team.setNamePrefix(matcher.group(1));
+						if(!canNotChangePrefix(getPlayerRank(player.getDisplayName().getUnformattedText()))) {
+							String displayName = player.getDisplayName().getFormattedText();
+							Matcher matcher = tablistColoredPrefixRegex.matcher(displayName);
+							if(matcher.find()) {
+								team.setNamePrefix(matcher.group(1));
+							}
 						}
 					}
 					break;
@@ -439,6 +441,13 @@ public class Helper {
 	public boolean hasFlyPermission(String playerRank) {
 		List<String> godRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
 				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup", "youtuber+", "yt+");
+		return godRanks.contains(playerRank);
+	}
+
+	public boolean canNotChangePrefix(String playerRank) {
+		List<String> godRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup",
+				"youtuber+", "yt+", "youtuber", "yt");
 		return godRanks.contains(playerRank);
 	}
 
