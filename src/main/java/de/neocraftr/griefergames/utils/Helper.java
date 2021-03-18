@@ -18,6 +18,7 @@ import de.neocraftr.griefergames.booster.MobBooster;
 import de.neocraftr.griefergames.enums.EnumSounds;
 import net.labymod.core.LabyModCore;
 import net.labymod.main.LabyMod;
+import net.labymod.utils.ModColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -365,7 +366,7 @@ public class Helper {
 					}
 				}
 
-				return getGG().getPlayerRank() != "";
+				return !getGG().getPlayerRank().equals("");
 			} catch (Exception e) {
 				e.printStackTrace();
 
@@ -389,7 +390,8 @@ public class Helper {
 			for(NetworkPlayerInfo player : players) {
 				if(player.getGameProfile().getName().equals(name)) {
 					if(player.getDisplayName() != null) {
-						if(!canNotChangePrefix(getPlayerRank(player.getDisplayName().getUnformattedText()))) {
+						String unformttedDisplayName = ModColor.removeColor(player.getDisplayName().getUnformattedText());
+						if(!excludeFromColorNameTag(getPlayerRank(unformttedDisplayName))) {
 							String displayName = player.getDisplayName().getFormattedText();
 							Matcher matcher = tablistColoredPrefixRegex.matcher(displayName);
 							if(matcher.find()) {
@@ -404,51 +406,51 @@ public class Helper {
 	}
 
 	public boolean showVanishModule(String playerRank) {
-		List<String> vanishRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+		List<String> ranks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
 				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "youtuber+", "yt+");
-		return vanishRanks.contains(playerRank);
+		return ranks.contains(playerRank);
 	}
 
 	public boolean vanishDefaultState(String playerRank) {
-		List<String> vanishRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+		List<String> ranks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
 				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod");
-		return vanishRanks.contains(playerRank);
+		return ranks.contains(playerRank);
 	}
 
 	public boolean doResetBoosterBySubserver(String subServer) {
-		List<String> subServers = Arrays.asList("lobby", "portal", "skyblock", "cb0", "kreativ", "hardcore", "gestrandet");
-		return subServers.contains(subServer.toLowerCase());
+		List<String> ranks = Arrays.asList("lobby", "portal", "skyblock", "cb0", "kreativ", "hardcore", "gestrandet");
+		return ranks.contains(subServer.toLowerCase());
 	}
 
 	public boolean doHaveToWaitAfterJoin(String subServer) {
 		if(subServer.startsWith("CB") && !subServer.equalsIgnoreCase("cb0")) return true;
-		List<String> subServers = Arrays.asList("skyblock", "lava", "wasser", "extreme", "evil", "nature");
-		return subServers.contains(subServer.toLowerCase());
+		List<String> ranks = Arrays.asList("skyblock", "lava", "wasser", "extreme", "evil", "nature");
+		return ranks.contains(subServer.toLowerCase());
 	}
 
 	public boolean showGodModule(String playerRank) {
-		List<String> godRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+		List<String> ranks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
 				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup");
-		return godRanks.contains(playerRank);
+		return ranks.contains(playerRank);
 	}
 
 	public boolean showAuraModule(String playerRank) {
-		List<String> auraRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+		List<String> ranks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
 				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "youtuber+", "yt+");
-		return auraRanks.contains(playerRank);
+		return ranks.contains(playerRank);
 	}
 
 	public boolean hasFlyPermission(String playerRank) {
-		List<String> godRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+		List<String> ranks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
 				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup", "youtuber+", "yt+");
-		return godRanks.contains(playerRank);
+		return ranks.contains(playerRank);
 	}
 
-	public boolean canNotChangePrefix(String playerRank) {
-		List<String> godRanks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
+	public boolean excludeFromColorNameTag(String playerRank) {
+		List<String> ranks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
 				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup",
 				"youtuber+", "yt+", "youtuber", "yt");
-		return godRanks.contains(playerRank);
+		return ranks.contains(playerRank);
 	}
 
 	public String formatServerName(String subServerName) {
