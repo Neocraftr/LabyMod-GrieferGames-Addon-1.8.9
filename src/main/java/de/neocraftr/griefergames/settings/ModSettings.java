@@ -1038,7 +1038,7 @@ public class ModSettings {
 				}, labyChatShowSubServerEnabled);
 		friendsCategory.getSubSettings().add(labyChatShowSubServerEnabledBtn);
 
-		// Show yitybuild in Discord
+		// Show citybuild in Discord
 		final BooleanElement discordShowSubServerEnabledBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_discordEnabled"),
 				new ControlElement.IconData("labymod/textures/settings/settings/discordrichpresence.png"), new Consumer<Boolean>() {
 			@Override

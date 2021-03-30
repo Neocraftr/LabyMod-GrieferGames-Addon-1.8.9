@@ -246,7 +246,7 @@ public class GrieferGamesServer extends Server {
 		getGG().setOnGrieferGames(true);
 		getGG().setSubServer("");
 		getGG().setLastLabyChatSubServer("");
-		getGG().setLastLabyChatSubServer("");
+		getGG().setLastDiscordSubServer("");
 		getGG().setNickname("");
 		getGG().setFirstJoin(true);
 	}
