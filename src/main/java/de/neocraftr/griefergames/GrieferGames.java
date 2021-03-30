@@ -82,8 +82,9 @@ public class GrieferGames extends LabyModAddon {
 		System.out.println("[GrieferGames-Addon] enabled.");
 	}
 
-	public void loadTranslations(String lang) {
-		if(lang == null) {
+	public void loadTranslations() {
+		String lang = settings.getLanguage().name();
+		if(settings.getLanguage() == EnumLanguages.GAMELANGUAGE) {
 			List<String> items = Arrays.asList(LanguageManager.getLanguage().getName().split("_"));
 			lang = items.get(0).toUpperCase();
 		}
@@ -149,11 +150,7 @@ public class GrieferGames extends LabyModAddon {
 
 		settings.loadConfig();
 
-		if(settings.getLanguage() == EnumLanguages.GAMELANGUAGE) {
-			loadTranslations(null);
-		} else {
-			loadTranslations(settings.getLanguage().name());
-		}
+		loadTranslations();
 
 		moduleCategory = new ModuleCategory(LanguageManager.translateOrReturnKey("modules_category_gg"),
 				true, new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/icon.png")));

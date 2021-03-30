@@ -304,8 +304,9 @@ public class ModSettings {
 						public void run() {
 							getConfig().entrySet().clear();
 							saveConfig();
-							loadConfig();
 
+							loadConfig();
+							getGG().loadTranslations();
 							reinitSettings();
 						}
 					}, 700);
@@ -337,9 +338,14 @@ public class ModSettings {
 		languageDropDown.setChangeListener(new Consumer<EnumLanguages>() {
 			@Override
 			public void accept(EnumLanguages value) {
-				language = value;
-				getConfig().addProperty("language", value.name());
-				saveConfig();
+				if(language != value) {
+					language = value;
+					getConfig().addProperty("language", value.name());
+					saveConfig();
+
+					getGG().loadTranslations();
+					reinitSettings();
+				}
 			}
 		});
 		settings.add(languageDropDown);
