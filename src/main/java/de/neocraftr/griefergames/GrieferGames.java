@@ -19,6 +19,8 @@ import de.neocraftr.griefergames.utils.FileManager;
 import de.neocraftr.griefergames.utils.Helper;
 import de.neocraftr.griefergames.utils.Updater;
 import net.labymod.addon.AddonLoader;
+import net.labymod.addon.online.AddonInfoManager;
+import net.labymod.addon.online.info.AddonInfo;
 import net.labymod.api.LabyModAddon;
 import net.labymod.core.LabyModCore;
 import net.labymod.ingamegui.ModuleCategory;
@@ -121,6 +123,19 @@ public class GrieferGames extends LabyModAddon {
 			error.printStackTrace();
 			System.out.println("[GrieferGames-Addon] Couldn't load language file " + lang + " " + error.getMessage());
 		}
+	}
+
+	public AddonInfo getAddonnfo() {
+		AddonInfoManager manager = AddonInfoManager.getInstance();
+		manager.init();
+		AddonInfo addonInfo = manager.getAddonInfoMap().get(about.uuid);
+		if (addonInfo == null) {
+			addonInfo = AddonLoader.getOfflineAddons().stream()
+					.filter(addon -> addon.getUuid().equals(about.uuid))
+					.findFirst()
+					.orElseThrow(() -> new IllegalArgumentException("Unable to find addon info of \"" + about.name + "\" (" + about.uuid + ")!"));
+		}
+		return addonInfo;
 	}
 
 	@Override

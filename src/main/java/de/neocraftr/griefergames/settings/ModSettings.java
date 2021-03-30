@@ -16,9 +16,11 @@ import net.labymod.core.LabyModCore;
 import net.labymod.gui.elements.ColorPicker;
 import net.labymod.gui.elements.DropDownMenu;
 import net.labymod.main.lang.LanguageManager;
+import net.labymod.settings.LabyModAddonsGui;
 import net.labymod.settings.elements.*;
 import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
 public class ModSettings {
@@ -29,177 +31,177 @@ public class ModSettings {
 
 	private TextElement infoText;
 
-	private boolean modEnabled = true;
-	private EnumLanguages language = EnumLanguages.GAMELANGUAGE;
-	private String overrideRank = null;
-	private boolean showChatTime = false;
-	private boolean chatTimeAfterMessage = false;
-	private String chatTimeFormat = DEFAULT_CHATTIME_FORMAT;
-	private boolean privateChatRight = true;
-	private boolean plotChatRight = false;
-	private EnumSounds privateChatSound = EnumSounds.NONE;
-	private EnumRealnameShown realname = EnumRealnameShown.DEFAULT;
-	// private boolean realnameClick = false;
-	private boolean msgDisplayNameClick = true;
-	private boolean filterDuplicateMessages = false;
-	private Integer filterDuplicateMessagesTime = 5;
-	private boolean cleanBlanks = true;
-	private boolean cleanSupremeBlanks = true;
-	private boolean highlightMentions = true;
-	private Color mentionsColor = new Color(121, 178, 255);
-	private EnumSounds mentionSound = EnumSounds.NONE;
-	private boolean afkNick = false;
-	private String afkNickname = DEFAULT_AFK_NICKNAME;
-	private int afkTime = 15;
-	private boolean afkMsgAnswear = false;
-	private String afkMsgText = "Ich bin momentan AFK ;)";
-	private boolean payChatRight = true;
-	private boolean payAchievement = false;
-	private boolean payMarker = false;
-	private boolean payHover = false;
-	private boolean bankChatRight = true;
-	private boolean bankAchievement = false;
-	private boolean itemRemoverChatRight = false;
-	private boolean itemRemoverLastTimeHover = true;
-	private boolean mobRemoverChatRight = false;
-	private boolean mobRemoverLastTimeHover = true;
-	private boolean betterIgnoreList = true;
-	private boolean ampEnabled = true;
-	private boolean ampClanEnabled = false;
-	private String ampChatReplacement = DEFAULT_AMP_REPLACEMENT_CHAT;
-	private String ampTablistReplacement = DEFAULT_AMP_REPLACEMENT_TABLIST;
-	private boolean preventCommandFailure = true;
-	private boolean markTPAMsg = true;
-	private boolean cleanVoteMsg = true;
-	private boolean cleanNewsMsg = false;
-	private boolean updateBoosterState = true;
-	private boolean clearMapCache = false;
-	private boolean labyChatShowSubServerEnabled = true;
-	private boolean discordShowSubServerEnabled = true;
-	private boolean autoPortal = false;
-	private boolean hideBoosterMenu = false;
-	private boolean autoUpdate = true;
-	private boolean vanishOnJoin = false;
-	private boolean flyOnJoin = false;
-	private boolean logTransactions = false;
-	private boolean showPrefixInDisplayName = true;
+	private boolean modEnabled;
+	private EnumLanguages language;
+	private String overrideRank;
+	private boolean showChatTime;
+	private boolean chatTimeAfterMessage;
+	private String chatTimeFormat;
+	private boolean privateChatRight;
+	private boolean plotChatRight;
+	private EnumSounds privateChatSound;
+	private EnumRealnameShown realname;
+	//private boolean realnameClick;
+	private boolean msgDisplayNameClick;
+	private boolean filterDuplicateMessages;
+	private Integer filterDuplicateMessagesTime;
+	private boolean cleanBlanks;
+	private boolean cleanSupremeBlanks;
+	private boolean highlightMentions;
+	private Color mentionsColor;
+	private EnumSounds mentionSound;
+	private boolean afkNick;
+	private String afkNickname;
+	private int afkTime;
+	private boolean afkMsgAnswear;
+	private String afkMsgText;
+	private boolean payChatRight;
+	private boolean payAchievement;
+	private boolean payMarker;
+	private boolean payHover;
+	private boolean bankChatRight;
+	private boolean bankAchievement;
+	private boolean itemRemoverChatRight;
+	private boolean itemRemoverLastTimeHover;
+	private boolean mobRemoverChatRight;
+	private boolean mobRemoverLastTimeHover;
+	private boolean betterIgnoreList;
+	private boolean ampEnabled;
+	private boolean ampClanEnabled;
+	private String ampChatReplacement;
+	private String ampTablistReplacement;
+	private boolean preventCommandFailure;
+	private boolean markTPAMsg;
+	private boolean cleanVoteMsg;
+	private boolean cleanNewsMsg;
+	private boolean updateBoosterState;
+	private boolean clearMapCache;
+	private boolean labyChatShowSubServerEnabled;
+	private boolean discordShowSubServerEnabled;
+	private boolean autoPortal;
+	private boolean hideBoosterMenu;
+	private boolean autoUpdate;
+	private boolean vanishOnJoin;
+	private boolean flyOnJoin;
+	private boolean logTransactions;
+	private boolean showPrefixInDisplayName;
 
 	public void loadConfig() {
-		if (getConfig().has("modEnabled"))
-			modEnabled = getConfig().get("modEnabled").getAsBoolean();
+		modEnabled = getConfig().has("modEnabled") ?
+				getConfig().get("modEnabled").getAsBoolean() : true;
 
-		if (getConfig().has("language"))
-			language = EnumLanguages.valueOf(getConfig().get("language").getAsString());
+		language = getConfig().has("language") ?
+				EnumLanguages.valueOf(getConfig().get("language").getAsString()) : EnumLanguages.GAMELANGUAGE;
 
-		if(getConfig().has("overrideRank"))
-			overrideRank = getConfig().get("overrideRank").getAsString();
+		overrideRank = getConfig().has("overrideRank") ?
+				getConfig().get("overrideRank").getAsString() : null;
 
-		if (getConfig().has("showChatTime"))
-			showChatTime = getConfig().get("showChatTime").getAsBoolean();
+		showChatTime = getConfig().has("showChatTime") ?
+				getConfig().get("showChatTime").getAsBoolean() : false;
 
-		if (getConfig().has("chatTimeAfterMessage"))
-			chatTimeAfterMessage = getConfig().get("chatTimeAfterMessage").getAsBoolean();
+		chatTimeAfterMessage = getConfig().has("chatTimeAfterMessage") ?
+				getConfig().get("chatTimeAfterMessage").getAsBoolean() : false;
 
-		if (getConfig().has("privateChatRight"))
-			privateChatRight = getConfig().get("privateChatRight").getAsBoolean();
+		privateChatRight = getConfig().has("privateChatRight") ?
+				getConfig().get("privateChatRight").getAsBoolean() : true;
 
-		if (getConfig().has("privateChatSound"))
-			privateChatSound = EnumSounds.valueOf(getConfig().get("privateChatSound").getAsString());
+		privateChatSound = getConfig().has("privateChatSound") ?
+				EnumSounds.valueOf(getConfig().get("privateChatSound").getAsString()) : EnumSounds.NONE;
 
-		if (getConfig().has("msgDisplayNameClick"))
-			msgDisplayNameClick = getConfig().get("msgDisplayNameClick").getAsBoolean();
+		msgDisplayNameClick = getConfig().has("msgDisplayNameClick") ?
+				getConfig().get("msgDisplayNameClick").getAsBoolean() : true;
 
-		if (getConfig().has("filterDuplicateMessages"))
-			filterDuplicateMessages = getConfig().get("filterDuplicateMessages").getAsBoolean();
+		filterDuplicateMessages = getConfig().has("filterDuplicateMessages") ?
+				getConfig().get("filterDuplicateMessages").getAsBoolean() : false;
 
-		if (getConfig().has("filterDuplicateMessagesTime"))
-			 filterDuplicateMessagesTime = getConfig().get("filterDuplicateMessagesTime").getAsInt();
+		filterDuplicateMessagesTime = getConfig().has("filterDuplicateMessagesTime") ?
+				getConfig().get("filterDuplicateMessagesTime").getAsInt() : 5;
 
-		if (getConfig().has("cleanBlanks"))
-			cleanBlanks = getConfig().get("cleanBlanks").getAsBoolean();
+		cleanBlanks = getConfig().has("cleanBlanks") ?
+				getConfig().get("cleanBlanks").getAsBoolean() : true;
 
-		if (getConfig().has("cleanSupremeBlanks"))
-			cleanSupremeBlanks = getConfig().get("cleanSupremeBlanks").getAsBoolean();
+		cleanSupremeBlanks = getConfig().has("cleanSupremeBlanks") ?
+				getConfig().get("cleanSupremeBlanks").getAsBoolean() : true;
 
-		if(getConfig().has("highlightMentions"))
-			highlightMentions = getConfig().get("highlightMentions").getAsBoolean();
+		highlightMentions = getConfig().has("highlightMentions") ?
+				getConfig().get("highlightMentions").getAsBoolean() : true;
 
-		if(getConfig().has("mentionsColor"))
-			mentionsColor = new Color(getConfig().get("mentionsColor").getAsInt());
+		mentionsColor = getConfig().has("mentionsColor") ?
+				new Color(getConfig().get("mentionsColor").getAsInt()) : new Color(121, 178, 255);
 
-		if(getConfig().has("mentionSound"))
-			mentionSound = EnumSounds.valueOf(getConfig().get("mentionSound").getAsString());
+		mentionSound = getConfig().has("mentionSound") ?
+				EnumSounds.valueOf(getConfig().get("mentionSound").getAsString()) : EnumSounds.NONE;
 
-		if (getConfig().has("payChatRight"))
-			payChatRight = getConfig().get("payChatRight").getAsBoolean();
+		payChatRight = getConfig().has("payChatRight") ?
+				getConfig().get("payChatRight").getAsBoolean() : true;
 
-		if (getConfig().has("payAchievement"))
-			payAchievement = getConfig().get("payAchievement").getAsBoolean();
+		payAchievement = getConfig().has("payAchievement") ?
+				getConfig().get("payAchievement").getAsBoolean() : false;
 
-		if (getConfig().has("payMarker"))
-			payMarker = getConfig().get("payMarker").getAsBoolean();
+		payMarker = getConfig().has("payMarker") ?
+				getConfig().get("payMarker").getAsBoolean() : false;
 
-		if (getConfig().has("payHover"))
-			payHover = getConfig().get("payHover").getAsBoolean();
+		payHover = getConfig().has("payHover") ?
+				getConfig().get("payHover").getAsBoolean() : false;
 
-		if(getConfig().has("afkNick"))
-			afkNick = getConfig().get("afkNick").getAsBoolean();
+		afkNick = getConfig().has("afkNick") ?
+				getConfig().get("afkNick").getAsBoolean() : false;
 
-		if(getConfig().has("afkMsgAnswear"))
-			afkMsgAnswear = getConfig().get("afkMsgAnswear").getAsBoolean();
+		afkMsgAnswear = getConfig().has("afkMsgAnswear") ?
+				getConfig().get("afkMsgAnswear").getAsBoolean() : false;
 
-		if(getConfig().has("afkMsgText"))
-			afkMsgText = getConfig().get("afkMsgText").getAsString();
+		afkMsgText = getConfig().has("afkMsgText") ?
+				getConfig().get("afkMsgText").getAsString() : "Ich bin momentan AFK ;)";
 
-		if(getConfig().has("afkNickname") && getConfig().get("afkNickname").getAsString().trim().length() > 0)
-			afkNickname = getConfig().get("afkNickname").getAsString();
+		afkNickname = getConfig().has("afkNickname") && getConfig().get("afkNickname").getAsString().trim().length() > 0 ?
+				getConfig().get("afkNickname").getAsString() : DEFAULT_AFK_NICKNAME;
 
-		if(getConfig().has("afkTime"))
-			afkTime = getConfig().get("afkTime").getAsInt();
+		afkTime = getConfig().has("afkTime") ?
+				getConfig().get("afkTime").getAsInt() : 15;
 
-		if (getConfig().has("bankChatRight"))
-			bankChatRight = getConfig().get("bankChatRight").getAsBoolean();
+		bankChatRight = getConfig().has("bankChatRight") ?
+				getConfig().get("bankChatRight").getAsBoolean() : true;
 
-		if (getConfig().has("bankAchievement"))
-			bankAchievement = getConfig().get("bankAchievement").getAsBoolean();
+		bankAchievement = getConfig().has("bankAchievement") ?
+				getConfig().get("bankAchievement").getAsBoolean() : false;
 
-		if (getConfig().has("plotChatRight"))
-			plotChatRight = getConfig().get("plotChatRight").getAsBoolean();
+		plotChatRight = getConfig().has("plotChatRight") ?
+				getConfig().get("plotChatRight").getAsBoolean() : false;
 
-		if (getConfig().has("realname"))
-			realname = EnumRealnameShown.valueOf(getConfig().get("realname").getAsString());
+		realname = getConfig().has("realname") ?
+				EnumRealnameShown.valueOf(getConfig().get("realname").getAsString()) : EnumRealnameShown.BOTH;
 
-		/*
-		 * if (getConfig().has("realnameClick"))
-		 * setRealnameClick(getConfig().get("realnameClick").getAsBoolean());
-		 */
+		//realnameClick = getConfig().has("realnameClick") ?
+		//		getConfig().get("realnameClick").getAsBoolean() ? false;
 
-		if (getConfig().has("itemRemoverChatRight"))
-			itemRemoverChatRight = getConfig().get("itemRemoverChatRight").getAsBoolean();
+		itemRemoverChatRight = getConfig().has("itemRemoverChatRight") ?
+				getConfig().get("itemRemoverChatRight").getAsBoolean() : false;
 
-		if (getConfig().has("itemRemoverLastTimeHover"))
-			itemRemoverLastTimeHover = getConfig().get("itemRemoverLastTimeHover").getAsBoolean();
+		itemRemoverLastTimeHover = getConfig().has("itemRemoverLastTimeHover") ?
+				getConfig().get("itemRemoverLastTimeHover").getAsBoolean() : true;
 
-		if (getConfig().has("mobRemoverChatRight"))
-			mobRemoverChatRight = getConfig().get("mobRemoverChatRight").getAsBoolean();
+		mobRemoverChatRight = getConfig().has("mobRemoverChatRight") ?
+				getConfig().get("mobRemoverChatRight").getAsBoolean() : false;
 
-		if (getConfig().has("mobRemoverLastTimeHover"))
-			mobRemoverLastTimeHover = getConfig().get("mobRemoverLastTimeHover").getAsBoolean();
+		mobRemoverLastTimeHover = getConfig().has("mobRemoverLastTimeHover") ?
+				getConfig().get("mobRemoverLastTimeHover").getAsBoolean() : true;
 
-		if (getConfig().has("betterIgnoreList"))
-			betterIgnoreList = getConfig().get("betterIgnoreList").getAsBoolean();
+		betterIgnoreList = getConfig().has("betterIgnoreList") ?
+				getConfig().get("betterIgnoreList").getAsBoolean() : true;
 
-		if (getConfig().has("ampEnabled"))
-			ampEnabled = getConfig().get("ampEnabled").getAsBoolean();
+		ampEnabled = getConfig().has("ampEnabled") ?
+				getConfig().get("ampEnabled").getAsBoolean() : true;
 
-		if (getConfig().has("ampClanEnabled"))
-			ampClanEnabled = getConfig().get("ampClanEnabled").getAsBoolean();
+		ampClanEnabled = getConfig().has("ampClanEnabled") ?
+				getConfig().get("ampClanEnabled").getAsBoolean() : false;
 
 		if (getConfig().has("chatReplacement") && getConfig().get("chatReplacement").getAsString().trim().length() > 0) {
 			String replacement = getConfig().get("chatReplacement").getAsString();
 			if(replacement.trim().length() > 0 && (replacement.contains("%CLEAN%") || replacement.contains("%clean%"))) {
 				ampChatReplacement = replacement;
 			}
+		} else {
+			ampChatReplacement = DEFAULT_AMP_REPLACEMENT_CHAT;
 		}
 
 		if (getConfig().has("tablistReplacement")) {
@@ -207,54 +209,57 @@ public class ModSettings {
 			if(replacement.trim().length() > 0 && (replacement.contains("%CLEAN%") || replacement.contains("%clean%"))) {
 				ampTablistReplacement = replacement;
 			}
+		} else {
+			ampTablistReplacement = DEFAULT_AMP_REPLACEMENT_TABLIST;
 		}
 
-		if (getConfig().has("chatTimeFormat") && getConfig().get("chatTimeFormat").getAsString().trim().length() > 0)
-			chatTimeFormat = getConfig().get("chatTimeFormat").getAsString();
+		chatTimeFormat = getConfig().has("chatTimeFormat") && getConfig().get("chatTimeFormat").getAsString().trim().length() > 0 ?
+				getConfig().get("chatTimeFormat").getAsString() : DEFAULT_CHATTIME_FORMAT;
 
-		if (getConfig().has("preventCommandFailure"))
-			preventCommandFailure = getConfig().get("preventCommandFailure").getAsBoolean();
+		preventCommandFailure = getConfig().has("preventCommandFailure") ?
+				getConfig().get("preventCommandFailure").getAsBoolean() : true;
 
-		if (getConfig().has("markTPAMsg"))
-			markTPAMsg = getConfig().get("markTPAMsg").getAsBoolean();
+		markTPAMsg = getConfig().has("markTPAMsg") ?
+				getConfig().get("markTPAMsg").getAsBoolean() : true;
 
-		if (getConfig().has("cleanVoteMsg"))
-			cleanVoteMsg = getConfig().get("cleanVoteMsg").getAsBoolean();
+		cleanVoteMsg = getConfig().has("cleanVoteMsg") ?
+				getConfig().get("cleanVoteMsg").getAsBoolean() : true;
 
-		if (getConfig().has("cleanNewsMsg"))
-			cleanNewsMsg = getConfig().get("cleanNewsMsg").getAsBoolean();
+		cleanNewsMsg = getConfig().has("cleanNewsMsg") ?
+				getConfig().get("cleanNewsMsg").getAsBoolean() : false;
 
-		if (getConfig().has("updateBoosterState"))
-			updateBoosterState = getConfig().get("updateBoosterState").getAsBoolean();
+		updateBoosterState = getConfig().has("updateBoosterState") ?
+				getConfig().get("updateBoosterState").getAsBoolean() : true;
 
-		if (getConfig().has("clearMapCache"))
-			clearMapCache = getConfig().get("clearMapCache").getAsBoolean();
+		clearMapCache = getConfig().has("clearMapCache") ?
+				getConfig().get("clearMapCache").getAsBoolean() : false;
 
-		if (getConfig().has("labyChatShowSubServerEnabled"))
-			labyChatShowSubServerEnabled = getConfig().get("labyChatShowSubServerEnabled").getAsBoolean();
-		if (getConfig().has("discordShowSubServerEnabled"))
-			discordShowSubServerEnabled = getConfig().get("discordShowSubServerEnabled").getAsBoolean();
+		labyChatShowSubServerEnabled = getConfig().has("labyChatShowSubServerEnabled") ?
+				getConfig().get("labyChatShowSubServerEnabled").getAsBoolean() : true;
 
-		if (getConfig().has("autoPortal"))
-			autoPortal = getConfig().get("autoPortal").getAsBoolean();
+		discordShowSubServerEnabled = getConfig().has("discordShowSubServerEnabled") ?
+				getConfig().get("discordShowSubServerEnabled").getAsBoolean() : true;
 
-		if (getConfig().has("hideBoosterMenu"))
-			hideBoosterMenu = getConfig().get("hideBoosterMenu").getAsBoolean();
+		autoPortal = getConfig().has("autoPortal") ?
+				getConfig().get("autoPortal").getAsBoolean() : false;
 
-		if (getConfig().has("autoUpdate"))
-			autoUpdate = getConfig().get("autoUpdate").getAsBoolean();
+		hideBoosterMenu = getConfig().has("hideBoosterMenu") ?
+				getConfig().get("hideBoosterMenu").getAsBoolean() : false;
 
-		if (getConfig().has("vanishOnJoin"))
-			vanishOnJoin = getConfig().get("vanishOnJoin").getAsBoolean();
+		autoUpdate = getConfig().has("autoUpdate") ?
+				getConfig().get("autoUpdate").getAsBoolean() : true;
 
-		if (getConfig().has("flyOnJoin"))
-			flyOnJoin = getConfig().get("flyOnJoin").getAsBoolean();
+		vanishOnJoin = getConfig().has("vanishOnJoin") ?
+				getConfig().get("vanishOnJoin").getAsBoolean() : false;
 
-		if (getConfig().has("logTransactions"))
-			logTransactions = getConfig().get("logTransactions").getAsBoolean();
+		flyOnJoin = getConfig().has("flyOnJoin") ?
+				getConfig().get("flyOnJoin").getAsBoolean() : false;
 
-		if (getConfig().has("showPrefixInDisplayName"))
-			showPrefixInDisplayName = getConfig().get("showPrefixInDisplayName").getAsBoolean();
+		logTransactions = getConfig().has("logTransactions") ?
+				getConfig().get("logTransactions").getAsBoolean() : false;
+
+		showPrefixInDisplayName = getConfig().has("showPrefixInDisplayName") ?
+				getConfig().get("showPrefixInDisplayName").getAsBoolean() : true;
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -290,11 +295,22 @@ public class ModSettings {
 			@Override
 			public void run() {
 				if(resetSettingsBtn.getButtonText().equals(LanguageManager.translateOrReturnKey("settings_gg_resetSettingsConfirm"))) {
-					getConfig().entrySet().clear();
-					saveConfig();
+					// Perform reset
 					resetSettingsBtn.setButtonText(LanguageManager.translateOrReturnKey("settings_gg_resetSettingsBtn"));
 					resetSettingsBtn.setEnabled(false);
+
+					new Timer().schedule(new TimerTask() {
+						@Override
+						public void run() {
+							getConfig().entrySet().clear();
+							saveConfig();
+							loadConfig();
+
+							reinitSettings();
+						}
+					}, 700);
 				} else {
+					// Display confirmation
 					resetSettingsBtn.setButtonText(LanguageManager.translateOrReturnKey("settings_gg_resetSettingsConfirm"));
 					new Timer().schedule(new TimerTask() {
 						@Override
@@ -1060,6 +1076,16 @@ public class ModSettings {
 
 		text += "\n§7GitHub: §ahttps://github.com/Neocraftr/LabyMod-GrieferGames-Addon-1.8.9";
 		infoText.setText(text);
+	}
+
+	public void reinitSettings() {
+		List<SettingsElement> subSettings = getGG().getAddonnfo().getAddonElement().getSubSettings();
+		subSettings.clear();
+		fillSettings(subSettings);
+
+		if(Minecraft.getMinecraft().currentScreen instanceof LabyModAddonsGui) {
+			Minecraft.getMinecraft().currentScreen.initGui();
+		}
 	}
 
 	private GrieferGames getGG() {
