@@ -28,7 +28,6 @@ public class ColorElement extends ColorPickerCheckBoxBulkElement {
     public boolean onClickBulkEntry(int mouseX, int mouseY, int mouseButton) {
         colorPicker.mouseClicked(mouseX, mouseY, mouseButton);
 
-        System.out.println("clicked");
         if(colorPicker.isHoverAdvancedButton() || colorPicker.isHoverSlider()) {
             if(callback != null) callback.accept(colorPicker.getSelectedColor());
         }

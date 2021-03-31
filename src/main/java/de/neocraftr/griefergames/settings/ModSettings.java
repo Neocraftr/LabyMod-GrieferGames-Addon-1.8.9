@@ -24,8 +24,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
 public class ModSettings {
-	public static final String DEFAULT_AMP_REPLACEMENT_CHAT = "[AMP] %clean%",
-			DEFAULT_AMP_REPLACEMENT_TABLIST = "[AMP] %clean%",
+	public static final String DEFAULT_AMP_REPLACEMENT_CHAT = "[AMP]",
+			DEFAULT_AMP_REPLACEMENT_TABLIST = "[AMP]",
 			DEFAULT_AFK_NICKNAME = "AFK_%name%",
 			DEFAULT_CHATTIME_FORMAT = "&8[&3%h%&7:&3%m%&7:&3%s%&8]";
 
@@ -87,6 +87,26 @@ public class ModSettings {
 	private boolean showPrefixInDisplayName;
 
 	public void loadConfig() {
+		// comnversion of old amp replacement
+		// TODO: remove after some time
+		if(getConfig().has("tablistReplacement")) {
+			String tablistReplacement = getConfig().get("tablistReplacement").getAsString();
+			if(tablistReplacement.toLowerCase().contains("%clear%")) {
+				getConfig().addProperty("tablistReplacement",
+						tablistReplacement.replace("%clear%", "").replace("%CLEAR%", "").trim());
+				saveConfig();
+			}
+		}
+		if(getConfig().has("chatReplacement")) {
+			String chatReplacement = getConfig().get("chatReplacement").getAsString();
+			if(chatReplacement.toLowerCase().contains("%clear%")) {
+				getConfig().addProperty("chatReplacement",
+						chatReplacement.replace("%clear%", "").replace("%CLEAR%", "").trim());
+				saveConfig();
+			}
+		}
+
+
 		modEnabled = getConfig().has("modEnabled") ?
 				getConfig().get("modEnabled").getAsBoolean() : true;
 
@@ -153,7 +173,7 @@ public class ModSettings {
 		afkMsgText = getConfig().has("afkMsgText") ?
 				getConfig().get("afkMsgText").getAsString() : "Ich bin momentan AFK ;)";
 
-		afkNickname = getConfig().has("afkNickname") && getConfig().get("afkNickname").getAsString().trim().length() > 0 ?
+		afkNickname = getConfig().has("afkNickname") && !getConfig().get("afkNickname").getAsString().trim().isEmpty() ?
 				getConfig().get("afkNickname").getAsString() : DEFAULT_AFK_NICKNAME;
 
 		afkTime = getConfig().has("afkTime") ?
@@ -195,25 +215,13 @@ public class ModSettings {
 		ampClanEnabled = getConfig().has("ampClanEnabled") ?
 				getConfig().get("ampClanEnabled").getAsBoolean() : false;
 
-		if (getConfig().has("chatReplacement") && getConfig().get("chatReplacement").getAsString().trim().length() > 0) {
-			String replacement = getConfig().get("chatReplacement").getAsString();
-			if(replacement.trim().length() > 0 && (replacement.contains("%CLEAN%") || replacement.contains("%clean%"))) {
-				ampChatReplacement = replacement;
-			}
-		} else {
-			ampChatReplacement = DEFAULT_AMP_REPLACEMENT_CHAT;
-		}
+		ampChatReplacement = getConfig().has("chatReplacement") && !getConfig().get("chatReplacement").getAsString().trim().isEmpty() ?
+				getConfig().get("chatReplacement").getAsString() : DEFAULT_AMP_REPLACEMENT_CHAT;
 
-		if (getConfig().has("tablistReplacement")) {
-			String replacement = getConfig().get("tablistReplacement").getAsString();
-			if(replacement.trim().length() > 0 && (replacement.contains("%CLEAN%") || replacement.contains("%clean%"))) {
-				ampTablistReplacement = replacement;
-			}
-		} else {
-			ampTablistReplacement = DEFAULT_AMP_REPLACEMENT_TABLIST;
-		}
+		ampTablistReplacement = getConfig().has("tablistReplacement") && !getConfig().get("tablistReplacement").getAsString().trim().isEmpty() ?
+				getConfig().get("tablistReplacement").getAsString() : DEFAULT_AMP_REPLACEMENT_TABLIST;
 
-		chatTimeFormat = getConfig().has("chatTimeFormat") && getConfig().get("chatTimeFormat").getAsString().trim().length() > 0 ?
+		chatTimeFormat = getConfig().has("chatTimeFormat") && !getConfig().get("chatTimeFormat").getAsString().trim().isEmpty() ?
 				getConfig().get("chatTimeFormat").getAsString() : DEFAULT_CHATTIME_FORMAT;
 
 		preventCommandFailure = getConfig().has("preventCommandFailure") ?
