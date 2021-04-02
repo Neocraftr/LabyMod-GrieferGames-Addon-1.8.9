@@ -91,17 +91,17 @@ public class ModSettings {
 		// TODO: remove after some time
 		if(getConfig().has("tablistReplacement")) {
 			String tablistReplacement = getConfig().get("tablistReplacement").getAsString();
-			if(tablistReplacement.toLowerCase().contains("%clear%")) {
+			if(tablistReplacement.toLowerCase().contains("%clean%")) {
 				getConfig().addProperty("tablistReplacement",
-						tablistReplacement.replace("%clear%", "").replace("%CLEAR%", "").trim());
+						tablistReplacement.replace("%clean%", "").replace("%CLEAN%", "").trim());
 				saveConfig();
 			}
 		}
 		if(getConfig().has("chatReplacement")) {
 			String chatReplacement = getConfig().get("chatReplacement").getAsString();
-			if(chatReplacement.toLowerCase().contains("%clear%")) {
+			if(chatReplacement.toLowerCase().contains("%clean%")) {
 				getConfig().addProperty("chatReplacement",
-						chatReplacement.replace("%clear%", "").replace("%CLEAR%", "").trim());
+						chatReplacement.replace("%clean%", "").replace("%CLEAN%", "").trim());
 				saveConfig();
 			}
 		}
