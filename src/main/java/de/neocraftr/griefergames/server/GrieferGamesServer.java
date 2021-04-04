@@ -2,6 +2,9 @@ package de.neocraftr.griefergames.server;
 
 import java.util.*;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.neocraftr.griefergames.chat.*;
 import de.neocraftr.griefergames.listener.KeyInputListener;
 import de.neocraftr.griefergames.listener.OnTickListener;
@@ -9,6 +12,7 @@ import de.neocraftr.griefergames.modules.*;
 import de.neocraftr.griefergames.settings.ModSettings;
 import de.neocraftr.griefergames.GrieferGames;
 import de.neocraftr.griefergames.utils.Helper;
+import io.netty.buffer.ByteBuf;
 import net.labymod.api.LabyModAPI;
 import net.labymod.api.events.MessageModifyChatEvent;
 import net.labymod.api.events.MessageReceiveEvent;
@@ -16,6 +20,7 @@ import net.labymod.api.events.MessageSendEvent;
 import net.labymod.api.events.TabListEvent;
 import net.labymod.core.LabyModCore;
 import net.labymod.ingamegui.ModuleCategoryRegistry;
+import net.labymod.main.LabyMod;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.labymod.servermanager.Server;
 import net.labymod.settings.elements.SettingsElement;
@@ -29,6 +34,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class GrieferGamesServer extends Server {
+	JsonParser parser = new JsonParser();
 
 	public GrieferGamesServer() {
 		super("GrieferGames", GrieferGames.SERVER_IP, GrieferGames.SECOND_SERVER_IP);
@@ -255,7 +261,33 @@ public class GrieferGamesServer extends Server {
 	public void fillSubSettings(List<SettingsElement> settings) {}
 
 	@Override
-	public void handlePluginMessage(String channelName, PacketBuffer packetBuffer) throws Exception {}
+	public void handlePluginMessage(String channel, PacketBuffer packetBufferOrig) {
+		if (!getGG().getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return;
+
+		if(!channel.equals("mysterymod:mm")) return;
+		ByteBuf packetBuffer = packetBufferOrig.copy();
+
+		if(packetBuffer.readableBytes() <= 0) return;
+		String messageKey = getHelper().readStringFromBuffer(32767, packetBuffer);
+
+		if(packetBuffer.readableBytes() <= 0) return;
+		String message = getHelper().readStringFromBuffer(32767, packetBuffer);
+
+		if(messageKey.equals("user_subtitle")) {
+			try {
+				JsonArray subtitleArray = parser.parse(message).getAsJsonArray();
+				JsonObject subtitle = subtitleArray.get(0).getAsJsonObject();
+
+				subtitle.addProperty("uuid", subtitle.get("targetId").getAsString());
+				subtitle.addProperty("value", subtitle.get("text").getAsString());
+				subtitle.addProperty("size", 1.2);
+
+				LabyMod.getInstance().getEventManager().callServerMessage("account_subtitle", subtitleArray);
+			} catch(Exception err) {
+				System.err.println("Error while parsing subtitle message: "+err.getMessage());
+			}
+		}
+	}
 
 	@Override
 	public void handleTabInfoMessage(TabListEvent.Type tabInfoType, String formatted, String clean) throws Exception {}

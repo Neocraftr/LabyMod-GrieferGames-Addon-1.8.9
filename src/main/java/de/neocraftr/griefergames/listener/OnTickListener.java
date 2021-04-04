@@ -31,8 +31,8 @@ public class OnTickListener {
 
 	@SubscribeEvent
 	public void onTick(TickEvent.ClientTickEvent event) {
+		if (!getGG().getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return;
 		if (LabyModCore.getMinecraft().getWorld() != null && event.phase == TickEvent.Phase.END) {
-			if (!getGG().getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return;
 
 			final long now = System.currentTimeMillis();
 			if (now > nextLastMessageRequest) {

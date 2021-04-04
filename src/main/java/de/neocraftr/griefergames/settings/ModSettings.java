@@ -88,7 +88,6 @@ public class ModSettings {
 
 	public void loadConfig() {
 		// comnversion of old amp replacement
-		// TODO: remove after some time
 		if(getConfig().has("tablistReplacement")) {
 			String tablistReplacement = getConfig().get("tablistReplacement").getAsString();
 			if(tablistReplacement.toLowerCase().contains("%clean%")) {
@@ -105,7 +104,6 @@ public class ModSettings {
 				saveConfig();
 			}
 		}
-
 
 		modEnabled = getConfig().has("modEnabled") ?
 				getConfig().get("modEnabled").getAsBoolean() : true;

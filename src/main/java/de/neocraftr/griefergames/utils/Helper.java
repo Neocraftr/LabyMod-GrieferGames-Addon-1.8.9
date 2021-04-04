@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Iterables;
 import com.google.gson.JsonObject;
 import de.neocraftr.griefergames.GrieferGames;
@@ -16,6 +17,8 @@ import de.neocraftr.griefergames.booster.ExperienceBooster;
 import de.neocraftr.griefergames.booster.FlyBooster;
 import de.neocraftr.griefergames.booster.MobBooster;
 import de.neocraftr.griefergames.enums.EnumSounds;
+import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.DecoderException;
 import net.labymod.core.LabyModCore;
 import net.labymod.main.LabyMod;
 import net.labymod.utils.ModColor;
@@ -519,6 +522,47 @@ public class Helper {
 			LabyMod.getInstance().getDiscordApp().onServerMessage("discord_rpc", serverMessage);
 		}
 
+	}
+
+	public String readStringFromBuffer(int maxLength, ByteBuf packetBuffer) {
+		int i = this.readVarIntFromBuffer(packetBuffer);
+		if (i > maxLength * 4) {
+			throw new DecoderException("The received encoded string buffer length is longer than maximum allowed (" + i + " > " + maxLength * 4 + ")");
+		} else if (i < 0) {
+			throw new DecoderException("The received encoded string buffer length is less than zero! Weird string!");
+		} else {
+			ByteBuf byteBuf = packetBuffer.readBytes(i);
+			byte[] bytes;
+			if (byteBuf.hasArray()) {
+				bytes = byteBuf.array();
+			} else {
+				bytes = new byte[byteBuf.readableBytes()];
+				byteBuf.getBytes(byteBuf.readerIndex(), bytes);
+			}
+
+			String s = new String(bytes, Charsets.UTF_8);
+			if (s.length() > maxLength) {
+				throw new DecoderException("The received string length is longer than maximum allowed (" + i + " > " + maxLength + ")");
+			} else {
+				return s;
+			}
+		}
+	}
+
+	private int readVarIntFromBuffer(ByteBuf packetBuffer) {
+		int i = 0;
+		int j = 0;
+
+		byte b0;
+		do {
+			b0 = packetBuffer.readByte();
+			i |= (b0 & 127) << j++ * 7;
+			if (j > 5) {
+				throw new RuntimeException("VarInt too big");
+			}
+		} while((b0 & 128) == 128);
+
+		return i;
 	}
 
 	private GrieferGames getGG() {
