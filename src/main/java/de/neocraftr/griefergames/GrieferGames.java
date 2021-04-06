@@ -49,6 +49,7 @@ public class GrieferGames extends LabyModAddon {
 	private boolean auraActive = false;
 	private boolean godActive = false;
 	private boolean flyActive = false;
+	private boolean redstoneActive = false;
 	private boolean newsStart = false;
 	private boolean afk = false;
 	private boolean firstJoin = false;
@@ -220,6 +221,13 @@ public class GrieferGames extends LabyModAddon {
 	}
 	public void setFlyActive(boolean flyActive) {
 		this.flyActive = flyActive;
+	}
+
+	public boolean isRedstoneActive() {
+		return redstoneActive;
+	}
+	public void setRedstoneActive(boolean redstoneActive) {
+		this.redstoneActive = redstoneActive;
 	}
 
 	public ModuleCategory getModuleCategory() {

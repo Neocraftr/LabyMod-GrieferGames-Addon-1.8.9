@@ -3,6 +3,7 @@ package de.neocraftr.griefergames.server;
 import java.util.*;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.neocraftr.griefergames.chat.*;
@@ -46,6 +47,7 @@ public class GrieferGamesServer extends Server {
 		new NicknameModule();
 		new DelayModule();
 		new IncomeModule();
+		new RedstoneModule();
 
 		// add Chat Modules
 		getGG().addChatModule(new PreventCommandFailure());
@@ -271,21 +273,32 @@ public class GrieferGamesServer extends Server {
 		String messageKey = getHelper().readStringFromBuffer(32767, packetBuffer);
 
 		if(packetBuffer.readableBytes() <= 0) return;
-		String message = getHelper().readStringFromBuffer(32767, packetBuffer);
+		String jsonMessage = getHelper().readStringFromBuffer(32767, packetBuffer);
+
+		//System.out.println("MysteryMod message: "+messageKey+" - "+jsonMessage);
+
+		JsonElement message;
+		try {
+			 message = parser.parse(jsonMessage);
+		} catch(Exception err) {
+			System.err.println("Error while parsing MysteryMod message: "+err.getMessage());
+			return;
+		}
 
 		if(messageKey.equals("user_subtitle")) {
-			try {
-				JsonArray subtitleArray = parser.parse(message).getAsJsonArray();
-				JsonObject subtitle = subtitleArray.get(0).getAsJsonObject();
+			JsonArray subtitleArray = message.getAsJsonArray();
+			JsonObject subtitle = subtitleArray.get(0).getAsJsonObject();
 
-				subtitle.addProperty("uuid", subtitle.get("targetId").getAsString());
-				subtitle.addProperty("value", subtitle.get("text").getAsString());
-				subtitle.addProperty("size", 1.2);
+			subtitle.addProperty("uuid", subtitle.get("targetId").getAsString());
+			subtitle.addProperty("value", subtitle.get("text").getAsString());
+			subtitle.addProperty("size", 1.2);
 
-				LabyMod.getInstance().getEventManager().callServerMessage("account_subtitle", subtitleArray);
-			} catch(Exception err) {
-				System.err.println("Error while parsing subtitle message: "+err.getMessage());
-			}
+			LabyMod.getInstance().getEventManager().callServerMessage("account_subtitle", subtitleArray);
+		}
+
+		if(messageKey.equals("redstone")) {
+			String redstoneState = message.getAsJsonObject().get("status").getAsString();
+			getGG().setRedstoneActive(redstoneState.equals("0"));
 		}
 	}
 
