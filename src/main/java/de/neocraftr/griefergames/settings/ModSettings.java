@@ -1,10 +1,8 @@
 package de.neocraftr.griefergames.settings;
 
 import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import com.google.gson.JsonObject;
 
@@ -12,6 +10,8 @@ import de.neocraftr.griefergames.GrieferGames;
 import de.neocraftr.griefergames.enums.EnumLanguages;
 import de.neocraftr.griefergames.enums.EnumRealnameShown;
 import de.neocraftr.griefergames.enums.EnumSounds;
+import de.neocraftr.griefergames.enums.CityBuild;
+import de.neocraftr.griefergames.plots.gui.PlotsGui;
 import net.labymod.core.LabyModCore;
 import net.labymod.gui.elements.ColorPicker;
 import net.labymod.gui.elements.DropDownMenu;
@@ -313,6 +313,7 @@ public class ModSettings {
 
 							loadConfig();
 							getGG().loadTranslations();
+							getGG().getPlotManager().getPlots().clear();
 							reinitSettings();
 						}
 					}, 700);
@@ -356,8 +357,23 @@ public class ModSettings {
 		});
 		settings.add(languageDropDown);
 
-		// Category: Chat
+		// Manage plots
 		settings.add(new HeaderElement(""));
+		settings.add(new ButtonElement("§b§l"+LanguageManager.translateOrReturnKey("settings_gg_plots"),
+				LanguageManager.translateOrReturnKey("settings_gg_plotsBtn"), new ControlElement.IconData(Material.IRON_AXE), new Runnable() {
+			@Override
+			public void run() {
+				CityBuild currentCityBuild = CityBuild.ALL;
+				if(modEnabled && getGG().isOnGrieferGames()) {
+					try {
+						currentCityBuild = CityBuild.valueOf(getGG().getSubServer().toUpperCase());
+					} catch(IllegalArgumentException e) {}
+				}
+				Minecraft.getMinecraft().displayGuiScreen(new PlotsGui(Minecraft.getMinecraft().currentScreen, currentCityBuild));
+			}
+		}));
+
+		// Category: Chat
 		final ListContainerElement chatCategory = new ListContainerElement("§b§l"+LanguageManager.translateOrReturnKey("settings_gg_category_chat"),
 				new ControlElement.IconData("labymod/textures/settings/settings/second_chat.png"));
 		settings.add(chatCategory);
