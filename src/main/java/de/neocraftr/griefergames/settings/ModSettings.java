@@ -366,7 +366,9 @@ public class ModSettings {
 				CityBuild currentCityBuild = CityBuild.ALL;
 				if(modEnabled && getGG().isOnGrieferGames()) {
 					try {
-						currentCityBuild = CityBuild.valueOf(getGG().getSubServer().toUpperCase());
+						String serverName = getGG().getSubServer().toUpperCase();
+						if(serverName.equals("CBE")) serverName = "EVIL";
+						currentCityBuild = CityBuild.valueOf(serverName);
 					} catch(IllegalArgumentException e) {}
 				}
 				Minecraft.getMinecraft().displayGuiScreen(new PlotsGui(Minecraft.getMinecraft().currentScreen, currentCityBuild));
