@@ -803,7 +803,7 @@ public class ModSettings {
 
 		// Log transactions
 		final BooleanElement logTransactionsBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_logTransactions"),
-			new ControlElement.IconData("labymod/textures/settings/settings/sendanonymousstatistics.png"),
+			new ControlElement.IconData("griefergames/textures/icons/labymod_statistics.png"),
 			new Consumer<Boolean>() {
 				@Override
 				public void accept(Boolean value) {
@@ -1086,7 +1086,7 @@ public class ModSettings {
 
 		// Category: Hotkeys
 		final ListContainerElement hotkeysCategory = new ListContainerElement("§b§l"+LanguageManager.translateOrReturnKey("settings_gg_category_hotkeys"),
-				new ControlElement.IconData("griefergames/textures/icons/hotkeys.png"));
+				new ControlElement.IconData("labymod/textures/buttons/hover_default.png"));
 		settings.add(hotkeysCategory);
 
 		// Plot menu key
