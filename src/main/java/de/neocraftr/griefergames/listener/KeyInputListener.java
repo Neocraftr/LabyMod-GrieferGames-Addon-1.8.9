@@ -1,6 +1,8 @@
 package de.neocraftr.griefergames.listener;
 
 import de.neocraftr.griefergames.GrieferGames;
+import de.neocraftr.griefergames.enums.CityBuild;
+import de.neocraftr.griefergames.plots.gui.PlotsGuiAdd;
 import de.neocraftr.griefergames.settings.ModSettings;
 import net.labymod.core.LabyModCore;
 import net.minecraft.client.Minecraft;
@@ -10,6 +12,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import org.lwjgl.input.Keyboard;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,6 +58,12 @@ public class KeyInputListener {
 
                 player.setDisplayName(newDisplayName);
             }
+        }
+
+        if(getGG().getSettings().getAddPlotKey() != -1 && Keyboard.isKeyDown(getGG().getSettings().getAddPlotKey())) {
+            System.out.println("ok");
+            CityBuild currentCityBuild = getGG().getHelper().cityBuildFromServerName(getGG().getSubServer(), CityBuild.ALL);
+            Minecraft.getMinecraft().displayGuiScreen(new PlotsGuiAdd(null, currentCityBuild, -1));
         }
     }
 

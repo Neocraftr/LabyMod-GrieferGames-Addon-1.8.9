@@ -33,6 +33,7 @@ public class OnTickListener {
 	public void onTick(TickEvent.ClientTickEvent event) {
 		if (!getGG().getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return;
 		if (LabyModCore.getMinecraft().getWorld() != null && event.phase == TickEvent.Phase.END) {
+			getGG().getPlotSwitchGui().tick();
 
 			final long now = System.currentTimeMillis();
 			if (now > nextLastMessageRequest) {

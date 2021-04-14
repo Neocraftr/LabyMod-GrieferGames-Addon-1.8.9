@@ -15,10 +15,7 @@ import de.neocraftr.griefergames.GrieferGames;
 import de.neocraftr.griefergames.utils.Helper;
 import io.netty.buffer.ByteBuf;
 import net.labymod.api.LabyModAPI;
-import net.labymod.api.events.MessageModifyChatEvent;
-import net.labymod.api.events.MessageReceiveEvent;
-import net.labymod.api.events.MessageSendEvent;
-import net.labymod.api.events.TabListEvent;
+import net.labymod.api.events.*;
 import net.labymod.core.LabyModCore;
 import net.labymod.ingamegui.ModuleCategoryRegistry;
 import net.labymod.main.LabyMod;
@@ -141,6 +138,13 @@ public class GrieferGamesServer extends Server {
 			@Override
 			public void accept(net.labymod.utils.ServerData serverData) {
 				getGG().setOnGrieferGames(false);
+			}
+		});
+
+		getApi().getEventManager().register(new RenderIngameOverlayEvent() {
+			@Override
+			public void onRender(float v) {
+				getGG().getPlotSwitchGui().render();
 			}
 		});
 	}

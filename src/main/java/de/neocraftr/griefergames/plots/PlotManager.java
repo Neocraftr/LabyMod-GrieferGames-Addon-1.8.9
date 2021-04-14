@@ -36,6 +36,10 @@ public class PlotManager {
         return plots.stream().filter(plot -> cityBuild == CityBuild.ALL || plot.getCityBuild() == cityBuild).collect(Collectors.toList());
     }
 
+    public List<Plot> getPlotsForGui(CityBuild cityBuild) {
+        return plots.stream().filter(plot -> cityBuild == CityBuild.ALL || plot.getCityBuild() == CityBuild.ALL || plot.getCityBuild() == cityBuild).collect(Collectors.toList());
+    }
+
     public List<Plot> getPlots() {
         return plots;
     }

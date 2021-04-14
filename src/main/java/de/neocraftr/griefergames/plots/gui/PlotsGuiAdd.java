@@ -25,9 +25,11 @@ public class PlotsGuiAdd extends GuiScreen {
     private DropDownMenu<CityBuild> citybuildDropDownMenu;
     private DropDownElement<CityBuild> citybuildDropDown;
     private GuiButton buttonDone;
+    private CityBuild selectedCitybuild;
 
-    public PlotsGuiAdd(PlotsGui lastScreen, int editIndex) {
+    public PlotsGuiAdd(PlotsGui lastScreen, CityBuild selectedCitybuild, int editIndex) {
         this.lastScreen = lastScreen;
+        this.selectedCitybuild = selectedCitybuild;
         this.editIndex = editIndex;
     }
 
@@ -56,7 +58,7 @@ public class PlotsGuiAdd extends GuiScreen {
             this.citybuildDropDownMenu.setSelected(plot.getCityBuild());
         } else {
             this.commandField.setText("/");
-            this.citybuildDropDownMenu.setSelected(this.lastScreen.citybuildDropDownMenu.getSelected());
+            this.citybuildDropDownMenu.setSelected(selectedCitybuild);
         }
 
         this.nameField.setFocused(true);
@@ -84,15 +86,13 @@ public class PlotsGuiAdd extends GuiScreen {
         }
 
         if(keyCode == Keyboard.KEY_ESCAPE) {
-            this.lastScreen.selectedIndex = -1;
-            Minecraft.getMinecraft().displayGuiScreen(this.lastScreen);
+            goBack();
         }
 
         if(keyCode == Keyboard.KEY_RETURN) {
             if(this.buttonDone.enabled) {
                 saveSettings();
-                this.lastScreen.selectedIndex = -1;
-                Minecraft.getMinecraft().displayGuiScreen(this.lastScreen);
+                goBack();
             }
         }
 
@@ -148,12 +148,10 @@ public class PlotsGuiAdd extends GuiScreen {
         switch (button.id) {
             case 0:
                 saveSettings();
-                this.lastScreen.selectedIndex = -1;
-                Minecraft.getMinecraft().displayGuiScreen(this.lastScreen);
+                goBack();
                 break;
             case 1:
-                this.lastScreen.selectedIndex = -1;
-                Minecraft.getMinecraft().displayGuiScreen(this.lastScreen);
+                goBack();
                 break;
         }
     }
@@ -191,6 +189,11 @@ public class PlotsGuiAdd extends GuiScreen {
             getGG().getPlotManager().getPlots().add(plot);
         }
         getGG().getPlotManager().savePlots();
+    }
+
+    private void goBack() {
+        if(this.lastScreen != null) this.lastScreen.selectedIndex = -1;
+        Minecraft.getMinecraft().displayGuiScreen(this.lastScreen);
     }
 
     private GrieferGames getGG() {

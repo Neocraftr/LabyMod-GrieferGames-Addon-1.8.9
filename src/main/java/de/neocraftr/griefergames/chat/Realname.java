@@ -36,6 +36,7 @@ public class Realname extends Chat {
 
 	@Override
 	public ChatDisplayAction handleChatMessage(String unformatted, String formatted) {
+		// TODO
 		if (getSettings().isRealnameBoth()) {
 			getApi().displayMessageInChat("${{dup}}" + formatted);
 		}

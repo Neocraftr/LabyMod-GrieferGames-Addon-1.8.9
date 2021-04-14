@@ -22,6 +22,7 @@ import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
 
 public class ModSettings {
 	public static final String DEFAULT_AMP_REPLACEMENT_CHAT = "[AMP]",
@@ -85,6 +86,8 @@ public class ModSettings {
 	private boolean flyOnJoin;
 	private boolean logTransactions;
 	private boolean showPrefixInDisplayName;
+	private int plotMenuKey;
+	private int addPlotKey;
 
 	public void loadConfig() {
 		// comnversion of old amp replacement
@@ -266,6 +269,12 @@ public class ModSettings {
 
 		showPrefixInDisplayName = getConfig().has("showPrefixInDisplayName") ?
 				getConfig().get("showPrefixInDisplayName").getAsBoolean() : true;
+
+		plotMenuKey = getConfig().has("plotMenuKey") ?
+				getConfig().get("plotMenuKey").getAsInt() : Keyboard.KEY_R;
+
+		addPlotKey = getConfig().has("addPlotKey") ?
+				getConfig().get("addPlotKey").getAsInt() : -1;
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -360,16 +369,12 @@ public class ModSettings {
 		// Manage plots
 		settings.add(new HeaderElement(""));
 		settings.add(new ButtonElement("§b§l"+LanguageManager.translateOrReturnKey("settings_gg_plots"),
-				LanguageManager.translateOrReturnKey("settings_gg_plotsBtn"), new ControlElement.IconData(Material.IRON_AXE), new Runnable() {
+				LanguageManager.translateOrReturnKey("settings_gg_plotsBtn"), new ControlElement.IconData(Material.GRASS), new Runnable() {
 			@Override
 			public void run() {
 				CityBuild currentCityBuild = CityBuild.ALL;
 				if(modEnabled && getGG().isOnGrieferGames()) {
-					try {
-						String serverName = getGG().getSubServer().toUpperCase();
-						if(serverName.equals("CBE")) serverName = "EVIL";
-						currentCityBuild = CityBuild.valueOf(serverName);
-					} catch(IllegalArgumentException e) {}
+					currentCityBuild = getGG().getHelper().cityBuildFromServerName(getGG().getSubServer(), CityBuild.ALL);
 				}
 				Minecraft.getMinecraft().displayGuiScreen(new PlotsGui(Minecraft.getMinecraft().currentScreen, currentCityBuild));
 			}
@@ -1079,6 +1084,35 @@ public class ModSettings {
 		}, discordShowSubServerEnabled);
 		friendsCategory.getSubSettings().add(discordShowSubServerEnabledBtn);
 
+		// Category: Hotkeys
+		final ListContainerElement hotkeysCategory = new ListContainerElement("§b§l"+LanguageManager.translateOrReturnKey("settings_gg_category_hotkeys"),
+				new ControlElement.IconData("griefergames/textures/icons/hotkeys.png"));
+		settings.add(hotkeysCategory);
+
+		// Plot menu key
+		final KeyElement plotMenuKeySetting = new KeyElement(LanguageManager.translateOrReturnKey("settings_gg_plotMenu"),
+				new ControlElement.IconData(Material.GRASS), plotMenuKey, new Consumer<Integer>() {
+			@Override
+			public void accept(Integer value) {
+				plotMenuKey = value;
+				getConfig().addProperty("plotMenuKey", value);
+				saveConfig();
+			}
+		});
+		hotkeysCategory.getSubSettings().add(plotMenuKeySetting);
+
+		// Add plot key
+		final KeyElement addPlotKeySetting = new KeyElement(LanguageManager.translateOrReturnKey("settings_gg_addPlot"),
+				new ControlElement.IconData("labymod/textures/settings/category/addons.png"), addPlotKey, new Consumer<Integer>() {
+			@Override
+			public void accept(Integer value) {
+				addPlotKey = value;
+				getConfig().addProperty("addPlotKey", value);
+				saveConfig();
+			}
+		});
+		hotkeysCategory.getSubSettings().add(addPlotKeySetting);
+
 		String commandsInfoText = "§7"+LanguageManager.translateOrReturnKey("settings_gg_cmdinfo");
 		commandsInfoText += "\n§e/resetincome §8- §7"+LanguageManager.translateOrReturnKey("settings_gg_cmdinfo_resetincome");
 		settings.add(new TextElement(commandsInfoText));
@@ -1228,10 +1262,6 @@ public class ModSettings {
 		return mentionSound != EnumSounds.NONE;
 	}
 
-	public void setMentionSound(EnumSounds mentionSound) {
-		this.mentionSound = mentionSound;
-	}
-
 	public boolean isPayChatRight() {
 		return this.payChatRight;
 	}
@@ -1366,5 +1396,13 @@ public class ModSettings {
 
 	public boolean isShowPrefixInDisplayName() {
 		return showPrefixInDisplayName;
+	}
+
+	public int getPlotMenuKey() {
+		return plotMenuKey;
+	}
+
+	public int getAddPlotKey() {
+		return addPlotKey;
 	}
 }

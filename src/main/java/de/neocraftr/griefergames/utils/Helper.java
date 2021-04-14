@@ -16,6 +16,7 @@ import de.neocraftr.griefergames.booster.DropBooster;
 import de.neocraftr.griefergames.booster.ExperienceBooster;
 import de.neocraftr.griefergames.booster.FlyBooster;
 import de.neocraftr.griefergames.booster.MobBooster;
+import de.neocraftr.griefergames.enums.CityBuild;
 import de.neocraftr.griefergames.enums.EnumSounds;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
@@ -454,6 +455,17 @@ public class Helper {
 				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup",
 				"youtuber+", "yt+", "youtuber", "yt");
 		return ranks.contains(playerRank);
+	}
+
+	public CityBuild cityBuildFromServerName(String subServerName, CityBuild defaultCityBuild) {
+		subServerName = subServerName.toUpperCase();
+		if(subServerName.equals("CBE")) return CityBuild.EVIL;
+
+		try {
+			return CityBuild.valueOf(subServerName);
+		} catch(IllegalArgumentException ignored) {}
+
+		return defaultCityBuild;
 	}
 
 	public String formatServerName(String subServerName) {

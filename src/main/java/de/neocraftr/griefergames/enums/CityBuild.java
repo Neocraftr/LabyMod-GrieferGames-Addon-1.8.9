@@ -2,10 +2,6 @@ package de.neocraftr.griefergames.enums;
 
 public enum CityBuild {
     ALL,
-    EXTREME,
-    EVIL,
-    NATURE,
-    CB0,
     CB1,
     CB2,
     CB3,
@@ -27,5 +23,11 @@ public enum CityBuild {
     CB19,
     CB20,
     CB21,
-    CB22
+    CB22,
+    CB0,
+    EXTREME,
+    EVIL,
+    NATURE,
+    LAVA,
+    WASSER
 }

@@ -18,7 +18,7 @@ public class Vote extends Chat {
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		if(getSettings().isMobRemoverChatRight() && unformatted.trim().length() > 0) {
+		if(getSettings().isCleanVoteMsg() && unformatted.trim().length() > 0) {
 			Matcher matcher = voteMsgHubRegexp.matcher(unformatted);
 			Matcher matcher2 = voteMsgRegexp.matcher(unformatted);
 

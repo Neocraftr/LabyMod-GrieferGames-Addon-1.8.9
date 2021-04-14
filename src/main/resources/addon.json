@@ -1,8 +1,9 @@
 {
-	"uuid":"%uuid%",
-	"name":"GrieferGames",
+	"uuid": "%uuid%",
+	"name": "GrieferGames",
 	"icon": "https://raw.githubusercontent.com/Neocraftr/LabyMod-GrieferGames-Addon-1.8.9/master/icons/griefergames.png",
-	"mainClass":"de.neocraftr.griefergames.GrieferGames",
+	"mainClass": "de.neocraftr.griefergames.GrieferGames",
+	"transformerClass": "de.neocraftr.griefergames.asm.GrieferGamesTransformer",
 	"description": "This add-on adds many useful features for GrieferGames.net server.",
 	"version": 1,
 	"author": "Neocraftr",

@@ -12,6 +12,7 @@ import java.util.Properties;
 import de.neocraftr.griefergames.booster.Booster;
 import de.neocraftr.griefergames.listener.SubServerListener;
 import de.neocraftr.griefergames.plots.PlotManager;
+import de.neocraftr.griefergames.plots.gui.PlotSwitchGui;
 import de.neocraftr.griefergames.server.GrieferGamesServer;
 import de.neocraftr.griefergames.settings.ModSettings;
 import de.neocraftr.griefergames.chat.Chat;
@@ -44,6 +45,7 @@ public class GrieferGames extends LabyModAddon {
 	private Helper helper;
 	private FileManager fileManager;
 	private PlotManager plotManager;
+	private PlotSwitchGui plotSwitchGui;
 
 	private boolean onGrieferGames = false;
 	private boolean showBoosterDummy = false;
@@ -82,6 +84,7 @@ public class GrieferGames extends LabyModAddon {
 		settings = new ModSettings();
 		fileManager = new FileManager();
 		plotManager = new PlotManager();
+		plotSwitchGui = new PlotSwitchGui();
 
 		System.out.println("[GrieferGames-Addon] enabled.");
 	}
@@ -193,6 +196,10 @@ public class GrieferGames extends LabyModAddon {
 
 	public PlotManager getPlotManager() {
 		return plotManager;
+	}
+
+	public PlotSwitchGui getPlotSwitchGui() {
+		return plotSwitchGui;
 	}
 
 	public boolean isShowBoosterDummy() {

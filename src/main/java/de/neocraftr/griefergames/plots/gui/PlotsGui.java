@@ -28,7 +28,7 @@ public class PlotsGui extends GuiScreen {
     private int hoveredIndex = -1;
     private GuiButton buttonEdit;
     private GuiButton buttonRemove;
-    public DropDownMenu<CityBuild> citybuildDropDownMenu;
+    private DropDownMenu<CityBuild> citybuildDropDownMenu;
     private DropDownElement<CityBuild> citybuildDropDown;
     public List<Plot> plots;
     public int selectedIndex = -1;
@@ -89,10 +89,10 @@ public class PlotsGui extends GuiScreen {
                 }, LanguageManager.translateOrReturnKey("gui_gg_plots_delete"), "§c"+plots.get(this.selectedIndex).getName(), 1));
                 break;
             case 2:
-                Minecraft.getMinecraft().displayGuiScreen(new PlotsGuiAdd(this, this.selectedIndex));
+                Minecraft.getMinecraft().displayGuiScreen(new PlotsGuiAdd(this, this.citybuildDropDownMenu.getSelected(), this.selectedIndex));
                 break;
             case 3:
-                Minecraft.getMinecraft().displayGuiScreen(new PlotsGuiAdd(this, -1));
+                Minecraft.getMinecraft().displayGuiScreen(new PlotsGuiAdd(this, this.citybuildDropDownMenu.getSelected(), -1));
                 break;
             case 4:
                 Minecraft.getMinecraft().displayGuiScreen(this.lastScreen);
@@ -176,8 +176,11 @@ public class PlotsGui extends GuiScreen {
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        this.scrollbar.mouseInput();
-        this.citybuildDropDown.onScrollDropDown();
+        if(this.citybuildDropDownMenu.isOpen()) {
+            this.citybuildDropDown.onScrollDropDown();
+        } else {
+            this.scrollbar.mouseInput();
+        }
     }
 
     private void drawCenteredString(String text, double x, double y, int color) {
