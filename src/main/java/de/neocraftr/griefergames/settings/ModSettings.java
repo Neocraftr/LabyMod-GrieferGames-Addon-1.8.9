@@ -1207,14 +1207,6 @@ public class ModSettings {
 		return this.realname;
 	}
 
-	public boolean isRealnameRight() {
-		return realname == EnumRealnameShown.SECONDCHAT || realname == EnumRealnameShown.BOTH;
-	}
-
-	public boolean isRealnameBoth() {
-		return this.realname.equals(EnumRealnameShown.BOTH);
-	}
-
 	/*
 	 * private void setRealnameClick(boolean realnameClick) { this.realnameClick =
 	 * realnameClick; }

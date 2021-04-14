@@ -61,7 +61,6 @@ public class KeyInputListener {
         }
 
         if(getGG().getSettings().getAddPlotKey() != -1 && Keyboard.isKeyDown(getGG().getSettings().getAddPlotKey())) {
-            System.out.println("ok");
             CityBuild currentCityBuild = getGG().getHelper().cityBuildFromServerName(getGG().getSubServer(), CityBuild.ALL);
             Minecraft.getMinecraft().displayGuiScreen(new PlotsGuiAdd(null, currentCityBuild, -1));
         }
