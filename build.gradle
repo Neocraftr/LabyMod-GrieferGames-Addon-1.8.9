@@ -15,7 +15,7 @@ buildscript {
 apply plugin: "net.minecraftforge.gradle.forge"
 apply plugin: "de.undercouch.download"
 
-group= "de.wuzlwuz.griefergames"
+group = "de.wuzlwuz.griefergames"
 archivesBaseName = "GrieferGames"
 
 minecraft {
