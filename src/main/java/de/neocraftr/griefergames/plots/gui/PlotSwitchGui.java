@@ -39,8 +39,14 @@ public class PlotSwitchGui extends Gui {
     }
 
     public void open() {
-        //UserActionGui
         if(this.open) return;
+
+        CityBuild currentCityBuild = getGG().getHelper().cityBuildFromServerName(getGG().getSubServer(), null);
+        if(currentCityBuild != null) {
+            this.plots = getGG().getPlotManager().getPlotsForGui(currentCityBuild);
+        } else {
+            return;
+        }
 
         EntityPlayerSP player = LabyModCore.getMinecraft().getPlayer();
         if(player != null) {
@@ -51,13 +57,6 @@ public class PlotSwitchGui extends Gui {
         this.prevCrosshairState = LabyMod.getInstance().getLabyModAPI().isCrosshairHidden();
         LabyMod.getInstance().getLabyModAPI().setCrosshairHidden(true);
         this.menuOpenedAt = System.currentTimeMillis();
-
-        CityBuild currentCityBuild = getGG().getHelper().cityBuildFromServerName(getGG().getSubServer(), null);
-        if(currentCityBuild != null) {
-            this.plots = getGG().getPlotManager().getPlotsForGui(currentCityBuild);
-        } else {
-            this.plots = new ArrayList<>();
-        }
 
         this.open = true;
     }
