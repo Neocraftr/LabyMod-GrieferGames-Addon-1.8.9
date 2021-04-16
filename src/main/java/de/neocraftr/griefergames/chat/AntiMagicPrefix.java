@@ -30,7 +30,7 @@ public class AntiMagicPrefix extends Chat {
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
 		boolean clan = msg.getSiblings().size() == 2;
 
-		IChatComponent message = msg;
+		IChatComponent message = msg.getSiblings().get(0);
 		if(clan) {
 			message = msg.getSiblings().get(1);
 		}
