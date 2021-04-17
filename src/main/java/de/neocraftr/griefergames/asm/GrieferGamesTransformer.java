@@ -10,6 +10,8 @@ import org.objectweb.asm.tree.*;
 public class GrieferGamesTransformer implements IClassTransformer {
 
     private final String scaledResolutionName = LabyModCoreMod.isObfuscated() ? "avr" : "net.minecraft.client.gui.ScaledResolution";
+    private final String minecraftName = LabyModCoreMod.isObfuscated() ? "ave" : "net.minecraft.client.Minecraft";
+    private final String rightClickMouseName = LabyModCoreMod.isObfuscated() ? "ax" : "rightClickMouse";
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
@@ -24,9 +26,25 @@ public class GrieferGamesTransformer implements IClassTransformer {
                     .ifPresent(methodNode -> {
                         InsnList list = new InsnList();
                         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "de/neocraftr/griefergames/plots/gui/PlotSwitchGui", "scaleResolution", "()V", false));
-
                         methodNode.instructions.insert(methodNode.instructions.getFirst(), list);
 
+                    });
+        }
+
+        if(name.equals(minecraftName) || transformedName.equals(minecraftName)) {
+            node.methods.stream()
+                    .filter(methodNode -> methodNode.name.equals(rightClickMouseName) && methodNode.desc.equals("()V"))
+                    .findFirst()
+                    .ifPresent(methodNode -> {
+                        InsnList insnList = new InsnList();
+                        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "de/neocraftr/griefergames/utils/BytecodeMethods", "handleRightClick", "()Z", false));
+
+                        LabelNode labelNode = new LabelNode();
+                        insnList.add(new JumpInsnNode(Opcodes.IFNE, labelNode));
+
+                        methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), insnList);
+                        methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), labelNode);
+                        methodNode.instructions.insertBefore(labelNode, new FrameNode(Opcodes.F_SAME, 0, null, 1, null));
                     });
         }
 
