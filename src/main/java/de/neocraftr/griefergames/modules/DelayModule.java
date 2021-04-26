@@ -7,6 +7,8 @@ import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.concurrent.TimeUnit;
+
 public class DelayModule extends SimpleModule {
     private GrieferGames getGG() {
         return GrieferGames.getGriefergames();
@@ -23,7 +25,8 @@ public class DelayModule extends SimpleModule {
 
     @Override
     public String getDisplayValue() {
-        return getGG().getTimeToWait()+"s";
+        long remainingTime = getGG().getWaitTime() - System.currentTimeMillis();
+        return TimeUnit.MILLISECONDS.toSeconds(remainingTime) + "s";
     }
 
     @Override
@@ -37,9 +40,7 @@ public class DelayModule extends SimpleModule {
     }
 
     @Override
-    public void loadSettings() {
-
-    }
+    public void loadSettings() {}
 
     @Override
     public String getSettingName() {
@@ -53,7 +54,7 @@ public class DelayModule extends SimpleModule {
 
     @Override
     public boolean isShown() {
-        return getGG().getSettings().isModEnabled() && getGG().isOnGrieferGames() && getGG().getTimeToWait() != 0;
+        return getGG().getSettings().isModEnabled() && getGG().isOnGrieferGames() && getGG().getWaitTime() > System.currentTimeMillis() + 1000;
     }
 
     @Override

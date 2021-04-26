@@ -66,7 +66,7 @@ public class GrieferGames extends LabyModAddon {
 	private String subServer = "";
 	private String filterDuplicateLastMessage = "";
 	private String lastLabyChatSubServer = "", lastDiscordSubServer = "";
-	private int timeToWait = 0;
+	private long waitTime = 0;
 	private long clearLagTime = 0;
 	private double income = 0;
 	private long lastActiveTime = System.currentTimeMillis();
@@ -340,11 +340,11 @@ public class GrieferGames extends LabyModAddon {
 		this.newsStart = newsStart;
 	}
 
-	public int getTimeToWait() {
-		return timeToWait;
+	public long getWaitTime() {
+		return waitTime;
 	}
-	public void setTimeToWait(int timeToWait) {
-		this.timeToWait = timeToWait;
+	public void setWaitTime(long waitTime) {
+		this.waitTime = waitTime;
 	}
 
 	public double getIncome() {

@@ -29,7 +29,7 @@ public class PluginMessageListener implements PluginMessageEvent {
         if(packetBuffer.readableBytes() <= 0) return;
         String jsonMessage = getGG().getHelper().readStringFromBuffer(32767, packetBuffer);
 
-        System.out.println("MysteryMod message: "+messageKey+" - "+jsonMessage);
+        //System.out.println("MysteryMod message: "+messageKey+" - "+jsonMessage);
 
         JsonElement message;
         try {

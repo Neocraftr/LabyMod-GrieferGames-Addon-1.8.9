@@ -1,6 +1,7 @@
 package de.neocraftr.griefergames.server;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import de.neocraftr.griefergames.chat.*;
 import de.neocraftr.griefergames.listener.KeyInputListener;
@@ -194,7 +195,7 @@ public class GrieferGamesServer extends Server {
 			}
 
 			if(getHelper().isResetWaitTime(unformatted)) {
-				getGG().setTimeToWait(12);
+				getGG().setWaitTime(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(12));
 			}
 
 			int status = getHelper().isVanishMessage(unformatted);

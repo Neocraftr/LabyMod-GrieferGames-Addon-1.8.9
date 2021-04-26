@@ -7,6 +7,8 @@ import de.neocraftr.griefergames.modules.VanishModule;
 import net.labymod.main.lang.LanguageManager;
 import net.minecraft.client.Minecraft;
 
+import java.util.concurrent.TimeUnit;
+
 public class SubServerListener {
 
     private boolean modulesLoaded = false;
@@ -32,15 +34,15 @@ public class SubServerListener {
         }
 
         if(getGG().getHelper().doHaveToWaitAfterJoin(subServerName)) {
-            getGG().setTimeToWait(15);
+            getGG().setWaitTime(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(15));
         } else if(subServerName.equalsIgnoreCase("portal")) {
-            getGG().setTimeToWait(12);
+            getGG().setWaitTime(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(12));
         } else {
-            getGG().setTimeToWait(0);
+            getGG().setWaitTime(0);
         }
 
         if (subServerName.equalsIgnoreCase("lobby")) {
-            getGG().setTimeToWait(0);
+            getGG().setWaitTime(0);
             //getGG().setShowBoosterDummy(true);
 
             Thread thread = new Thread() {

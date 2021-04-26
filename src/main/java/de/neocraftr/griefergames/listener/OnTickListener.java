@@ -25,7 +25,6 @@ public class OnTickListener {
 	private long nextLastMessageRequest = System.currentTimeMillis() + 1000L;
 	private long nextScoreboardRequest = System.currentTimeMillis() + (-1 * 1000L);
 	private long nextCheckFly = System.currentTimeMillis() + 1000L;
-	private long nextUpdateTimeToWait = System.currentTimeMillis() + 1000L;
 	private long nextCheckAFKTime = System.currentTimeMillis() + 2000L;
 	private long nextColorizePlayerNames = System.currentTimeMillis() + 20000L;
 
@@ -76,11 +75,6 @@ public class OnTickListener {
 			if (now > nextCheckFly) {
 				nextCheckFly = now + 500L;
 				getGG().setFlyActive(LabyModCore.getMinecraft().getPlayer().capabilities.allowFlying);
-			}
-
-			if (now > nextUpdateTimeToWait && getGG().getTimeToWait() > 0) {
-				nextUpdateTimeToWait = now + 1000L;
-				getGG().setTimeToWait(getGG().getTimeToWait() - 1);
 			}
 
 			if(now > nextCheckAFKTime) {
