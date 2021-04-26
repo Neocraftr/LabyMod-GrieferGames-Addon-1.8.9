@@ -14,6 +14,7 @@ public class SubServerListener {
     public void onSubServerChanged(String subServerNameOld, String subServerName) {
         getGG().setNickname("");
         getGG().setNewsStart(false);
+        getGG().setClearLagTime(0);
 
         if(getGG().getSettings().isShowPrefixInDisplayName()) {
             getGG().getHelper().colorizePlayerNames();

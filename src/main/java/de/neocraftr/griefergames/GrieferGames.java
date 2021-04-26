@@ -67,6 +67,7 @@ public class GrieferGames extends LabyModAddon {
 	private String filterDuplicateLastMessage = "";
 	private String lastLabyChatSubServer = "", lastDiscordSubServer = "";
 	private int timeToWait = 0;
+	private long clearLagTime = 0;
 	private double income = 0;
 	private long lastActiveTime = System.currentTimeMillis();
 	private BlockPos lastPlayerPosition = new BlockPos(0, 0, 0);
@@ -351,6 +352,13 @@ public class GrieferGames extends LabyModAddon {
 	}
 	public void setIncome(double income) {
 		this.income = income;
+	}
+
+	public long getClearLagTime() {
+		return clearLagTime;
+	}
+	public void setClearLagTime(long clearLagTime) {
+		this.clearLagTime = clearLagTime;
 	}
 
 	public boolean isAfk() {
