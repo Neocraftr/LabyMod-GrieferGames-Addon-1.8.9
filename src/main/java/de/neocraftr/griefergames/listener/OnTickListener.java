@@ -2,6 +2,7 @@ package de.neocraftr.griefergames.listener;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import de.neocraftr.griefergames.settings.ModSettings;
 import de.neocraftr.griefergames.GrieferGames;
@@ -27,6 +28,7 @@ public class OnTickListener {
 	private long nextCheckFly = System.currentTimeMillis() + 1000L;
 	private long nextCheckAFKTime = System.currentTimeMillis() + 2000L;
 	private long nextColorizePlayerNames = System.currentTimeMillis() + 20000L;
+	private boolean itemRemoverNotificationShown = false;
 
 	@SubscribeEvent
 	public void onTick(TickEvent.ClientTickEvent event) {
@@ -123,6 +125,21 @@ public class OnTickListener {
 						getGG().setHideBoosterMenu(false);
 						Minecraft.getMinecraft().thePlayer.closeScreen();
 					}
+				}
+			}
+
+			if(getGG().getSettings().getItemRemoverNotification() > 0) {
+				int remainingTime = (int) TimeUnit.MILLISECONDS.toSeconds(getGG().getClearLagTime() - System.currentTimeMillis());
+				if(remainingTime > 0 && remainingTime <= getGG().getSettings().getItemRemoverNotification()) {
+					if(!itemRemoverNotificationShown) {
+						itemRemoverNotificationShown = true;
+						String subtitle = "§c"+LanguageManager.translateOrReturnKey("message_gg_itemRemover");
+						subtitle = subtitle.replace("${time}", String.valueOf(remainingTime));
+						Minecraft.getMinecraft().ingameGUI.displayTitle("§4"+LanguageManager.translateOrReturnKey("gg_attention"), null, 10, 10, 10);
+						Minecraft.getMinecraft().ingameGUI.displayTitle(null, subtitle, 10, 10, 10);
+					}
+				} else {
+					itemRemoverNotificationShown = false;
 				}
 			}
 		}

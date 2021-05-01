@@ -89,6 +89,7 @@ public class ModSettings {
 	private boolean openBookClientSide;
 	private int plotMenuKey;
 	private int addPlotKey;
+	private int itemRemoverNotification;
 
 	public void loadConfig() {
 		// comnversion of old amp replacement
@@ -279,6 +280,9 @@ public class ModSettings {
 
 		addPlotKey = getConfig().has("addPlotKey") ?
 				getConfig().get("addPlotKey").getAsInt() : -1;
+
+		itemRemoverNotification = getConfig().has("itemRemoverNotification") ?
+				getConfig().get("itemRemoverNotification").getAsInt() : 0;
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -601,6 +605,20 @@ public class ModSettings {
 			}
 		}, itemRemoverLastTimeHover);
 		chatCategory.getSubSettings().add(itemRemoverLastTimeHoverBtn);
+
+		// ItemRemover timestamp
+		final CustomSliderElement itemRemoverNotificationBtn = new CustomSliderElement(LanguageManager.translateOrReturnKey("settings_gg_itemRemoverNotification"),
+				new ControlElement.IconData("labymod/textures/settings/settings/alertplaysounds.png"), itemRemoverNotification);
+		itemRemoverNotificationBtn.setRange(0, 60);
+		itemRemoverNotificationBtn.addCallback(new Consumer<Integer>() {
+			@Override
+			public void accept(Integer value) {
+				itemRemoverNotification = value;
+				getConfig().addProperty("itemRemoverNotification", value);
+				saveConfig();
+			}
+		});
+		chatCategory.getSubSettings().add(itemRemoverNotificationBtn);
 
 		// MobRemover 2nd chat
 		final BooleanElement mobRemoverChatRightBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_mobRemoverChatRight"),
@@ -1416,5 +1434,9 @@ public class ModSettings {
 
 	public int getAddPlotKey() {
 		return addPlotKey;
+	}
+
+	public int getItemRemoverNotification() {
+		return itemRemoverNotification;
 	}
 }
