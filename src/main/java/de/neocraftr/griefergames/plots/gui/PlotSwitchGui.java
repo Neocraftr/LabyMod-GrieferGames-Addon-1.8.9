@@ -32,9 +32,11 @@ public class PlotSwitchGui extends Gui {
     private Plot selectedPlot;
 
     public static void scaleResolution() {
-        if(getGG() != null && getGG().getPlotSwitchGui() != null) {
-            if(!getGG().getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return;
-            getGG().getPlotSwitchGui().lockMouseMovementInCircle();
+        if(getGG() != null) {
+            if(getGG().getPlotSwitchGui() != null) {
+                if(!getGG().getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return;
+                getGG().getPlotSwitchGui().lockMouseMovementInCircle();
+            }
         }
     }
 
