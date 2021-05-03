@@ -48,7 +48,7 @@ public class Helper {
 	private Pattern getBoosterValidRegexp = Pattern.compile("^\\[Booster\\] ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster) f\\u00FCr ([0-9]+) Minuten aktiviert.$");
 	private Pattern getBoosterDoneValidRegexp = Pattern.compile("^\\[Booster\\] Der ([A-z]+\\-Booster) ist jetzt wieder deaktiviert.$");
 	private Pattern getBoosterMultiDoneValidRegexp = Pattern.compile("^\\[Booster\\] Der ([A-z]+\\-Booster) \\(Stufe [1-6]\\) von ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) ist abgelaufen.$");
-	private Pattern getCurrentBoosters = Pattern.compile("^([A-z]+\\-Booster): ([0-9])x Multiplikator ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
+	private Pattern currentBoosterRegexp = Pattern.compile("^([A-z]+\\-Booster): ([0-9])x Multiplikator ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
 
 	public String getProperTextFormat(String formatted) {
 		return formatted.replaceAll("\u00A7", "§");
@@ -64,7 +64,7 @@ public class Helper {
 		return fMsg.contains("§3§lServer");
 	}
 
-	public void checkIfBoosterDoneMessage(String unformatted, String formatted) {
+	public void handleBoosterDoneMessage(String unformatted, String formatted) {
 		if (unformatted.trim().length() <= 0) return;
 
 		String fMsg = getProperTextFormat(formatted);
@@ -89,7 +89,7 @@ public class Helper {
 		}
 	}
 
-	public void checkIfBoosterMultiDoneMessage(String unformatted, String formatted) {
+	public void handleBoosterMultiDoneMessage(String unformatted, String formatted) {
 		if (unformatted.trim().length() <= 0) return;
 
 		String fMsg = getProperTextFormat(formatted);
@@ -115,7 +115,7 @@ public class Helper {
 		}
 	}
 
-	public void checkIfBoosterMessage(String unformatted, String formatted) {
+	public void handleBoosterMessage(String unformatted, String formatted) {
 		if (unformatted.trim().length() <= 0) return;
 
 		String fMsg = getProperTextFormat(formatted);
@@ -162,17 +162,17 @@ public class Helper {
 		}
 	}
 
-	public int checkCurrentBoosters(String unformatted, String formatted) {
+	public int handleCurrentBoostersMessage(String unformatted, String formatted) {
 		if (unformatted.trim().length() <= 0)
 			return -1;
 
-		Matcher matcher = getCurrentBoosters.matcher(unformatted.trim());
+		Matcher matcher = currentBoosterRegexp.matcher(unformatted.trim());
 		if (matcher.find()) {
 			String boosterName = matcher.group(1);
 
 			Integer multi = 0;
 			try {
-				matcher = getCurrentBoosters.matcher(unformatted.trim());
+				matcher = currentBoosterRegexp.matcher(unformatted.trim());
 				if (matcher.find()) {
 					multi = Integer.parseInt(matcher.group(2));
 				}
@@ -182,7 +182,7 @@ public class Helper {
 
 			List<Integer> boosterTimes = new ArrayList<Integer>();
 			try {
-				matcher = getCurrentBoosters.matcher(unformatted.trim());
+				matcher = currentBoosterRegexp.matcher(unformatted.trim());
 				if (matcher.find()) {
 					String times[] = matcher.group(3).trim().split(" ");
 					for (String time : times) {
@@ -345,7 +345,7 @@ public class Helper {
 		return unformatted.equalsIgnoreCase("[Switcher] Daten heruntergeladen!");
 	}
 
-	public boolean isResetWaitTime(String unformatted) {
+	public boolean isResetWaitTimeMessage(String unformatted) {
 		if(unformatted.startsWith("Der Server ist voll.")) return true;
 		return unformatted.equalsIgnoreCase("Der Server ist gerade im Wartungsmodus.");
 	}

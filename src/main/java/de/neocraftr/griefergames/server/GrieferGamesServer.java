@@ -1,10 +1,10 @@
 package de.neocraftr.griefergames.server;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import de.neocraftr.griefergames.chat.*;
 import de.neocraftr.griefergames.listener.KeyInputListener;
+import de.neocraftr.griefergames.listener.MessageReceiveListener;
 import de.neocraftr.griefergames.listener.OnTickListener;
 import de.neocraftr.griefergames.listener.PluginMessageListener;
 import de.neocraftr.griefergames.modules.*;
@@ -13,13 +13,11 @@ import de.neocraftr.griefergames.GrieferGames;
 import de.neocraftr.griefergames.utils.Helper;
 import net.labymod.api.LabyModAPI;
 import net.labymod.api.events.*;
-import net.labymod.core.LabyModCore;
 import net.labymod.ingamegui.ModuleCategoryRegistry;
 import net.labymod.servermanager.ChatDisplayAction;
 import net.labymod.servermanager.Server;
 import net.labymod.settings.elements.SettingsElement;
 import net.labymod.utils.Consumer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ChatComponentText;
@@ -69,6 +67,7 @@ public class GrieferGamesServer extends Server {
 		getApi().registerForgeListener(new KeyInputListener());
 		getApi().registerForgeListener(new OnTickListener());
 		getApi().getEventManager().register(new PluginMessageListener());
+		getApi().getEventManager().register(new MessageReceiveListener());
 
 		getApi().getEventManager().register(new MessageModifyChatEvent() {
 			@Override
@@ -100,30 +99,6 @@ public class GrieferGamesServer extends Server {
 				for (Chat chatModule : chatModules) {
 					if (chatModule.doActionCommandMessage(message)) {
 						return chatModule.commandMessage(message);
-					}
-				}
-
-				return false;
-			}
-		});
-
-		getApi().getEventManager().register(new MessageReceiveEvent() {
-			@Override
-			public boolean onReceive(String formatted, String unformatted) {
-				if (!getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return false;
-
-				if (unformatted.startsWith("[SCAMMER] ")) {
-					String newFormatted = formatted.replaceFirst("((§r)?§6\\[§r§([0-9]|[a-f])§lSCAMMER§r§6\\]§r§r)", "").trim();
-					formatted = getHelper().getProperChatFormat(newFormatted);
-
-					String newUnformatted = unformatted.replaceFirst("\\[SCAMMER\\]", "").trim();
-					unformatted = newUnformatted;
-				}
-
-				List<Chat> chatModules = getGG().getChatModules();
-				for (Chat chatModule : chatModules) {
-					if (chatModule.doActionReceiveMessage(formatted, unformatted)) {
-						return chatModule.receiveMessage(formatted, unformatted);
 					}
 				}
 
@@ -164,38 +139,6 @@ public class GrieferGamesServer extends Server {
 						return retVal;
 					}
 				}
-			}
-
-			getHelper().checkIfBoosterMessage(unformatted, formatted);
-			getHelper().checkIfBoosterDoneMessage(unformatted, formatted);
-			getHelper().checkIfBoosterMultiDoneMessage(unformatted, formatted);
-			getHelper().checkCurrentBoosters(unformatted, formatted);
-
-			if (getHelper().isSwitcherDoneMsg(unformatted)) {
-				if(getSettings().isUpdateBoosterState()) {
-					getGG().setHideBoosterMenu(true);
-					getGG().getBoosters().clear();
-					Minecraft.getMinecraft().thePlayer.sendChatMessage("/booster");
-				}
-
-				if(getSettings().isVanishOnJoin() && getHelper().showVanishModule(getGG().getPlayerRank()) && !getGG().isVanishActive()) {
-					Minecraft.getMinecraft().thePlayer.sendChatMessage("/vanish");
-				}
-
-				if(getSettings().isFlyOnJoin() && getHelper().hasFlyPermission(getGG().getPlayerRank())) {
-					new Timer().schedule(new TimerTask() {
-						@Override
-						public void run() {
-							if(!LabyModCore.getMinecraft().getPlayer().capabilities.allowFlying) {
-								Minecraft.getMinecraft().thePlayer.sendChatMessage("/fly");
-							}
-						}
-					}, 5000);
-				}
-			}
-
-			if(getHelper().isResetWaitTime(unformatted)) {
-				getGG().setWaitTime(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(12));
 			}
 
 			int status = getHelper().isVanishMessage(unformatted);
