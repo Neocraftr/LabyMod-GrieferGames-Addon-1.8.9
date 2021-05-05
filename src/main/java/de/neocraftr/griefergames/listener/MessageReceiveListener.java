@@ -35,6 +35,7 @@ public class MessageReceiveListener implements MessageReceiveEvent {
         getGG().getHelper().handleBoosterDoneMessage(unformatted, formatted);
         getGG().getHelper().handleBoosterMultiDoneMessage(unformatted, formatted);
         getGG().getHelper().handleCurrentBoostersMessage(unformatted, formatted);
+        getGG().getHelper().handleCityBuildDelay(unformatted);
 
         if (getGG().getHelper().isSwitcherDoneMsg(unformatted)) {
             if(getGG().getSettings().isUpdateBoosterState()) {
@@ -59,7 +60,7 @@ public class MessageReceiveListener implements MessageReceiveEvent {
             }
         }
 
-        if(getGG().getHelper().isResetWaitTimeMessage(unformatted)) {
+        if(!getGG().isCityBuildDelay() && getGG().getHelper().isResetWaitTimeMessage(unformatted)) {
             getGG().setWaitTime(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(12));
         }
 

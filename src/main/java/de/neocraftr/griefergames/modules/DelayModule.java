@@ -7,9 +7,13 @@ import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement;
 import net.minecraft.util.ResourceLocation;
 
+import java.text.SimpleDateFormat;
 import java.util.concurrent.TimeUnit;
 
 public class DelayModule extends SimpleModule {
+
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("mm:ss");
+
     private GrieferGames getGG() {
         return GrieferGames.getGriefergames();
     }
@@ -26,7 +30,15 @@ public class DelayModule extends SimpleModule {
     @Override
     public String getDisplayValue() {
         long remainingTime = getGG().getWaitTime() - System.currentTimeMillis();
-        return TimeUnit.MILLISECONDS.toSeconds(remainingTime) + "s";
+
+        String formattedTime = "";
+        if(remainingTime > 60000) {
+            formattedTime = timeFormat.format(remainingTime);
+        } else {
+            formattedTime = TimeUnit.MILLISECONDS.toSeconds(remainingTime) + "s";
+        }
+
+        return (getGG().isCityBuildDelay() ? "§c" : "") + formattedTime;
     }
 
     @Override

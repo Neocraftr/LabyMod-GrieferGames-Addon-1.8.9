@@ -3,6 +3,7 @@ package de.neocraftr.griefergames.utils;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +50,8 @@ public class Helper {
 	private Pattern getBoosterDoneValidRegexp = Pattern.compile("^\\[Booster\\] Der ([A-z]+\\-Booster) ist jetzt wieder deaktiviert.$");
 	private Pattern getBoosterMultiDoneValidRegexp = Pattern.compile("^\\[Booster\\] Der ([A-z]+\\-Booster) \\(Stufe [1-6]\\) von ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) ist abgelaufen.$");
 	private Pattern currentBoosterRegexp = Pattern.compile("^([A-z]+\\-Booster): ([0-9])x Multiplikator ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
+
+	private Pattern cityBuildDelayRegex = Pattern.compile("Der Server konnte deine Daten noch nicht verarbeiten\\. Du wurdest für (\\d+) Minuten gesperrt!");
 
 	public String getProperTextFormat(String formatted) {
 		return formatted.replaceAll("\u00A7", "§");
@@ -240,6 +243,18 @@ public class Helper {
 		return 0;
 	}
 
+	public void handleCityBuildDelay(String unformatted) {
+		Matcher m = cityBuildDelayRegex.matcher(unformatted);
+		if(m.find()) {
+			try {
+				long delay = TimeUnit.MINUTES.toMillis(Integer.parseInt(m.group(1)));
+
+				getGG().setCityBuildDelay(true);
+				getGG().setWaitTime(System.currentTimeMillis() + delay);
+			} catch(NumberFormatException e) {}
+		}
+	}
+
 	public String getDisplayName(String unformatted) {
 		Matcher matcher = playerNameRankRegex.matcher(unformatted);
 		if (matcher.find()) {
@@ -426,9 +441,9 @@ public class Helper {
 		return ranks.contains(subServer.toLowerCase());
 	}
 
-	public boolean doHaveToWaitAfterJoin(String subServer) {
+	public boolean isCityBuild(String subServer) {
 		if(subServer.startsWith("CB") && !subServer.equalsIgnoreCase("cb0")) return true;
-		List<String> ranks = Arrays.asList("skyblock", "lava", "wasser", "extreme", "evil", "nature");
+		List<String> ranks = Arrays.asList("lava", "wasser", "extreme", "evil", "nature");
 		return ranks.contains(subServer.toLowerCase());
 	}
 

@@ -33,6 +33,7 @@ public class OnTickListener {
 	@SubscribeEvent
 	public void onTick(TickEvent.ClientTickEvent event) {
 		if (!getGG().getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return;
+
 		if (LabyModCore.getMinecraft().getWorld() != null && event.phase == TickEvent.Phase.END) {
 			getGG().getPlotSwitchGui().tick();
 
@@ -129,7 +130,7 @@ public class OnTickListener {
 			}
 
 			if(getGG().getSettings().getItemRemoverNotification() > 0) {
-				int remainingTime = (int) TimeUnit.MILLISECONDS.toSeconds(getGG().getClearLagTime() - System.currentTimeMillis());
+				int remainingTime = (int) TimeUnit.MILLISECONDS.toSeconds(getGG().getClearLagTime() - now);
 				if(remainingTime > 0 && remainingTime <= getGG().getSettings().getItemRemoverNotification()) {
 					if(!itemRemoverNotificationShown) {
 						itemRemoverNotificationShown = true;
@@ -141,6 +142,10 @@ public class OnTickListener {
 				} else {
 					itemRemoverNotificationShown = false;
 				}
+			}
+
+			if(getGG().getWaitTime() < System.currentTimeMillis()) {
+				getGG().setCityBuildDelay(false);
 			}
 		}
 	}

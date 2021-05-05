@@ -33,16 +33,18 @@ public class SubServerListener {
             getGG().getBoosters().clear();
         }
 
-        if(getGG().getHelper().doHaveToWaitAfterJoin(subServerName)) {
+        if(getGG().getHelper().isCityBuild(subServerName)) {
+            getGG().setCityBuildDelay(false);
             getGG().setWaitTime(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(15));
+        } else if(subServerName.equalsIgnoreCase("skyblock")) {
+            if(!getGG().isCityBuildDelay()) getGG().setWaitTime(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(15));
         } else if(subServerName.equalsIgnoreCase("portal")) {
-            getGG().setWaitTime(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(12));
+            if(!getGG().isCityBuildDelay()) getGG().setWaitTime(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(12));
         } else {
-            getGG().setWaitTime(0);
+            if(!getGG().isCityBuildDelay()) getGG().setWaitTime(0);
         }
 
         if (subServerName.equalsIgnoreCase("lobby")) {
-            getGG().setWaitTime(0);
             //getGG().setShowBoosterDummy(true);
 
             Thread thread = new Thread() {
