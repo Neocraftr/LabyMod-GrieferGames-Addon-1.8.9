@@ -1,119 +1,77 @@
 package de.neocraftr.griefergames.booster;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.concurrent.TimeUnit;
 
+import com.ibm.icu.impl.duration.DurationFormatter;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement.IconData;
-import net.labymod.utils.Material;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
-public class Booster {
+public abstract class Booster {
 	private String name;
-	private int count = 0;
-	private List<LocalDateTime> endDates = new ArrayList<LocalDateTime>();
 	private String type;
-	private IconData icon = new IconData(Material.BARRIER);
-	private int iconIndex = 0;
-	private boolean showCount = true;
-	private boolean resetEndDates = false;
 	private boolean highlightDuration = false;
+	private boolean displayCount;
+	private int count;
+	private int iconIndex;
 	private long nextDurationBlink = 0;
+	private long endTime = 0;
 
-	Booster(String name, String type, int count, LocalDateTime endDate, IconData icon, int iconIndex,
-			boolean showCount) {
+	Booster(String name, String type, int count, int iconIndex, boolean displayCount) {
 		this.name = name;
 		this.type = type;
 		this.count = count;
-		endDates.add(endDate);
-		this.icon = icon;
 		this.iconIndex = iconIndex;
-		this.showCount = showCount;
+		this.displayCount = displayCount;
 	}
 
-	Booster(String name, String type, int count, LocalDateTime endDate, boolean showCount) {
+	Booster(String name, String type, int iconIndex, boolean displayCount) {
 		this.name = name;
 		this.type = type;
-		this.count = count;
-		endDates.add(endDate);
-		this.showCount = showCount;
-	}
-
-	Booster(String name, String type, int count, IconData icon, int iconIndex, boolean showCount) {
-		this.name = name;
-		this.type = type;
-		this.count = count;
-		this.icon = icon;
 		this.iconIndex = iconIndex;
-		this.showCount = showCount;
+		this.count = 0;
+		this.displayCount = displayCount;
 	}
 
-	Booster(String name, String type, int count, boolean showCount) {
+	Booster(String name, String type, int count, long endTime, int iconIndex, boolean displayCount) {
 		this.name = name;
 		this.type = type;
 		this.count = count;
-		this.showCount = showCount;
-	}
-
-	Booster(String name, String type, IconData icon, int iconIndex, boolean showCount) {
-		this.name = name;
-		this.type = type;
-		setCount(0);
-		this.icon = icon;
 		this.iconIndex = iconIndex;
-		this.showCount = showCount;
+		this.endTime = endTime;
+		this.displayCount = displayCount;
 	}
 
-	Booster(String name, String type, boolean showCount) {
-		this.name = name;
-		this.type = type;
-		setCount(0);
-		this.showCount = showCount;
+	public String getDurationString() {
+		if(this.endTime == -1) return LanguageManager.translateOrReturnKey("gg_on");
+
+		long remainingTime = this.endTime - System.currentTimeMillis();
+		long displayTime = Math.abs(remainingTime);
+
+		String displayString;
+		if(displayTime < TimeUnit.HOURS.toMillis(1)) {
+			displayString = DurationFormatUtils.formatDuration(displayTime, "mm:ss");
+		} else {
+			displayString = DurationFormatUtils.formatDuration(displayTime, "HH:mm:ss");
+		}
+
+		return (remainingTime < 0 ? "+" : "") + displayString;
 	}
 
-	Booster(String name, String type, int count, LocalDateTime endDate, IconData icon, int iconIndex) {
-		this.name = name;
-		this.type = type;
-		this.count = count;
-		endDates.add(endDate);
-		this.icon = icon;
-		this.iconIndex = iconIndex;
-	}
+	public boolean doHighlightDuration() {
+		if(this.endTime == -1) return false;
 
-	Booster(String name, String type, int count, LocalDateTime endDate) {
-		this.name = name;
-		this.type = type;
-		this.count = count;
-		endDates.add(endDate);
-	}
+		long remainingTime = this.endTime- System.currentTimeMillis();
 
-	Booster(String name, String type, int count, IconData icon, int iconIndex) {
-		this.name = name;
-		this.type = type;
-		this.count = count;
-		this.icon = icon;
-		this.iconIndex = iconIndex;
-	}
+		if(remainingTime < 0 || remainingTime > TimeUnit.SECONDS.toMillis(30)) return false;
 
-	Booster(String name, String type, int count) {
-		this.name = name;
-		this.type = type;
-		this.count = count;
-	}
+		if (System.currentTimeMillis() > this.nextDurationBlink) {
+			this.nextDurationBlink = System.currentTimeMillis() + 500L;
+			this.highlightDuration = !this.highlightDuration;
+		}
 
-	Booster(String name, String type, IconData icon, int iconIndex) {
-		this.name = name;
-		this.type = type;
-		setCount(0);
-		this.icon = icon;
-		this.iconIndex = iconIndex;
-	}
-
-	Booster(String name, String type) {
-		this.name = name;
-		this.type = type;
-		setCount(0);
+		return highlightDuration;
 	}
 
 	public String getName() {
@@ -133,33 +91,25 @@ public class Booster {
 	}
 
 	public void decreaseCount() {
-		this.count--;
-	}
-
-	public void decreaseEndDates() {
-		if (endDates.size() > 0) {
-			endDates.remove(0);
+		if(this.count > 0) {
+			this.count--;
 		}
 	}
 
-	public List<LocalDateTime> getEndDates() {
-		return endDates;
+	public void setEndTime(long endTime) {
+		this.endTime = endTime;
 	}
 
-	public LocalDateTime getEndDate(int index) {
-		return (endDates.size() > index) ? endDates.get(index) : null;
+	public long getEndTime() {
+		return endTime;
 	}
 
-	public LocalDateTime getEndDate() {
-		return (endDates.size() > 0) ? endDates.get(0) : null;
+	public void setDisplayCount(boolean displayCount) {
+		this.displayCount = displayCount;
 	}
 
-	public void setEndDates(List<LocalDateTime> endDate) {
-		this.endDates = endDate;
-	}
-
-	public void addEndDates(LocalDateTime endDate) {
-		this.endDates.add(endDate);
+	public boolean isDisplayCount() {
+		return displayCount;
 	}
 
 	public String getType() {
@@ -168,94 +118,5 @@ public class Booster {
 
 	public int getIconIndex() {
 		return iconIndex;
-	}
-
-	public boolean getShowCount() {
-		return showCount;
-	}
-
-	public void setShowCount(boolean showCount) {
-		this.showCount = showCount;
-	}
-
-	public boolean getResetEndDates() {
-		return resetEndDates;
-	}
-
-	public void setResetEndDates(boolean resetEndDates) {
-		this.resetEndDates = resetEndDates;
-	}
-
-	public String getDurationString() {
-		LocalDateTime curDateTime = LocalDateTime.now();
-		String ret = LanguageManager.translateOrReturnKey("gg_on");
-		LocalDateTime endDate = getEndDate(0);
-
-		if (endDate != null) {
-			boolean additionTime = false;
-			Duration duration = null;
-			if (endDate.isAfter(curDateTime)) {
-				duration = Duration.between(curDateTime, endDate);
-			} else {
-				duration = Duration.between(endDate, curDateTime);
-				additionTime = true;
-			}
-
-			Integer hours = (int) duration.getSeconds() / 3600;
-			Integer helper = (int) duration.getSeconds() - hours * 3600;
-			Integer minutes = helper / 60;
-			helper = helper - minutes * 60;
-			Integer seconds = helper;
-
-			if (hours <= 0) {
-				ret = minutes.toString();
-				ret += ":";
-				if (seconds < 10) {
-					ret += "0" + seconds.toString();
-				} else {
-					ret += seconds.toString();
-				}
-			} else {
-				ret = hours.toString();
-				ret += ":";
-				if (minutes < 10) {
-					ret += "0" + minutes.toString();
-				} else {
-					ret += minutes.toString();
-				}
-				ret += ":";
-				if (seconds < 10) {
-					ret += "0" + seconds.toString();
-				} else {
-					ret += seconds.toString();
-				}
-			}
-			if (additionTime) {
-				ret = "+" + ret;
-			}
-		}
-
-		return ret;
-	}
-
-	public boolean doHighlightDuration() {
-		LocalDateTime curDateTime = LocalDateTime.now();
-		LocalDateTime endDate = getEndDate(0);
-
-		if(endDate == null) return false;
-
-		Duration duration = null;
-		if (endDate.isAfter(curDateTime)) {
-			duration = Duration.between(curDateTime, endDate);
-		} else return false;
-
-		if(duration.getSeconds() > 30) return false;
-
-		if (System.currentTimeMillis() > nextDurationBlink) {
-			nextDurationBlink = System.currentTimeMillis() + 500L;
-			highlightDuration = !highlightDuration;
-		}
-
-		return highlightDuration;
 	}
 }

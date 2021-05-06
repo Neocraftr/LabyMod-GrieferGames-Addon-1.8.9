@@ -31,16 +31,12 @@ public class MessageReceiveListener implements MessageReceiveEvent {
             }
         }
 
-        getGG().getHelper().handleBoosterMessage(unformatted, formatted);
-        getGG().getHelper().handleBoosterDoneMessage(unformatted, formatted);
-        getGG().getHelper().handleBoosterMultiDoneMessage(unformatted, formatted);
-        getGG().getHelper().handleCurrentBoostersMessage(unformatted, formatted);
+        getGG().getHelper().handleBoosterMessage(unformatted);
         getGG().getHelper().handleCityBuildDelay(unformatted);
 
         if (getGG().getHelper().isSwitcherDoneMsg(unformatted)) {
             if(getGG().getSettings().isUpdateBoosterState()) {
                 getGG().setHideBoosterMenu(true);
-                getGG().getBoosters().clear();
                 Minecraft.getMinecraft().thePlayer.sendChatMessage("/booster");
             }
 

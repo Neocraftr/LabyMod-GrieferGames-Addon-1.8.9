@@ -1,6 +1,7 @@
 package de.neocraftr.griefergames.server;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import de.neocraftr.griefergames.chat.*;
 import de.neocraftr.griefergames.listener.KeyInputListener;
@@ -32,7 +33,7 @@ public class GrieferGamesServer extends Server {
 
 		ModuleCategoryRegistry.loadCategory(getGG().getModuleCategory());
 
-		new BoosterModule();
+		getGG().setBoosterModule(new BoosterModule());
 		new FlyModule();
 		new NicknameModule();
 		new DelayModule();
@@ -92,6 +93,26 @@ public class GrieferGamesServer extends Server {
 
 				if(message.toLowerCase().startsWith("/ggmessage")) {
 					getGG().getApi().displayMessageInChat(getHelper().colorize(message.replace("/ggmessage", "").trim()));
+					return true;
+				}
+
+				if(message.toLowerCase().startsWith("/addbooster")) {
+					getGG().getBoosterModule().addBooster(message.replace("/addbooster", "").trim(), TimeUnit.MINUTES.toMillis(30));
+					return true;
+				}
+
+				if(message.toLowerCase().startsWith("/setbooster")) {
+					getGG().getBoosterModule().setBooster(message.replace("/setbooster", "").trim(), TimeUnit.HOURS.toMillis(2), 1);
+					return true;
+				}
+
+				if(message.toLowerCase().startsWith("/delbooster")) {
+					getGG().getBoosterModule().removeBooster(message.replace("/delbooster", "").trim());
+					return true;
+				}
+
+				if(message.toLowerCase().startsWith("/resetbooster")) {
+					getGG().getBoosterModule().resetBooster(message.replace("/resetbooster", "").trim());
 					return true;
 				}
 

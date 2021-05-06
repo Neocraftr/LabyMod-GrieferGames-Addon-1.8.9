@@ -1,6 +1,5 @@
 package de.neocraftr.griefergames.utils;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -11,12 +10,6 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.Iterables;
 import com.google.gson.JsonObject;
 import de.neocraftr.griefergames.GrieferGames;
-import de.neocraftr.griefergames.booster.Booster;
-import de.neocraftr.griefergames.booster.BreakBooster;
-import de.neocraftr.griefergames.booster.DropBooster;
-import de.neocraftr.griefergames.booster.ExperienceBooster;
-import de.neocraftr.griefergames.booster.FlyBooster;
-import de.neocraftr.griefergames.booster.MobBooster;
 import de.neocraftr.griefergames.enums.CityBuild;
 import de.neocraftr.griefergames.enums.EnumSounds;
 import io.netty.buffer.ByteBuf;
@@ -46,10 +39,10 @@ public class Helper {
 	private Pattern auraRegex = Pattern.compile("^Deine Aura wurde aktiviert!$");
 	private Pattern auraRegex2 = Pattern.compile("^Deine Aura ist jetzt deaktiviert.$");
 
-	private Pattern getBoosterValidRegexp = Pattern.compile("^\\[Booster\\] ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) hat f\\u00FCr die GrieferGames Community den ([A-z]+\\-Booster) f\\u00FCr ([0-9]+) Minuten aktiviert.$");
-	private Pattern getBoosterDoneValidRegexp = Pattern.compile("^\\[Booster\\] Der ([A-z]+\\-Booster) ist jetzt wieder deaktiviert.$");
-	private Pattern getBoosterMultiDoneValidRegexp = Pattern.compile("^\\[Booster\\] Der ([A-z]+\\-Booster) \\(Stufe [1-6]\\) von ([A-Za-z\\-]+\\+? \\u2503 (\\u007E)?\\!?\\w{1,16}) ist abgelaufen.$");
-	private Pattern currentBoosterRegexp = Pattern.compile("^([A-z]+\\-Booster): ([0-9])x Multiplikator ((\\s?\\((([0-9]?[0-9]\\:)?([0-9]?[0-9]\\:)([0-9][0-9]))\\))+)");
+	private Pattern boosterInfoRegex = Pattern.compile("^([A-z]+-Booster): (?:(Deaktiviert)|([0-9+]+)x Multiplikator \\((?:([0-9]+):)?([0-9]+):([0-9]+)\\))$");
+	private Pattern boosterStartRegex = Pattern.compile("^\\[Booster\\] .+ hat für die GrieferGames Community den ([A-z]+-Booster) für ([0-9]+) Minuten aktiviert\\.$");
+	private Pattern boosterEndRegex = Pattern.compile("^\\[Booster\\] Der ([A-z]+-Booster) \\(Stufe [0-9]+\\) von .+ ist abgelaufen\\.$");
+	private Pattern boosterResetRegex = Pattern.compile("^\\[Booster\\] Der ([A-z]+-Booster) ist jetzt wieder deaktiviert\\.$");
 
 	private Pattern cityBuildDelayRegex = Pattern.compile("Der Server konnte deine Daten noch nicht verarbeiten\\. Du wurdest für (\\d+) Minuten gesperrt!");
 
@@ -67,180 +60,53 @@ public class Helper {
 		return fMsg.contains("§3§lServer");
 	}
 
-	public void handleBoosterDoneMessage(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0) return;
-
-		String fMsg = getProperTextFormat(formatted);
-		if (fMsg.contains("§r§cist jetzt wieder deaktiviert.§r")) {
-
-			Matcher matcher = getBoosterDoneValidRegexp.matcher(unformatted.trim());
-			if (matcher.find()) {
-				String boosterName = matcher.group(1).toLowerCase();
-
-				if (boosterName.equalsIgnoreCase("fly-booster")) {
-					getGG().boosterDone("fly");
-				} else if (boosterName.equalsIgnoreCase("drops-booster")) {
-					getGG().boosterDone("drop");
-				} else if (boosterName.equalsIgnoreCase("break-booster")) {
-					getGG().boosterDone("break");
-				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
-					getGG().boosterDone("mob");
-				} else if (boosterName.equalsIgnoreCase("erfahrung-booster")) {
-					getGG().boosterDone("xp");
-				}
-			}
-		}
-	}
-
-	public void handleBoosterMultiDoneMessage(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0) return;
-
-		String fMsg = getProperTextFormat(formatted);
-		if (fMsg.contains("§r§fDer §r§b") && fMsg.contains("§r§7(Stufe") && fMsg.contains("§r§fist abgelaufen.§r")) {
-
-			Matcher matcher = getBoosterMultiDoneValidRegexp.matcher(unformatted.trim());
-			if (matcher.find()) {
-				String boosterName = matcher.group(1);
-
-				boosterName = boosterName.toLowerCase();
-				if (boosterName.equalsIgnoreCase("fly-booster")) {
-					getGG().boosterDone("fly");
-				} else if (boosterName.equalsIgnoreCase("drops-booster")) {
-					getGG().boosterDone("drop");
-				} else if (boosterName.equalsIgnoreCase("break-booster")) {
-					getGG().boosterDone("break");
-				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
-					getGG().boosterDone("mob");
-				} else if (boosterName.equalsIgnoreCase("erfahrung-booster")) {
-					getGG().boosterDone("xp");
-				}
-			}
-		}
-	}
-
-	public void handleBoosterMessage(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0) return;
-
-		String fMsg = getProperTextFormat(formatted);
-		if (fMsg.contains("§r§ahat f\u00FCr die GrieferGames Community den §r§b§l")) {
-
-			Matcher matcher = getBoosterValidRegexp.matcher(unformatted);
-			if (matcher.find()) {
-				String boosterName = matcher.group(3);
-
-				Integer minutes = 0;
+	public void handleBoosterMessage(String unformatted) {
+		Matcher m = boosterInfoRegex.matcher(unformatted);
+		if(m.find()) {
+			String type = m.group(1);
+			if(m.group(2) == null) {
 				try {
-					matcher = getBoosterValidRegexp.matcher(unformatted);
-					if (matcher.find()) {
-						minutes = Integer.parseInt(matcher.group(4));
-					}
-				} catch (NumberFormatException e) {
-					// do nothing ;)
-				}
+					int seconds = Integer.parseInt(m.group(6));
+					int minutes = Integer.parseInt(m.group(5));
+					int hours = (m.group(4) != null) ? Integer.parseInt(m.group(4)) : 0;
+					int count = Integer.parseInt(m.group(3));
 
-				boolean validBooster = false;
-				Booster booster = null;
-				boosterName = boosterName.toLowerCase();
-				if (boosterName.equalsIgnoreCase("fly-booster")) {
-					booster = new FlyBooster(-1, LocalDateTime.now().plusMinutes(minutes));
-					validBooster = true;
-				} else if (boosterName.equalsIgnoreCase("drops-booster")) {
-					booster = new DropBooster(-1, LocalDateTime.now().plusMinutes(minutes));
-					validBooster = true;
-				} else if (boosterName.equalsIgnoreCase("break-booster")) {
-					booster = new BreakBooster(-1, LocalDateTime.now().plusMinutes(minutes));
-					validBooster = true;
-				} else if (boosterName.equalsIgnoreCase("mob-booster")) {
-					booster = new MobBooster(-1, LocalDateTime.now().plusMinutes(minutes));
-					validBooster = true;
-				} else if (boosterName.equalsIgnoreCase("erfahrung-booster")) {
-					booster = new ExperienceBooster(-1, LocalDateTime.now().plusMinutes(minutes));
-					validBooster = true;
+					long duration = TimeUnit.SECONDS.toMillis(seconds) + TimeUnit.MINUTES.toMillis(minutes) + TimeUnit.HOURS.toMillis(hours);
+					getGG().getBoosterModule().setBooster(type, duration, count);
+				} catch(NumberFormatException e) {
+					e.printStackTrace();
 				}
-
-				if (validBooster) {
-					getGG().addBooster(booster);
-				}
+			} else {
+				getGG().getBoosterModule().resetBooster(type);
 			}
+			return;
 		}
-	}
 
-	public int handleCurrentBoostersMessage(String unformatted, String formatted) {
-		if (unformatted.trim().length() <= 0)
-			return -1;
-
-		Matcher matcher = currentBoosterRegexp.matcher(unformatted.trim());
-		if (matcher.find()) {
-			String boosterName = matcher.group(1);
-
-			Integer multi = 0;
+		m = boosterStartRegex.matcher(unformatted);
+		if(m.find()) {
+			String type = m.group(1);
 			try {
-				matcher = currentBoosterRegexp.matcher(unformatted.trim());
-				if (matcher.find()) {
-					multi = Integer.parseInt(matcher.group(2));
-				}
-			} catch (NumberFormatException e) {
-				// do nothing ;)
-			}
+				int minutes = Integer.parseInt(m.group(2));
 
-			List<Integer> boosterTimes = new ArrayList<Integer>();
-			try {
-				matcher = currentBoosterRegexp.matcher(unformatted.trim());
-				if (matcher.find()) {
-					String times[] = matcher.group(3).trim().split(" ");
-					for (String time : times) {
-						Integer curTime = 0;
-						String[] timeSplitted = time.replaceAll("(\\(|\\))", "").trim().split(":");
-
-						if (timeSplitted.length == 3) {
-							curTime += Integer.parseInt(timeSplitted[0]) * 60 * 60;
-							curTime += Integer.parseInt(timeSplitted[1]) * 60;
-							curTime += Integer.parseInt(timeSplitted[2]);
-						} else {
-							curTime += Integer.parseInt(timeSplitted[0]) * 60;
-							curTime += Integer.parseInt(timeSplitted[1]);
-						}
-						boosterTimes.add(curTime);
-					}
-				}
-			} catch (NumberFormatException e) {
+				getGG().getBoosterModule().addBooster(type, TimeUnit.MINUTES.toMillis(minutes));
+			} catch(NumberFormatException e) {
 				e.printStackTrace();
 			}
-
-			boolean validBooster = false;
-			Booster booster = null;
-			boosterName = boosterName.toLowerCase();
-			if (boosterName.equalsIgnoreCase("fly-booster")) {
-				booster = new FlyBooster(multi);
-				validBooster = true;
-			} else if (boosterName.equalsIgnoreCase("drops-booster")) {
-				booster = new DropBooster(multi);
-				validBooster = true;
-			} else if (boosterName.equalsIgnoreCase("break-booster")) {
-				booster = new BreakBooster(multi);
-				validBooster = true;
-			} else if (boosterName.equalsIgnoreCase("mob-booster")) {
-				booster = new MobBooster(multi);
-				validBooster = true;
-			} else if (boosterName.equalsIgnoreCase("erfahrung-booster")) {
-				booster = new ExperienceBooster(multi);
-				validBooster = true;
-			}
-
-			if (validBooster) {
-				if (boosterTimes.size() > 0) {
-					booster.setResetEndDates(true);
-					for (Integer boosterTime : boosterTimes) {
-						booster.addEndDates(LocalDateTime.now().plusSeconds(boosterTime));
-					}
-				}
-
-				getGG().addBooster(booster);
-				return 1;
-			}
+			return;
 		}
 
-		return 0;
+		m = boosterEndRegex.matcher(unformatted);
+		if(m.find()) {
+			String type = m.group(1);
+			getGG().getBoosterModule().removeBooster(type);
+			return;
+		}
+
+		m = boosterResetRegex.matcher(unformatted);
+		if(m.find()) {
+			String type = m.group(1);
+			getGG().getBoosterModule().resetBooster(type);
+		}
 	}
 
 	public void handleCityBuildDelay(String unformatted) {

@@ -6,13 +6,11 @@ import net.labymod.ingamegui.moduletypes.SimpleModule;
 import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ControlElement;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.concurrent.TimeUnit;
 
 public class ClearLagModule extends SimpleModule {
-
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("mm:ss");
 
     private GrieferGames getGG() {
         return GrieferGames.getGriefergames();
@@ -31,7 +29,7 @@ public class ClearLagModule extends SimpleModule {
     public String getDisplayValue() {
         long remainingTime = getGG().getClearLagTime() - System.currentTimeMillis();
         if(remainingTime > 60000) {
-            return timeFormat.format(remainingTime);
+            return DurationFormatUtils.formatDuration(remainingTime, "mm:ss");
         } else {
             return TimeUnit.MILLISECONDS.toSeconds(remainingTime) + "s";
         }

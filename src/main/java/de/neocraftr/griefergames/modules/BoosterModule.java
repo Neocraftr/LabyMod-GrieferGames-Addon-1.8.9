@@ -28,19 +28,23 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 public class BoosterModule extends Module {
-	private List<Booster> dummyBooster = new ArrayList<Booster>();
 
 	private GrieferGames getGG() {
 		return GrieferGames.getGriefergames();
 	}
 
+	private List<Booster> boosters = new ArrayList<>();
+
+	private Color LIGHT_RED = new Color(255, 85, 85);
+	private Color LIGHT_BLUE = new Color(85, 255, 255);
+
 	public BoosterModule() {
-		dummyBooster.add(new BreakBooster(1));
-		dummyBooster.add(new DropBooster(4));
-		dummyBooster.add(new ExperienceBooster(6));
-		dummyBooster.add(new FlyBooster(1));
-		dummyBooster.add(new MobBooster(3));
 		getGG().getApi().registerModule(this);
+		boosters.add(new BreakBooster());
+		boosters.add(new DropBooster());
+		boosters.add(new ExperienceBooster());
+		boosters.add(new FlyBooster());
+		boosters.add(new MobBooster());
 	}
 
 	public void init() {
@@ -51,74 +55,66 @@ public class BoosterModule extends Module {
 	}
 
 	public void draw(int x, int y, int rightX) {
-		Collection<Booster> boosters = getActiveBoosters();
-		if (boosters.size() == 0) {
-			return;
-		}
 		GlStateManager.pushMatrix();
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.disableLighting();
 
-		int slotHeight = getSlotHeight(boosters);
-		for (Booster booster : boosters) {
+		int slotHeight = getSlotHeight();
+		for (Booster booster : this.boosters) {
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
 			String name = booster.getName();
-			Integer count = booster.getCount();
-			boolean showCount = booster.getShowCount();
+			int count = booster.getCount();
 
 			if (count > 0) {
 				int durationColor = getColor("durationColor", DefaultValues.POTION_DURATION_COLOR);
 				if(booster.doHighlightDuration()) {
-					if(durationColor == new Color(255, 85, 85).getRGB()) {
-						durationColor = new Color(255, 255, 255).getRGB();
+					if(durationColor == LIGHT_RED.getRGB()) {
+						durationColor = Color.WHITE.getRGB();
 					} else {
-						durationColor = new Color(255, 85, 85).getRGB();
+						durationColor = LIGHT_RED.getRGB();
 					}
 				}
 
 				if (rightX == -1) {
 					int stringWidth = LabyModCore.getMinecraft().getFontRenderer().getStringWidth(name + " ");
-					LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow(name, x + 28, y - 1,
+					LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow(name, x + 25, y + 2,
 							getColor("nameColor", DefaultValues.POTION_NAME_COLOR));
 
-					if (showCount) {
-						LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow("x" + count.toString(),
-								x + (28 + stringWidth), y - 1, getColor("ampColor", new Color(85, 255, 255).getRGB()));
+					if (count > 1 && booster.isDisplayCount()) {
+						LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow("x" + count,
+								x + (25 + stringWidth), y + 2, getColor("ampColor", LIGHT_BLUE.getRGB()));
 					}
 
 					LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow(booster.getDurationString(),
-							x + 28, y + 9, durationColor);
+							x + 25, y + 12, durationColor);
 				} else {
 					int stringWidth = 0;
-					String countStr = "x" + count.toString();
-					if (showCount) {
+					String countStr = "x" + count;
+					if (count > 1 && booster.isDisplayCount()) {
 						stringWidth = LabyModCore.getMinecraft().getFontRenderer().getStringWidth(" " + countStr);
 					}
-					LabyMod.getInstance().getDrawUtils().drawRightStringWithShadow(name, rightX - (28 + stringWidth),
-							y - 1, getColor("nameColor", DefaultValues.POTION_NAME_COLOR));
+					LabyMod.getInstance().getDrawUtils().drawRightStringWithShadow(name, rightX - (25 + stringWidth),
+							y + 2, getColor("nameColor", DefaultValues.POTION_NAME_COLOR));
 
-					if (showCount) {
+					if (count > 1 && booster.isDisplayCount()) {
 						stringWidth = LabyModCore.getMinecraft().getFontRenderer().getStringWidth(countStr);
-						LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow("x" + count.toString(),
-								rightX - (28 + stringWidth), y - 1,
-								getColor("ampColor", new Color(85, 255, 255).getRGB()));
+						LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow("x" + count,
+								rightX - (25 + stringWidth), y + 2,
+								getColor("ampColor", LIGHT_BLUE.getRGB()));
 					}
 
 					LabyMod.getInstance().getDrawUtils().drawRightStringWithShadow(booster.getDurationString(),
-							rightX - 28, y + 9, durationColor);
+							rightX - 25, y + 12, durationColor);
 				}
 
-				Minecraft.getMinecraft().getTextureManager()
-						.bindTexture(new ResourceLocation("griefergames/textures/icons/module_booster_sprite.png"));
+				Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("griefergames/textures/icons/module_booster_sprite.png"));
 
 				GlStateManager.color(1.0F, 1.0F, 1.0F);
 				if (rightX == -1) {
-					LabyMod.getInstance().getDrawUtils().drawTexturedModalRect(x, y, booster.getIconIndex() * 18, 0, 18,
-							18);
+					LabyMod.getInstance().getDrawUtils().drawTexturedModalRect(x, y + 2, booster.getIconIndex() * 18, 0, 18, 18);
 				} else {
-					LabyMod.getInstance().getDrawUtils().drawTexturedModalRect(rightX - 18, y,
-							booster.getIconIndex() * 18, 0, 18, 18);
+					LabyMod.getInstance().getDrawUtils().drawTexturedModalRect(rightX - 18, y + 2, booster.getIconIndex() * 18, 0, 18, 18);
 				}
 				y += slotHeight;
 			}
@@ -134,28 +130,21 @@ public class BoosterModule extends Module {
 		return true;
 	}
 
-	private Collection<Booster> getActiveBoosters() {
-		if (getGG().isShowBoosterDummy()) {
-			return this.dummyBooster;
-		}
-		return getGG().getBoosters();
-	}
-
 	private int getColor(String key, int defaultColor) {
-		Color color = ModColor.getColorByString((String) getAttributes().get(key));
+		Color color = ModColor.getColorByString(getAttributes().get(key));
 		if (color == null) {
 			return defaultColor;
 		}
 		return color.getRGB();
 	}
 
-	private int getSlotHeight(Collection<Booster> boosters) {
+	private int getSlotHeight() {
 		return 23;
 	}
 
 	public void fillSubSettings(List<SettingsElement> settingsElements) {
 		super.fillSubSettings(settingsElements);
-
+		// TODO: Translations!
 		ColorPickerCheckBoxBulkElement colorPickerBulkElement = new ColorPickerCheckBoxBulkElement("Colors");
 
 		ColorPicker nameColorPicker = new ColorPicker("Name",
@@ -181,7 +170,7 @@ public class BoosterModule extends Module {
 				ModColor.getColorByString((String) getAttributes().get("ampColor")),
 				new ColorPicker.DefaultColorCallback() {
 					public Color getDefaultColor() {
-						return new Color(new Color(85, 255, 255).getRGB());
+						return LIGHT_BLUE;
 					}
 				}, 0, 0, 0, 0);
 
@@ -218,25 +207,22 @@ public class BoosterModule extends Module {
 	}
 
 	public ControlElement.IconData getIconData() {
-		return new ControlElement.IconData(new ResourceLocation("griefergames/textures/icons/module_booster.png"));
+		return new ControlElement.IconData("griefergames/textures/icons/module_booster.png");
 	}
 
 	public double getHeight() {
-		Collection<Booster> boosters = getActiveBoosters();
 		int size = 0;
-		for (Booster booster : boosters) {
+		for (Booster booster : this.boosters) {
 			if (booster.getCount() > 0) {
 				size++;
 			}
 		}
-		return (short) (int) scaleModuleSize(getSlotHeight(boosters) * size, false);
+		return scaleModuleSize(getSlotHeight() * size, false);
 	}
 
 	public double getWidth() {
-		Collection<Booster> boosters = getActiveBoosters();
-
 		int maxWidth = 0;
-		for (Booster booster : boosters) {
+		for (Booster booster : this.boosters) {
 			if (booster.getCount() > 0) {
 				String amplifierString = booster.getName();
 				int width = LabyModCore.getMinecraft().getFontRenderer().getStringWidth(booster.getDurationString());
@@ -248,7 +234,7 @@ public class BoosterModule extends Module {
 				}
 			}
 		}
-		return (short) (int) scaleModuleSize(maxWidth, false);
+		return scaleModuleSize(maxWidth, false);
 	}
 
 	public String getSettingName() {
@@ -265,5 +251,51 @@ public class BoosterModule extends Module {
 
 	public ModuleCategory getCategory() {
 		return getGG().getModuleCategory();
+	}
+
+	public void addBooster(String type, long duration) {
+		for(Booster booster : this.boosters) {
+			if(booster.getType().equalsIgnoreCase(type)) {
+				if(booster.getEndTime() < System.currentTimeMillis()) {
+					booster.setEndTime(System.currentTimeMillis() + duration);
+				} else {
+					booster.setEndTime(booster.getEndTime() + duration);
+				}
+				booster.incrementCount();
+			}
+		}
+	}
+
+	public void setBooster(String type, long duration, int count) {
+		for(Booster booster : this.boosters) {
+			if(booster.getType().equalsIgnoreCase(type)) {
+				booster.setEndTime(System.currentTimeMillis() + duration);
+				booster.setCount(count);
+			}
+		}
+	}
+
+	public void removeBooster(String type) {
+		for(Booster booster : this.boosters) {
+			if(booster.getType().equalsIgnoreCase(type)) {
+				booster.decreaseCount();
+			}
+		}
+	}
+
+	public void resetBooster(String type) {
+		for(Booster booster : this.boosters) {
+			if(booster.getType().equalsIgnoreCase(type)) {
+				booster.setCount(0);
+				booster.setEndTime(-1);
+			}
+		}
+	}
+
+	public void resetBoosters() {
+		for(Booster booster : this.boosters) {
+			booster.setCount(0);
+			booster.setEndTime(-1);
+		}
 	}
 }

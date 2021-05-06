@@ -30,7 +30,7 @@ public class SubServerListener {
         }
 
         if (getGG().getHelper().doResetBoosterBySubserver(subServerName)) {
-            getGG().getBoosters().clear();
+            getGG().getBoosterModule().resetBoosters();
         }
 
         if(getGG().getHelper().isCityBuild(subServerName)) {
@@ -45,8 +45,6 @@ public class SubServerListener {
         }
 
         if (subServerName.equalsIgnoreCase("lobby")) {
-            //getGG().setShowBoosterDummy(true);
-
             Thread thread = new Thread() {
                 public void run() {
                     try {
