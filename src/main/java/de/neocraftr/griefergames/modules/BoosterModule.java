@@ -18,6 +18,7 @@ import net.labymod.ingamegui.Module;
 import net.labymod.ingamegui.ModuleCategory;
 import net.labymod.main.DefaultValues;
 import net.labymod.main.LabyMod;
+import net.labymod.main.lang.LanguageManager;
 import net.labymod.settings.elements.ColorPickerCheckBoxBulkElement;
 import net.labymod.settings.elements.ControlElement;
 import net.labymod.settings.elements.SettingsElement;
@@ -144,10 +145,10 @@ public class BoosterModule extends Module {
 
 	public void fillSubSettings(List<SettingsElement> settingsElements) {
 		super.fillSubSettings(settingsElements);
-		// TODO: Translations!
-		ColorPickerCheckBoxBulkElement colorPickerBulkElement = new ColorPickerCheckBoxBulkElement("Colors");
 
-		ColorPicker nameColorPicker = new ColorPicker("Name",
+		ColorPickerCheckBoxBulkElement colorPickerBulkElement = new ColorPickerCheckBoxBulkElement("");
+
+		ColorPicker nameColorPicker = new ColorPicker(LanguageManager.translateOrReturnKey("module_gg_booster_settings_name"),
 				ModColor.getColorByString((String) getAttributes().get("nameColor")),
 				new ColorPicker.DefaultColorCallback() {
 					public Color getDefaultColor() {
@@ -166,7 +167,7 @@ public class BoosterModule extends Module {
 		});
 		colorPickerBulkElement.addColorPicker(nameColorPicker);
 
-		ColorPicker amplifierColorPicker = new ColorPicker("Amplifier",
+		ColorPicker amplifierColorPicker = new ColorPicker(LanguageManager.translateOrReturnKey("module_gg_booster_settings_amplifier"),
 				ModColor.getColorByString((String) getAttributes().get("ampColor")),
 				new ColorPicker.DefaultColorCallback() {
 					public Color getDefaultColor() {
@@ -184,7 +185,7 @@ public class BoosterModule extends Module {
 		});
 		colorPickerBulkElement.addColorPicker(amplifierColorPicker);
 
-		ColorPicker durationColorPicker = new ColorPicker("Duration",
+		ColorPicker durationColorPicker = new ColorPicker(LanguageManager.translateOrReturnKey("module_gg_booster_settings_duration"),
 				ModColor.getColorByString((String) getAttributes().get("durationColor")),
 				new ColorPicker.DefaultColorCallback() {
 					public Color getDefaultColor() {
@@ -242,7 +243,7 @@ public class BoosterModule extends Module {
 	}
 
 	public String getDescription() {
-		return "";
+		return LanguageManager.translateOrReturnKey("module_gg_booster_description");
 	}
 
 	public int getSortingId() {
