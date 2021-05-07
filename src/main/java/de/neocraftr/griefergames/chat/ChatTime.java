@@ -10,7 +10,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
 public class ChatTime extends Chat {
-	IChatComponent resetMsg = new ChatComponentText(" ").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RESET));
+	private IChatComponent resetMsg = new ChatComponentText(" ").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RESET));
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 	@Override
 	public String getName() {
@@ -21,13 +22,11 @@ public class ChatTime extends Chat {
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
 		String unformatted = msg.getUnformattedText();
 
-		return unformatted.trim().length() > 0
-				&& getSettings().isShowChatTime() && getSettings().getChatTimeFormat().trim().length() > 0;
+		return unformatted.trim().length() > 0 && getSettings().isShowChatTime() && getSettings().getChatTimeFormat().trim().length() > 0;
 	}
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 		String[] time = LocalDateTime.now().format(formatter).split(":");
 
 		String timeMsg = getSettings().getChatTimeFormat();

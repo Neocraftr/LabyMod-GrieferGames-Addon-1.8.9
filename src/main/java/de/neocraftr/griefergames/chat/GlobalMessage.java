@@ -12,10 +12,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
 public class GlobalMessage extends Chat {
-	private static Pattern msgUserGlobalChatRegex = Pattern
-			.compile("^([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})\\s[\\u00BB:]\\s");
-	private static Pattern msgUserGlobalChatClanRegex = Pattern
-			.compile("^(\\[[^\\]]+\\])\\s([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})\\s[\\u00BB:]\\s");
+	private static Pattern msgUserGlobalChatRegex = Pattern.compile("^(\\[[^\\]]+\\])? ?([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16})\\s[\\u00BB:]\\s");
 
 	@Override
 	public String getName() {
@@ -24,9 +21,7 @@ public class GlobalMessage extends Chat {
 
 	@Override
 	public boolean doActionModifyChatMessage(IChatComponent msg) {
-		String unformatted = msg.getUnformattedText();
-
-		return !getUserFromGlobalMessage(unformatted).equalsIgnoreCase(LabyModCore.getMinecraft().getPlayer().getName().trim());
+		return true;
 	}
 
 	@Override
@@ -34,37 +29,27 @@ public class GlobalMessage extends Chat {
 		String unformatted = msg.getUnformattedText();
 
 		Matcher matcher = msgUserGlobalChatRegex.matcher(unformatted);
-		Matcher matcher2 = msgUserGlobalChatClanRegex.matcher(unformatted);
+		if(matcher.find()) {
+			String playerName = matcher.group(3);
+			if(playerName.startsWith("~")) playerName = playerName.replaceFirst("~", "");
 
-		boolean clan;
-		if((clan = matcher2.find()) || matcher.find()) {
-			String username = "/msg " + getUserFromGlobalMessage(unformatted) + " ";
-			String suggestMsgHoverTxt = LanguageManager.translateOrReturnKey("message_gg_suggestMsgHoverMsg");
-			IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") + suggestMsgHoverTxt);
+			if(!playerName.equalsIgnoreCase(LabyModCore.getMinecraft().getPlayer().getName().trim())) {
+				String username = "/msg " + playerName + " ";
+				String suggestMsgHoverTxt = LanguageManager.translateOrReturnKey("message_gg_suggestMsgHoverMsg");
+				IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") + suggestMsgHoverTxt);
 
-			IChatComponent message = clan ? msg.getSiblings().get(1) : msg;
-			for (IChatComponent msgs : message.getSiblings()) {
-				msgs.getChatStyle()
-						.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username))
-						.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
-				if(msgs.getUnformattedText().equals("» ")) break;
-				if(msgs.getUnformattedText().equals(": ")) break;
+				IChatComponent message = (matcher.group(1) != null) ? msg.getSiblings().get(1) : msg;
+				for (IChatComponent msgs : message.getSiblings()) {
+					msgs.getChatStyle()
+							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username))
+							.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+					if(msgs.getUnformattedText().equals("» ")) break;
+					if(msgs.getUnformattedText().equals(": ")) break;
+				}
 			}
+
 		}
 
 		return msg;
-	}
-
-	private String getUserFromGlobalMessage(String unformatted) {
-		String displayName = "";
-		Matcher msgUserGlobalChat = msgUserGlobalChatRegex.matcher(unformatted);
-		Matcher msgUserGlobalChatClan = msgUserGlobalChatClanRegex.matcher(unformatted);
-		if (msgUserGlobalChat.find()) {
-			displayName = msgUserGlobalChat.group(2);
-		} else if (msgUserGlobalChatClan.find()) {
-			displayName = msgUserGlobalChatClan.group(3);
-		}
-		if(displayName.startsWith("~")) displayName = displayName.replaceFirst("~", "");
-		return displayName;
 	}
 }

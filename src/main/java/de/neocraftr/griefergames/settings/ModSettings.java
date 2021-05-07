@@ -42,7 +42,6 @@ public class ModSettings {
 	private boolean plotChatRight;
 	private EnumSounds privateChatSound;
 	private EnumRealnameShown realname;
-	//private boolean realnameClick;
 	private boolean msgDisplayNameClick;
 	private boolean filterDuplicateMessages;
 	private Integer filterDuplicateMessagesTime;
@@ -1240,13 +1239,6 @@ public class ModSettings {
 	public EnumRealnameShown getRealname() {
 		return this.realname;
 	}
-
-	/*
-	 * private void setRealnameClick(boolean realnameClick) { this.realnameClick =
-	 * realnameClick; }
-	 *
-	 * public boolean isRealnameClick() { return this.realnameClick; }
-	 */
 
 	public boolean isMsgDisplayNameClick() {
 		return this.msgDisplayNameClick;

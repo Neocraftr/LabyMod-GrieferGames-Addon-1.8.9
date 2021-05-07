@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Mention extends Chat {
-    private Pattern msgUserGlobalChatRegex = Pattern.compile("^(?:\\[.+\\] )?([A-Za-z\\-]+\\+?) \\u2503 (\\u007E?\\!?\\w{1,16})\\s[\\u00BB:]\\s(.+)");
+    private Pattern msgUserGlobalChatRegex = Pattern.compile("^(\\[[^\\]]+\\])? ?([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16})\\s[\\u00BB:]\\s(.+)");
 
     @Override
     public String getName() {
@@ -20,11 +20,12 @@ public class Mention extends Chat {
     @Override
     public boolean doActionReceiveMessage(String formatted, String unformatted) {
         if(!getSettings().isHighlightMentions() && !getSettings().isMentionSound()) return false;
+        if(unformatted.trim().length() <= 0) return false;
 
         Matcher matcher = msgUserGlobalChatRegex.matcher(unformatted);
-        if(unformatted.trim().length() > 0 && matcher.find()) {
-            if(!matcher.group(2).equalsIgnoreCase(LabyMod.getInstance().getPlayerName())) {
-                for(String word : matcher.group(3).split(" ")) {
+        if(matcher.find()) {
+            if(!matcher.group(3).equalsIgnoreCase(LabyMod.getInstance().getPlayerName())) {
+                for(String word : matcher.group(4).split(" ")) {
                     if(word.equalsIgnoreCase(LabyMod.getInstance().getPlayerName().toLowerCase())) return true;
                 }
             }
@@ -38,7 +39,7 @@ public class Mention extends Chat {
         short g = (short) getSettings().getMentionsColor().getGreen();
         short b = (short) getSettings().getMentionsColor().getBlue();
         String soundPath = getHelper().getSoundPath(getSettings().getMentionSound());
-        Filters.Filter filter = new Filters.Filter("GrieferGames Addon Mention", new String[] {unformatted}, new String[0],
+        Filters.Filter filter = new Filters.Filter("GG Addon Mention", new String[] {unformatted}, new String[0],
                 getSettings().isMentionSound(), soundPath, getSettings().isHighlightMentions(), r, g, b,
                 false, false, false, "Global");
 

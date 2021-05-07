@@ -27,17 +27,17 @@ import net.minecraft.util.IChatComponent;
 public class Helper {
 
 	private Pattern subServerCityBuildRegex = Pattern.compile("^cb([0-9]+)$");
-	private Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})");
+	private Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16})");
 	private Pattern tablistColoredPrefixRegex = Pattern.compile("(.+\\u2503 (?:§.)+)");
 
-	private Pattern vanishRegex = Pattern.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) : aktiviert$");
-	private Pattern vanishRegex2 = Pattern.compile("^Unsichtbar f\\u00FCr ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) : deaktiviert$");
+	private Pattern vanishRegex = Pattern.compile("^Unsichtbar für ([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) : aktiviert$");
+	private Pattern vanishRegex2 = Pattern.compile("^Unsichtbar für ([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) : deaktiviert$");
 
-	private Pattern godmodeRegex = Pattern.compile("^Unsterblichkeit aktiviert.$");
-	private Pattern godmodeRegex2 = Pattern.compile("^Unsterblichkeit deaktiviert.$");
+	private Pattern godmodeRegex = Pattern.compile("^Unsterblichkeit aktiviert\\.$");
+	private Pattern godmodeRegex2 = Pattern.compile("^Unsterblichkeit deaktiviert\\.$");
 
 	private Pattern auraRegex = Pattern.compile("^Deine Aura wurde aktiviert!$");
-	private Pattern auraRegex2 = Pattern.compile("^Deine Aura ist jetzt deaktiviert.$");
+	private Pattern auraRegex2 = Pattern.compile("^Deine Aura ist jetzt deaktiviert\\.$");
 
 	private Pattern boosterInfoRegex = Pattern.compile("^([A-z]+-Booster): (?:(Deaktiviert)|([0-9+]+)x Multiplikator \\((?:([0-9]+):)?([0-9]+):([0-9]+)\\))$");
 	private Pattern boosterStartRegex = Pattern.compile("^\\[Booster\\] .+ hat für die GrieferGames Community den ([A-z]+-Booster) für ([0-9]+) Minuten aktiviert\\.$");
@@ -46,18 +46,8 @@ public class Helper {
 
 	private Pattern cityBuildDelayRegex = Pattern.compile("Der Server konnte deine Daten noch nicht verarbeiten\\. Du wurdest für (\\d+) Minuten gesperrt!");
 
-	public String getProperTextFormat(String formatted) {
-		return formatted.replaceAll("\u00A7", "§");
-	}
-
-	public String getProperChatFormat(String formatted) {
-		return formatted.replaceAll("§", "\u00A7");
-	}
-
 	public boolean isScoreBoardSubServer(String formatted) {
-		String fMsg = getProperTextFormat(formatted);
-
-		return fMsg.contains("§3§lServer");
+		return formatted.contains("§3§lServer");
 	}
 
 	public void handleBoosterMessage(String unformatted) {

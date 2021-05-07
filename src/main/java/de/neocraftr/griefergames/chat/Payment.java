@@ -21,9 +21,9 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
 public class Payment extends Chat {
-	private static Pattern getMoneyValidRegex = Pattern.compile("^([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) hat dir \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
-	private static Pattern payedMoneyRegex = Pattern.compile("^Du hast ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
-	private static Pattern earnedMoneyRegex = Pattern.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) wurde zu deinem Konto hinzugef\\u00FCgt");
+	private static Pattern getMoneyValidRegex = Pattern.compile("^([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) hat dir \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
+	private static Pattern payedMoneyRegex = Pattern.compile("^Du hast ([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) \\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) gegeben\\.$");
+	private static Pattern earnedMoneyRegex = Pattern.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?) wurde zu deinem Konto hinzugefügt\\.$");
 	private static Pattern getMoneyRegex = Pattern.compile("\\$((?:[1-9]\\d{0,2}(?:,\\d{1,3})*|0)(?:\\.\\d+)?)");
 
 	@Override
@@ -33,7 +33,7 @@ public class Payment extends Chat {
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		if (!getHelper().getProperTextFormat(formatted).contains("§r§f §r§ahat dir $")) {
+		if (!formatted.contains("§r§f §r§ahat dir $")) {
 			Matcher matcher = getMoneyValidRegex.matcher(unformatted);
 			if (matcher.find()) {
 				String name = getHelper().getPlayerName(unformatted);
@@ -113,7 +113,7 @@ public class Payment extends Chat {
 		String unformatted = msg.getUnformattedText();
 		String formatted = msg.getFormattedText();
 
-		if (!getHelper().getProperTextFormat(formatted).contains("§r§f §r§ahat dir $")) {
+		if (!formatted.contains("§r§f §r§ahat dir $")) {
 			Matcher matcher = getMoneyValidRegex.matcher(unformatted);
 			return matcher.find();
 		}

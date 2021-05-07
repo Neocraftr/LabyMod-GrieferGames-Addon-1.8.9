@@ -15,10 +15,8 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
 
 public class PrivateMessage extends Chat {
-	private static Pattern privateMessageRegex = Pattern
-			.compile("^\\[([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16}) -> mir\\](.*)$");
-	private static Pattern privateMessageSentRegex = Pattern
-			.compile("^\\[mir -> ([A-Za-z\\-]+\\+?) \\u2503 ((\\u007E)?\\!?\\w{1,16})\\](.*)$");
+	private static Pattern privateMessageRegex = Pattern.compile("^\\[([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) -> mir\\] (.*)$");
+	private static Pattern privateMessageSentRegex = Pattern.compile("^\\[mir -> ([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16})\\] (.*)$");
 
 	@Override
 	public String getName() {
@@ -64,22 +62,23 @@ public class PrivateMessage extends Chat {
 		IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") + suggestMsgHoverTxt);
 
 		if (privateMessage.find()) {
+			String playerName = privateMessage.group(2);
+			if(playerName.startsWith("~")) playerName = playerName.replaceFirst("~", "");
+
 			if (getSettings().isPrivateChatSound()) {
 				LabyModCore.getMinecraft().playSound(new ResourceLocation(getHelper().getSoundPath(getSettings().getPrivateChatSound())), 1.0F);
 			}
 
 			if (getSettings().isMsgDisplayNameClick()) {
-				String username = "/msg " + getPrivateMessageName(unformatted) + " ";
+				String username = "/msg " + playerName + " ";
 				int siblingCnt = 0;
 				int nameStart = 0;
 				int nameEnd = 0;
 				for (IChatComponent msgs : msg.getSiblings()) {
-					if (nameStart == 0
-							&& getHelper().getProperTextFormat(msgs.getFormattedText()).contains("§6[§r")) {
+					if (nameStart == 0 && msgs.getFormattedText().contains("§6[§r")) {
 						nameStart = siblingCnt + 1;
 					}
-					if (nameEnd == 0
-							&& getHelper().getProperTextFormat(msgs.getFormattedText()).equals("§6 -> §r")) {
+					if (nameEnd == 0 && msgs.getFormattedText().equals("§6 -> §r")) {
 						nameEnd = siblingCnt - 1;
 					}
 					siblingCnt++;
@@ -95,21 +94,24 @@ public class PrivateMessage extends Chat {
 				String message = getSettings().getAfkMsgText();
 				if(message.length() > 0) {
 					if(message.startsWith("~")) message = message.replaceFirst("~", "");
-					Minecraft.getMinecraft().thePlayer.sendChatMessage("/msg "+getPrivateMessageName(unformatted)+" "+message);
+					Minecraft.getMinecraft().thePlayer.sendChatMessage("/msg " + playerName + " " + message);
 				}
 			}
 		}
 
 		if (privateMessageSent.find() && getSettings().isMsgDisplayNameClick()) {
-			String username = "/msg " + getSentPrivateMessageName(unformatted) + " ";
+			String playerName = privateMessageSent.group(2);
+			if(playerName.startsWith("~")) playerName = playerName.replaceFirst("~", "");
+
+			String username = "/msg " + playerName + " ";
 			int siblingCnt = 0;
 			int nameStart = 0;
 			int nameEnd = 0;
 			for (IChatComponent msgs : msg.getSiblings()) {
-				if (nameStart == 0 && getHelper().getProperTextFormat(msgs.getFormattedText()).equals("§6 -> §r")) {
+				if (nameStart == 0 && msgs.getFormattedText().equals("§6 -> §r")) {
 					nameStart = siblingCnt + 1;
 				}
-				if (nameEnd == 0 && getHelper().getProperTextFormat(msgs.getFormattedText()).equals("§6] §r")) {
+				if (nameEnd == 0 && msgs.getFormattedText().equals("§6] §r")) {
 					nameEnd = siblingCnt - 1;
 				}
 				siblingCnt++;
@@ -122,25 +124,5 @@ public class PrivateMessage extends Chat {
 		}
 
 		return msg;
-	}
-
-	private String getSentPrivateMessageName(String unformatted) {
-		Matcher privateMessageSent = privateMessageSentRegex.matcher(unformatted);
-		if (privateMessageSent.find()) {
-			String msg = privateMessageSent.group(2);
-			if(msg.startsWith("~")) msg = msg.replaceFirst("~", "");
-			return msg;
-		}
-		return "";
-	}
-
-	private String getPrivateMessageName(String unformatted) {
-		Matcher privateMessage = privateMessageRegex.matcher(unformatted);
-		if (privateMessage.find()) {
-			String msg = privateMessage.group(2);
-			if(msg.startsWith("~")) msg = msg.replaceFirst("~", "");
-			return msg;
-		}
-		return "";
 	}
 }

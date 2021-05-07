@@ -11,10 +11,10 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
 public class ItemRemover extends Chat {
-	private static Pattern itemRemoverMessageRegex = Pattern.compile(
-			"^\\[GrieferGames\\] Warnung! Die auf dem Boden liegenden Items werden in ([0-9]+) Sekunden entfernt!$");
-	private static Pattern itemRemoverDoneMessageRegex = Pattern
-			.compile("^\\[GrieferGames\\] Es wurden ([0-9]+) auf dem Boden liegende Items entfernt!$");
+	private static Pattern itemRemoverMessageRegex = Pattern.compile("^\\[GrieferGames\\] Warnung! Die auf dem Boden liegenden Items werden in ([0-9]+) Sekunden entfernt!$");
+	private static Pattern itemRemoverDoneMessageRegex = Pattern.compile("^\\[GrieferGames\\] Es wurden ([0-9]+) auf dem Boden liegende Items entfernt!$");
+
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 	@Override
 	public String getName() {
@@ -52,7 +52,6 @@ public class ItemRemover extends Chat {
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 		String dateNowStr = LocalDateTime.now().format(formatter);
 
 		IChatComponent hoverText = new ChatComponentText(dateNowStr);

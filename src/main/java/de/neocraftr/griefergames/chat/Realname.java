@@ -9,8 +9,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
 public class Realname extends Chat {
-	private static Pattern realnameRegex = Pattern.compile("^(?:\\[[^\\]]+\\] )?[A-Za-z\\-]+\\+? \\u2503 \\u007E?\\!?\\w{1,16} ist (\\!?\\w{1,16})$");
-	private static Pattern realnameRegexDup = Pattern.compile("^(?:\\$\\{\\{dup\\}\\})?(?:\\[[^\\]]+\\] )?[A-Za-z\\-]+\\+? \\u2503 \\u007E?\\!?\\w{1,16} ist (\\!?\\w{1,16})$");
+	private static Pattern realnameRegex = Pattern.compile("^(\\$\\{\\{dup\\}\\})?(?:\\[[^\\]]+\\])?[A-Za-z\\-]+\\+? \\u2503 \\u007E?\\!?\\w{1,16} ist (\\!?\\w{1,16})$");
 
 	@Override
 	public String getName() {
@@ -23,7 +22,7 @@ public class Realname extends Chat {
 
 		if(getSettings().getRealname() != EnumRealnameShown.DEFAULT) {
 			Matcher realname = realnameRegex.matcher(unformatted);
-			if(realname.find()) {
+			if(realname.find() && realname.group(1) == null) {
 				if(getSettings().getRealname() == EnumRealnameShown.BOTH) {
 					getApi().displayMessageInChat("${{dup}}" + formatted);
 				}
@@ -45,8 +44,8 @@ public class Realname extends Chat {
 		if(unformatted.trim().length() <= 0) return false;
 
 		if(getSettings().getRealname() == EnumRealnameShown.BOTH) {
-			Matcher realname = realnameRegexDup.matcher(unformatted);
-			return realname.find();
+			Matcher realname = realnameRegex.matcher(unformatted);
+			return realname.find() && realname.group(1) != null;
 		}
 
 		return false;

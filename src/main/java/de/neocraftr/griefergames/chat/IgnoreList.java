@@ -9,7 +9,7 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
 
 public class IgnoreList extends Chat {
-	private static Pattern ignoreListRegex = Pattern.compile("^Ignoriert:((\\s\\w{1,16})+)$");
+	private static Pattern ignoreListRegex = Pattern.compile("^Ignoriert:(\\s\\w{1,16})+$");
 
 	@Override
 	public String getName() {
@@ -31,18 +31,13 @@ public class IgnoreList extends Chat {
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
 		List<IChatComponent> ignoreList = msg.getSiblings();
 		if (ignoreList.size() == 2) {
-			ChatStyle ignoreChatStyle = ignoreList.get(0).getChatStyle().createDeepCopy();
-			IChatComponent newMsg = new ChatComponentText("Ignoriert:").setChatStyle(ignoreChatStyle);
-
 			String ignoredNames = ignoreList.get(1).getUnformattedText().trim();
 			String[] ignoredNamesArr = ignoredNames.split(" ");
 			for (String ignoreName : ignoredNamesArr) {
-				// newMsg.appendSibling(new ChatComponentText("\n"));
-				// newMsg.appendSibling(new ChatComponentText(ignoreName).setChatStyle(new
-				// ChatStyle().setColor(EnumChatFormatting.WHITE)));
 				getApi().displayMessageInChat(ignoreName);
 			}
-			msg = newMsg;
+
+			msg.getSiblings().remove(1);
 		}
 		return msg;
 	}

@@ -10,14 +10,11 @@ import net.labymod.main.lang.LanguageManager;
 import net.labymod.servermanager.ChatDisplayAction;
 
 public class Bank extends Chat {
-	private static Pattern bankPayInMessageRegexp = Pattern
-			.compile("^\\[GrieferBank\\] Du hast ((?:[1-9])(?:\\d+)) auf dein Bankkonto eingezahlt.$");
-	private static Pattern bankPayOutMessageRegexp = Pattern
-			.compile("^\\[GrieferBank\\] Du hast ((?:[1-9])(?:\\d+)) von deinem Bankkonto abgehoben.$");
-	private static Pattern bankBalanceMessageRegexp = Pattern
-			.compile("^\\[GrieferBank\\] (Dein )?Kontostand: ((?:[1-9])(?:\\d+))$");
-	private static Pattern bankMessageOtherRegexp = Pattern.compile("^\\[GrieferBank\\]");
-	private static Pattern moneyBankRegexp = Pattern.compile("(\\s(?:[1-9])(?:\\d+))");
+	private static Pattern bankPayInMessageRegexp = Pattern.compile("^\\[GrieferBank\\] Du hast (\\d+) auf dein Bankkonto eingezahlt\\.$");
+	private static Pattern bankPayOutMessageRegexp = Pattern.compile("^\\[GrieferBank\\] Du hast (\\d+) von deinem Bankkonto abgehoben\\.$");
+	//private static Pattern bankBalanceMessageRegexp = Pattern.compile("^\\[GrieferBank\\] (?:Dein )?Kontostand: (\\d+)$");
+	private static Pattern bankMessageOtherRegexp = Pattern.compile("^\\[GrieferBank\\] ");
+	private static Pattern moneyBankRegexp = Pattern.compile("\\s(\\d+)");
 
 	@Override
 	public String getName() {
@@ -34,26 +31,27 @@ public class Bank extends Chat {
 		Matcher bankPayInMessage = bankPayInMessageRegexp.matcher(unformatted);
 		Matcher bankPayOutMessage = bankPayOutMessageRegexp.matcher(unformatted);
 
-		if ((bankPayInMessage.find() || bankPayOutMessage.find())) {
+		boolean payInMessage;
+		if ((payInMessage = bankPayInMessage.find()) || bankPayOutMessage.find()) {
 			if (getSettings().isBankAchievement()) {
 				int money = getMoneyBank(unformatted);
 				if (money > 0) {
 					DecimalFormat moneyFormat = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.ENGLISH);
 
-					String achievementTitle = LanguageManager.translateOrReturnKey("message_gg_moneyWithdrawn");
-					String achievementDesc = LanguageManager.translateOrReturnKey("message_gg_moneyWithdrawnBank");
-
-					bankPayInMessage = bankPayInMessageRegexp.matcher(unformatted);
-					if (bankPayInMessage.find()) {
+					String achievementTitle;
+					String achievementDesc;
+					if (payInMessage) {
 						achievementTitle = LanguageManager.translateOrReturnKey("message_gg_moneyDeposited");
 						achievementDesc = LanguageManager.translateOrReturnKey("message_gg_moneyDepositedBank");
+					} else {
+						achievementTitle = LanguageManager.translateOrReturnKey("message_gg_moneyWithdrawn");
+						achievementDesc = LanguageManager.translateOrReturnKey("message_gg_moneyWithdrawnBank");
 					}
 
 					achievementTitle = achievementTitle.replace("{money}", moneyFormat.format(money));
 					achievementDesc = achievementDesc.replace("{money}", moneyFormat.format(money));
 
-					LabyMod.getInstance().getGuiCustomAchievement().displayAchievement(achievementTitle,
-							achievementDesc);
+					LabyMod.getInstance().getGuiCustomAchievement().displayAchievement(achievementTitle, achievementDesc);
 				}
 			}
 
@@ -61,10 +59,9 @@ public class Bank extends Chat {
 		}
 
 		if(getSettings().isBankChatRight()) {
-			Matcher bankBalanceMessage = bankBalanceMessageRegexp.matcher(unformatted);
 			Matcher bankMessageOther = bankMessageOtherRegexp.matcher(unformatted);
 
-			if(bankBalanceMessage.find() || bankMessageOther.find()) {
+			if(bankMessageOther.find()) {
 				return ChatDisplayAction.SWAP;
 			}
 		}
