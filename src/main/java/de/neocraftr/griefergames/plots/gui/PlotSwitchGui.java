@@ -13,10 +13,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // Some parts used from: net.labymod.user.gui.UserActionGui
@@ -83,13 +81,13 @@ public class PlotSwitchGui extends Gui {
                 return;
             }
 
-            if(!Keyboard.isKeyDown(getGG().getSettings().getPlotMenuKey())) {
+            if(!getGG().getHelper().isKeyDown(getGG().getSettings().getPlotMenuKey())) {
                 if(this.selectedPlot != null) {
                     Minecraft.getMinecraft().thePlayer.sendChatMessage(this.selectedPlot.getCommand());
                 }
                 close();
             }
-        } else if(getGG().getSettings().getPlotMenuKey() != -1 && Keyboard.isKeyDown(getGG().getSettings().getPlotMenuKey())
+        } else if(getGG().getHelper().isKeyDown(getGG().getSettings().getPlotMenuKey())
                 && Minecraft.getMinecraft().currentScreen == null) {
             open();
         }

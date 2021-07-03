@@ -23,6 +23,8 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public class Helper {
 
@@ -278,6 +280,10 @@ public class Helper {
 				}
 			}
 		}
+	}
+
+	public boolean isKeyDown(int key) {
+		return key != -1 && (key >= 0 ? Keyboard.isKeyDown(key) : Mouse.isButtonDown(key + 100));
 	}
 
 	public boolean showVanishModule(String playerRank) {

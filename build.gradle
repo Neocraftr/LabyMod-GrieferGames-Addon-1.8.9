@@ -2,9 +2,6 @@ buildscript {
     repositories {
         jcenter()
         maven {
-            url = "https://sizableshrimp.me/maven" 
-        }
-        maven {
             url = "http://files.minecraftforge.net/maven"
         }
     }
