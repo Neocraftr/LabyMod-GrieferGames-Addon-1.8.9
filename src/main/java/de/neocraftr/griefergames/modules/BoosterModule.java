@@ -41,10 +41,10 @@ public class BoosterModule extends Module {
 
 	public BoosterModule() {
 		getGG().getApi().registerModule(this);
+		boosters.add(new FlyBooster());
 		boosters.add(new BreakBooster());
 		boosters.add(new DropBooster());
 		boosters.add(new ExperienceBooster());
-		boosters.add(new FlyBooster());
 		boosters.add(new MobBooster());
 	}
 
@@ -82,7 +82,7 @@ public class BoosterModule extends Module {
 					LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow(name, x + 25, y + 2,
 							getColor("nameColor", DefaultValues.POTION_NAME_COLOR));
 
-					if (count > 1 && booster.isDisplayCount()) {
+					if (booster.isStackable()) {
 						LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow("x" + count,
 								x + (25 + stringWidth), y + 2, getColor("ampColor", LIGHT_BLUE.getRGB()));
 					}
@@ -92,13 +92,13 @@ public class BoosterModule extends Module {
 				} else {
 					int stringWidth = 0;
 					String countStr = "x" + count;
-					if (count > 1 && booster.isDisplayCount()) {
+					if (booster.isStackable()) {
 						stringWidth = LabyModCore.getMinecraft().getFontRenderer().getStringWidth(" " + countStr);
 					}
 					LabyMod.getInstance().getDrawUtils().drawRightStringWithShadow(name, rightX - (25 + stringWidth),
 							y + 2, getColor("nameColor", DefaultValues.POTION_NAME_COLOR));
 
-					if (count > 1 && booster.isDisplayCount()) {
+					if (booster.isStackable()) {
 						stringWidth = LabyModCore.getMinecraft().getFontRenderer().getStringWidth(countStr);
 						LabyModCore.getMinecraft().getFontRenderer().drawStringWithShadow("x" + count,
 								rightX - (25 + stringWidth), y + 2,
@@ -257,21 +257,15 @@ public class BoosterModule extends Module {
 	public void addBooster(String type, long duration) {
 		for(Booster booster : this.boosters) {
 			if(booster.getType().equalsIgnoreCase(type)) {
-				if(booster.getEndTime() < System.currentTimeMillis()) {
-					booster.setEndTime(System.currentTimeMillis() + duration);
-				} else {
-					booster.setEndTime(booster.getEndTime() + duration);
-				}
-				booster.incrementCount();
+				booster.addBooster(duration);
 			}
 		}
 	}
 
-	public void setBooster(String type, long duration, int count) {
+	public void setBooster(String type, int count, List<Long> durations) {
 		for(Booster booster : this.boosters) {
 			if(booster.getType().equalsIgnoreCase(type)) {
-				booster.setEndTime(System.currentTimeMillis() + duration);
-				booster.setCount(count);
+				booster.setBooster(count, durations);
 			}
 		}
 	}
@@ -279,7 +273,7 @@ public class BoosterModule extends Module {
 	public void removeBooster(String type) {
 		for(Booster booster : this.boosters) {
 			if(booster.getType().equalsIgnoreCase(type)) {
-				booster.decreaseCount();
+				booster.removeBooster();
 			}
 		}
 	}
@@ -288,7 +282,7 @@ public class BoosterModule extends Module {
 		for(Booster booster : this.boosters) {
 			if(booster.getType().equalsIgnoreCase(type)) {
 				booster.setCount(0);
-				booster.setEndTime(-1);
+				booster.getEndTimes().clear();
 			}
 		}
 	}
@@ -296,7 +290,7 @@ public class BoosterModule extends Module {
 	public void resetBoosters() {
 		for(Booster booster : this.boosters) {
 			booster.setCount(0);
-			booster.setEndTime(-1);
+			booster.getEndTimes().clear();
 		}
 	}
 }

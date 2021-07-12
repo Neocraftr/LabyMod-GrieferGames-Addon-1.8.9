@@ -1,52 +1,34 @@
 package de.neocraftr.griefergames.booster;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.ibm.icu.impl.duration.DurationFormatter;
 import net.labymod.main.lang.LanguageManager;
-import net.labymod.settings.elements.ControlElement.IconData;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 public abstract class Booster {
 	private String name;
 	private String type;
 	private boolean highlightDuration = false;
-	private boolean displayCount;
+	private boolean stackable;
 	private int count;
 	private int iconIndex;
 	private long nextDurationBlink = 0;
-	private long endTime = 0;
+	private List<Long> endTimes = new ArrayList<>();
 
-	Booster(String name, String type, int count, int iconIndex, boolean displayCount) {
-		this.name = name;
-		this.type = type;
-		this.count = count;
-		this.iconIndex = iconIndex;
-		this.displayCount = displayCount;
-	}
-
-	Booster(String name, String type, int iconIndex, boolean displayCount) {
+	Booster(String name, String type, int iconIndex, boolean stackable) {
 		this.name = name;
 		this.type = type;
 		this.iconIndex = iconIndex;
 		this.count = 0;
-		this.displayCount = displayCount;
-	}
-
-	Booster(String name, String type, int count, long endTime, int iconIndex, boolean displayCount) {
-		this.name = name;
-		this.type = type;
-		this.count = count;
-		this.iconIndex = iconIndex;
-		this.endTime = endTime;
-		this.displayCount = displayCount;
+		this.stackable = stackable;
 	}
 
 	public String getDurationString() {
-		if(this.endTime == -1) return LanguageManager.translateOrReturnKey("gg_on");
+		if(this.endTimes.size() == 0) return LanguageManager.translateOrReturnKey("gg_on");
 
-		long remainingTime = this.endTime - System.currentTimeMillis();
+		long remainingTime = this.endTimes.get(0) - System.currentTimeMillis();
 		long displayTime = Math.abs(remainingTime);
 
 		String displayString;
@@ -60,11 +42,11 @@ public abstract class Booster {
 	}
 
 	public boolean doHighlightDuration() {
-		if(this.endTime == -1) return false;
+		if(this.endTimes.size() == 0) return false;
 
-		long remainingTime = this.endTime- System.currentTimeMillis();
+		long remainingTime = this.endTimes.get(0) - System.currentTimeMillis();
 
-		if(remainingTime < 0 || remainingTime > TimeUnit.SECONDS.toMillis(30)) return false;
+		if(remainingTime < 0 || remainingTime > TimeUnit.SECONDS.toMillis(10)) return false;
 
 		if (System.currentTimeMillis() > this.nextDurationBlink) {
 			this.nextDurationBlink = System.currentTimeMillis() + 500L;
@@ -72,6 +54,41 @@ public abstract class Booster {
 		}
 
 		return highlightDuration;
+	}
+
+	public void addBooster(long duration) {
+		this.count++;
+		if(this.stackable) {
+			endTimes.add(System.currentTimeMillis() + duration);
+		} else {
+			if(endTimes.size() == 0) {
+				endTimes.add(System.currentTimeMillis() + duration);
+			} else if(endTimes.get(0) < System.currentTimeMillis()) {
+				endTimes.set(0, System.currentTimeMillis() + duration);
+			} else {
+				endTimes.set(0, endTimes.get(0) + duration);
+			}
+		}
+	}
+
+	public void setBooster(int count, List<Long> durations) {
+		this.count = count;
+		this.endTimes.clear();
+		if(this.stackable) {
+			for(Long duration : durations) {
+				this.endTimes.add(System.currentTimeMillis() + duration);
+			}
+		} else {
+			this.endTimes.add(System.currentTimeMillis() + durations.get(0));
+		}
+	}
+
+	public void removeBooster() {
+		if(this.count <= 0) return;
+		this.count--;
+		if(this.stackable) {
+			endTimes.remove(0);
+		}
 	}
 
 	public String getName() {
@@ -86,30 +103,16 @@ public abstract class Booster {
 		this.count = count;
 	}
 
-	public void incrementCount() {
-		this.count++;
+	public List<Long> getEndTimes() {
+		return endTimes;
 	}
 
-	public void decreaseCount() {
-		if(this.count > 0) {
-			this.count--;
-		}
+	public void setStackable(boolean stackable) {
+		this.stackable = stackable;
 	}
 
-	public void setEndTime(long endTime) {
-		this.endTime = endTime;
-	}
-
-	public long getEndTime() {
-		return endTime;
-	}
-
-	public void setDisplayCount(boolean displayCount) {
-		this.displayCount = displayCount;
-	}
-
-	public boolean isDisplayCount() {
-		return displayCount;
+	public boolean isStackable() {
+		return stackable;
 	}
 
 	public String getType() {

@@ -31,6 +31,7 @@ public class Helper {
 	private Pattern subServerCityBuildRegex = Pattern.compile("^cb([0-9]+)$");
 	private Pattern playerNameRankRegex = Pattern.compile("([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16})");
 	private Pattern tablistColoredPrefixRegex = Pattern.compile("(.+\\u2503 (?:§.)+)");
+	private Pattern durationRegex = Pattern.compile("(?:([0-9]+):)?([0-9]+):([0-9]+)");
 
 	private Pattern vanishRegex = Pattern.compile("^Unsichtbar für ([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) : aktiviert$");
 	private Pattern vanishRegex2 = Pattern.compile("^Unsichtbar für ([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) : deaktiviert$");
@@ -41,7 +42,7 @@ public class Helper {
 	private Pattern auraRegex = Pattern.compile("^Deine Aura wurde aktiviert!$");
 	private Pattern auraRegex2 = Pattern.compile("^Deine Aura ist jetzt deaktiviert\\.$");
 
-	private Pattern boosterInfoRegex = Pattern.compile("^([A-z]+-Booster): (?:(Deaktiviert)|([0-9+]+)x Multiplikator \\((?:([0-9]+):)?([0-9]+):([0-9]+)\\))$");
+	private Pattern boosterInfoRegex = Pattern.compile("^([A-z]+-Booster): (?:(Deaktiviert)|([0-9+]+)x Multiplikator (\\(.+\\)\\s?)+)$");
 	private Pattern boosterStartRegex = Pattern.compile("^\\[Booster\\] .+ hat für die GrieferGames Community den ([A-z]+-Booster) für ([0-9]+) Minuten aktiviert\\.$");
 	private Pattern boosterEndRegex = Pattern.compile("^\\[Booster\\] Der ([A-z]+-Booster) \\(Stufe [0-9]+\\) von .+ ist abgelaufen\\.$");
 	private Pattern boosterResetRegex = Pattern.compile("^\\[Booster\\] Der ([A-z]+-Booster) ist jetzt wieder deaktiviert\\.$");
@@ -58,13 +59,21 @@ public class Helper {
 			String type = m.group(1);
 			if(m.group(2) == null) {
 				try {
-					int seconds = Integer.parseInt(m.group(6));
-					int minutes = Integer.parseInt(m.group(5));
-					int hours = (m.group(4) != null) ? Integer.parseInt(m.group(4)) : 0;
 					int count = Integer.parseInt(m.group(3));
+					List<Long> durations = new ArrayList<>();
 
-					long duration = TimeUnit.SECONDS.toMillis(seconds) + TimeUnit.MINUTES.toMillis(minutes) + TimeUnit.HOURS.toMillis(hours);
-					getGG().getBoosterModule().setBooster(type, duration, count);
+					for(String durationStr : m.group(4).split(" ")) {
+						Matcher durationMatcher = durationRegex.matcher(durationStr);
+						if(durationMatcher.find()) {
+							int seconds = Integer.parseInt(durationMatcher.group(3));
+							int minutes = Integer.parseInt(durationMatcher.group(2));
+							int hours = (durationMatcher.group(1) != null) ? Integer.parseInt(durationMatcher.group(1)) : 0;
+
+							durations.add(TimeUnit.SECONDS.toMillis(seconds) + TimeUnit.MINUTES.toMillis(minutes) + TimeUnit.HOURS.toMillis(hours));
+						}
+					}
+
+					getGG().getBoosterModule().setBooster(type, count, durations);
 				} catch(NumberFormatException e) {
 					e.printStackTrace();
 				}
