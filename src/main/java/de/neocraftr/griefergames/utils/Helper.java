@@ -73,6 +73,7 @@ public class Helper {
 						}
 					}
 
+					Collections.reverse(durations);
 					getGG().getBoosterModule().setBooster(type, count, durations);
 				} catch(NumberFormatException e) {
 					e.printStackTrace();
