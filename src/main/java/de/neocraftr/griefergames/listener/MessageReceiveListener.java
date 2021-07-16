@@ -16,12 +16,6 @@ public class MessageReceiveListener implements MessageReceiveEvent {
     public boolean onReceive(String formatted, String unformatted) {
         if (!getGG().getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return false;
 
-        if (unformatted.startsWith("[SCAMMER] ")) {
-            formatted = formatted.replaceFirst("((§r)?§6\\[§r§([0-9]|[a-f])§lSCAMMER§r§6\\]§r§r)", "").trim();
-
-            unformatted = unformatted.replaceFirst("\\[SCAMMER\\]", "").trim();
-        }
-
         List<Chat> chatModules = getGG().getChatModules();
         for (Chat chatModule : chatModules) {
             if (chatModule.doActionReceiveMessage(formatted, unformatted)) {

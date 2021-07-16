@@ -12,7 +12,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
 public class GlobalMessage extends Chat {
-	private static Pattern msgUserGlobalChatRegex = Pattern.compile("^(\\[[^\\]]+\\])? ?([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16})\\s[\\u00BB:]\\s");
+	private static Pattern globalChatRegex = Pattern.compile("([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) [\\u00BB:]");
 
 	@Override
 	public String getName() {
@@ -26,28 +26,32 @@ public class GlobalMessage extends Chat {
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		String unformatted = msg.getUnformattedText();
-
-		Matcher matcher = msgUserGlobalChatRegex.matcher(unformatted);
-		if(matcher.find()) {
-			String playerName = matcher.group(3);
-			if(playerName.startsWith("~")) playerName = playerName.replaceFirst("~", "");
-
-			if(!playerName.equalsIgnoreCase(LabyModCore.getMinecraft().getPlayer().getName().trim())) {
-				String username = "/msg " + playerName + " ";
-				String suggestMsgHoverTxt = LanguageManager.translateOrReturnKey("message_gg_suggestMsgHoverMsg");
-				IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") + suggestMsgHoverTxt);
-
-				IChatComponent message = (matcher.group(1) != null) ? msg.getSiblings().get(1) : msg;
-				for (IChatComponent msgs : message.getSiblings()) {
-					msgs.getChatStyle()
-							.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username))
-							.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
-					if(msgs.getUnformattedText().equals("» ")) break;
-					if(msgs.getUnformattedText().equals(": ")) break;
-				}
+		IChatComponent message = null;
+		String playername = null;
+		for(IChatComponent component : msg.getSiblings()) {
+			Matcher globalChatMatcher = globalChatRegex.matcher(component.getUnformattedText());
+			if(globalChatMatcher.find()) {
+				message = component;
+				playername = globalChatMatcher.group(2);
+				break;
 			}
+		}
 
+		if(playername == null) return msg;
+		if(playername.startsWith("~")) playername = playername.replaceFirst("~", "");
+
+		if(!playername.equalsIgnoreCase(LabyModCore.getMinecraft().getPlayer().getName().trim())) {
+			String username = "/msg " + playername + " ";
+			String suggestMsgHoverTxt = LanguageManager.translateOrReturnKey("message_gg_suggestMsgHoverMsg");
+			IChatComponent hoverText = new ChatComponentText(ModColor.cl("a") + suggestMsgHoverTxt);
+
+			for (IChatComponent component : message.getSiblings()) {
+				component.getChatStyle()
+						.setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, username))
+						.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+				if(component.getUnformattedText().equals("» ")) break;
+				if(component.getUnformattedText().equals(": ")) break;
+			}
 		}
 
 		return msg;

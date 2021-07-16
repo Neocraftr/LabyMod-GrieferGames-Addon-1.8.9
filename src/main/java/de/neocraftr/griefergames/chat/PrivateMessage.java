@@ -15,8 +15,8 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
 
 public class PrivateMessage extends Chat {
-	private static Pattern privateMessageRegex = Pattern.compile("^\\[([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) -> mir\\] (.*)$");
-	private static Pattern privateMessageSentRegex = Pattern.compile("^\\[mir -> ([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16})\\] (.*)$");
+	private static Pattern privateMessageRegex = Pattern.compile("\\[([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) -> mir\\] (.*)$");
+	private static Pattern privateMessageSentRegex = Pattern.compile("\\[mir -> ([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16})\\] (.*)$");
 
 	@Override
 	public String getName() {

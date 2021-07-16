@@ -38,17 +38,13 @@ public class Teleport extends Chat {
 		Matcher tpahereMesssage = tpahereMesssageRegexp.matcher(unformatted);
 
 		if (tpaMesssage.find()) {
-			IChatComponent beforeTpaMsg = new ChatComponentText("[TPA] ")
-					.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_GREEN).setBold(true));
-			IChatComponent newMsg = new ChatComponentText("").appendSibling(beforeTpaMsg).appendSibling(msg);
-			return newMsg;
+			IChatComponent beforeTpaMsg = new ChatComponentText("[TPA] ") .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_GREEN).setBold(true));
+			msg.getSiblings().add(0, beforeTpaMsg);
 		}
 
 		if (tpahereMesssage.find()) {
-			IChatComponent beforeTpaMsg = new ChatComponentText("[TPAHERE] ")
-					.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED).setBold(true));
-			IChatComponent newMsg = new ChatComponentText("").appendSibling(beforeTpaMsg).appendSibling(msg);
-			return newMsg;
+			IChatComponent beforeTpaMsg = new ChatComponentText("[TPAHERE] ").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED).setBold(true));
+			msg.getSiblings().add(0, beforeTpaMsg);
 		}
 
 		return msg;

@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import net.minecraft.util.IChatComponent;
 
 public class AntiMagicClanTag extends Chat {
-	private static Pattern antiMagicClanTagRegex = Pattern.compile("^\\[[^\\]]+\\] ([A-Za-z\\-\\+]+) \\u2503 (~?!?\\w{1,16})");
+	private static Pattern antiMagicClanTagRegex = Pattern.compile("\\[[^\\]]+\\] ([A-Za-z\\-\\+]+) \\u2503 (~?!?\\w{1,16})");
 
 	@Override
 	public String getName() {
@@ -20,8 +20,8 @@ public class AntiMagicClanTag extends Chat {
 			String formatted = msg.getFormattedText();
 
 			if(unformatted.trim().length() > 0 && (formatted.contains("§k") || formatted.contains("§m"))) {
-				Matcher antiMagicClanTag = antiMagicClanTagRegex.matcher(unformatted);
-				return antiMagicClanTag.find();
+				Matcher chatMatcher = antiMagicClanTagRegex.matcher(unformatted);
+				return chatMatcher.find();
 			}
 		}
 		return false;
@@ -29,8 +29,15 @@ public class AntiMagicClanTag extends Chat {
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		for (IChatComponent sibbling : msg.getSiblings().get(0).getSiblings()) {
-			sibbling.getChatStyle().setObfuscated(false).setStrikethrough(false);
+		// Find clan tag
+		for(IChatComponent clanTag : msg.getSiblings()) {
+			if (clanTag.getFormattedText().contains("§r§6[") && clanTag.getFormattedText().contains("§r§6]")) {
+				// remove magic effect
+				for (IChatComponent component : msg.getSiblings().get(0).getSiblings()) {
+					component.getChatStyle().setObfuscated(false).setStrikethrough(false);
+				}
+				break;
+			}
 		}
 
 		return msg;

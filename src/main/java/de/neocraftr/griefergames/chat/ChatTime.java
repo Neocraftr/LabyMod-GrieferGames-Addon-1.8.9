@@ -39,9 +39,12 @@ public class ChatTime extends Chat {
 		timeMsg = timeMsg.replace("%s%", time[2]);
 
 		if(getSettings().isChatTimeAfterMessage()) {
-			return new ChatComponentText("").appendSibling(msg).appendSibling(resetMsg).appendText(timeMsg);
+			msg.getSiblings().add(resetMsg);
+			msg.getSiblings().add(new ChatComponentText(timeMsg));
 		} else {
-			return new ChatComponentText("").appendText(timeMsg).appendSibling(resetMsg).appendSibling(msg);
+			msg.getSiblings().add(0, new ChatComponentText(timeMsg));
+			msg.getSiblings().add(1, resetMsg);
 		}
+		return msg;
 	}
 }

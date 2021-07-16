@@ -126,7 +126,7 @@ public class Helper {
 	public String getDisplayName(String unformatted) {
 		Matcher matcher = playerNameRankRegex.matcher(unformatted);
 		if (matcher.find()) {
-			return matcher.group(1);
+			return matcher.group(0);
 		}
 		return "";
 	}

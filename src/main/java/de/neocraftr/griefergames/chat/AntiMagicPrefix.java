@@ -9,6 +9,7 @@ import net.minecraft.util.IChatComponent;
 
 public class AntiMagicPrefix extends Chat {
 	private static Pattern antiMagicPrefixRegex = Pattern.compile("([A-Za-z\\-\\+]+) \\u2503 (~?!?\\w{1,16})");
+	private static Pattern globalChatRegex = Pattern.compile("[A-Za-z\\-]+\\+? \\u2503 (\\!?\\w{1,16}) \\u00BB");
 
 	@Override
 	public String getName() {
@@ -28,35 +29,38 @@ public class AntiMagicPrefix extends Chat {
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		boolean clan = msg.getSiblings().size() == 2;
+		// Check if message contains playername
+		Matcher matcher = antiMagicPrefixRegex.matcher(msg.getUnformattedText());
+		if(!matcher.find()) return msg;
 
-		IChatComponent message = msg.getSiblings().get(0);
-		if(clan) {
-			message = msg.getSiblings().get(1);
-		}
-
-		String ampPrefix = getGG().getSettings().getAMPChatReplacement();
-		if(ampPrefix.trim().isEmpty()) ampPrefix = ModSettings.DEFAULT_AMP_REPLACEMENT_CHAT;
-
-		Matcher matcher = antiMagicPrefixRegex.matcher(message.getUnformattedText());
-		if(!matcher.find()) return message;
-
-		IChatComponent newMsg = new ChatComponentText("");
-		for(IChatComponent sibbling : message.getSiblings()) {
-			if(sibbling.getUnformattedText().equalsIgnoreCase(matcher.group(1))) {
-				sibbling.getChatStyle().setObfuscated(false);
-				IChatComponent newSibbling = new ChatComponentText(ampPrefix+" "+sibbling.getUnformattedText());
-				newSibbling.setChatStyle(sibbling.getChatStyle());
-				newMsg.appendSibling(newSibbling);
-			} else if(sibbling.getUnformattedText().equalsIgnoreCase(matcher.group(2))) {
-				sibbling.getChatStyle().setObfuscated(false);
-				newMsg.appendSibling(sibbling);
-			} else {
-				newMsg.appendSibling(sibbling);
+		// Find message component in global chat
+		IChatComponent message = msg;
+		for(IChatComponent sibbling : msg.getSiblings()) {
+			Matcher m = globalChatRegex.matcher(sibbling.getUnformattedText());
+			if(m.find()) {
+				message = sibbling;
+				break;
 			}
 		}
 
-		if(clan) newMsg.getSiblings().add(0, msg.getSiblings().get(0));
-		return newMsg;
+		// Prepare prefix
+		String ampPrefix = getGG().getSettings().getAMPChatReplacement();
+		if(ampPrefix.trim().isEmpty()) ampPrefix = ModSettings.DEFAULT_AMP_REPLACEMENT_CHAT;
+
+		// Replace magic prefix
+		for(int i=0; i<message.getSiblings().size(); i++) {
+			IChatComponent currentSibbling = message.getSiblings().get(i);
+			if(currentSibbling.getUnformattedText().equalsIgnoreCase(matcher.group(1))) {
+				currentSibbling.getChatStyle().setObfuscated(false);
+				IChatComponent newRankSibbling = new ChatComponentText(ampPrefix+" "+currentSibbling.getUnformattedText());
+				newRankSibbling.setChatStyle(currentSibbling.getChatStyle());
+				message.getSiblings().set(i, newRankSibbling);
+			} else if(currentSibbling.getUnformattedText().equalsIgnoreCase(matcher.group(2))) {
+				currentSibbling.getChatStyle().setObfuscated(false);
+				break;
+			}
+		}
+
+		return msg;
 	}
 }

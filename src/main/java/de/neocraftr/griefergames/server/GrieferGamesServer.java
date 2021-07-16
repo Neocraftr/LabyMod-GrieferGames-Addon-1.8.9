@@ -1,7 +1,6 @@
 package de.neocraftr.griefergames.server;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import de.neocraftr.griefergames.chat.*;
 import de.neocraftr.griefergames.listener.KeyInputListener;
@@ -21,7 +20,6 @@ import net.labymod.settings.elements.SettingsElement;
 import net.labymod.utils.Consumer;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -60,9 +58,9 @@ public class GrieferGamesServer extends Server {
 		getGG().addChatModule(new IgnoreList());
 		getGG().addChatModule(new AntiMagicClanTag());
 		getGG().addChatModule(new Teleport());
-		getGG().addChatModule(new AntiMagicPrefix());
 		getGG().addChatModule(new Nickname());
 		getGG().addChatModule(new Mention());
+		getGG().addChatModule(new AntiMagicPrefix());
 		getGG().addChatModule(new ChatTime());
 
 		getApi().registerForgeListener(new KeyInputListener());
@@ -171,14 +169,6 @@ public class GrieferGamesServer extends Server {
 
 		try {
 			IChatComponent msg = (IChatComponent) o;
-			IChatComponent prefix = new ChatComponentText("");
-
-			if (msg.getUnformattedText().startsWith("[SCAMMER] ")) {
-				for (int i = 0; i < (msg.getSiblings().size() - 1); i++) {
-					prefix.appendSibling(msg.getSiblings().get(i));
-				}
-				msg = msg.getSiblings().get(msg.getSiblings().size() - 1);
-			}
 
 			List<Chat> chatModules = getGG().getChatModules();
 			for (Chat chatModule : chatModules) {

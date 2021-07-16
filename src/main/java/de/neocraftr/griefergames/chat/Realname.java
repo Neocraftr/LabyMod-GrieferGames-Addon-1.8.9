@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 import de.neocraftr.griefergames.enums.EnumRealnameShown;
 import net.labymod.servermanager.ChatDisplayAction;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
 public class Realname extends Chat {
@@ -53,7 +52,8 @@ public class Realname extends Chat {
 
 	@Override
 	public IChatComponent modifyChatMessage(IChatComponent msg) {
-		IChatComponent newMsg = new ChatComponentText(msg.getFormattedText().replace("${{dup}}", ""));
-		return newMsg;
+		if(msg.getSiblings().get(0).getUnformattedText().equals("${{dup}}"))
+			msg.getSiblings().remove(0);
+		return msg;
 	}
 }
