@@ -7,6 +7,8 @@ import de.neocraftr.griefergames.modules.VanishModule;
 import net.labymod.main.lang.LanguageManager;
 import net.minecraft.client.Minecraft;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class SubServerListener {
@@ -19,7 +21,12 @@ public class SubServerListener {
         getGG().setClearLagTime(0);
 
         if(getGG().getSettings().isShowPrefixInDisplayName()) {
-            getGG().getHelper().colorizePlayerNames();
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    getGG().getHelper().colorizePlayerNames();
+                }
+            }, 2000);
         }
 
         if(getGG().getSettings().isLabyChatShowSubServerEnabled()) {

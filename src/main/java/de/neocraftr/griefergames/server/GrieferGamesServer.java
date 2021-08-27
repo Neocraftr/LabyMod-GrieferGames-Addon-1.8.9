@@ -3,10 +3,7 @@ package de.neocraftr.griefergames.server;
 import java.util.*;
 
 import de.neocraftr.griefergames.chat.*;
-import de.neocraftr.griefergames.listener.KeyInputListener;
-import de.neocraftr.griefergames.listener.MessageReceiveListener;
-import de.neocraftr.griefergames.listener.OnTickListener;
-import de.neocraftr.griefergames.listener.PluginMessageListener;
+import de.neocraftr.griefergames.listener.*;
 import de.neocraftr.griefergames.modules.*;
 import de.neocraftr.griefergames.settings.ModSettings;
 import de.neocraftr.griefergames.GrieferGames;
@@ -64,9 +61,10 @@ public class GrieferGamesServer extends Server {
 		getGG().addChatModule(new ChatTime());
 
 		getApi().registerForgeListener(new KeyInputListener());
-		getApi().registerForgeListener(new OnTickListener());
+		getApi().registerForgeListener(new TickListener());
 		getApi().getEventManager().register(new PluginMessageListener());
 		getApi().getEventManager().register(new MessageReceiveListener());
+		getApi().getEventManager().registerOnIncomingPacket(new ServerPacketListener());
 
 		getApi().getEventManager().register(new MessageModifyChatEvent() {
 			@Override

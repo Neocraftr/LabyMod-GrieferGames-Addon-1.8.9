@@ -49,10 +49,6 @@ public class Helper {
 
 	private Pattern cityBuildDelayRegex = Pattern.compile("Der Server konnte deine Daten noch nicht verarbeiten\\. Du wurdest für (\\d+) Minuten gesperrt!");
 
-	public boolean isScoreBoardSubServer(String formatted) {
-		return formatted.contains("§3§lServer");
-	}
-
 	public void handleBoosterMessage(String unformatted) {
 		Matcher m = boosterInfoRegex.matcher(unformatted);
 		if(m.find()) {

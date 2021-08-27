@@ -1,6 +1,7 @@
 package de.neocraftr.griefergames.modules;
 
 import de.neocraftr.griefergames.GrieferGames;
+import net.labymod.core.LabyModCore;
 import net.labymod.ingamegui.ModuleCategory;
 import net.labymod.ingamegui.moduletypes.SimpleModule;
 import net.labymod.main.lang.LanguageManager;
@@ -23,7 +24,7 @@ public class FlyModule extends SimpleModule {
 
 	@Override
 	public String getDisplayValue() {
-		if (getGG().isFlyActive()) {
+		if (LabyModCore.getMinecraft().getPlayer() != null && LabyModCore.getMinecraft().getPlayer().capabilities.allowFlying) {
 			return LanguageManager.translateOrReturnKey("gg_on");
 		} else {
 			return LanguageManager.translateOrReturnKey("gg_off");
