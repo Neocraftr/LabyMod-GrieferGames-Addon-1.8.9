@@ -64,6 +64,22 @@ public class PluginMessageListener implements PluginMessageEvent {
                 getGG().setClearLagTime(System.currentTimeMillis() + timeUnit.toMillis(until));
             }
         }
+
+        if(messageKey.equals("coins")) {
+            int amount = message.getAsJsonObject().get("amount").getAsInt();
+            if(getGG().getBalance() != amount) {
+                getGG().setBalance(amount);
+                getGG().getHelper().updateBalance("cash");
+            }
+        }
+
+        if(messageKey.equals("bank")) {
+            int amount = message.getAsJsonObject().get("amount").getAsInt();
+            if(getGG().getBankBalance() != amount) {
+                getGG().setBankBalance(amount);
+                getGG().getHelper().updateBalance("bank");
+            }
+        }
     }
 
     private GrieferGames getGG() {

@@ -32,11 +32,11 @@ public class MessageReceiveListener implements MessageReceiveEvent {
                 Minecraft.getMinecraft().thePlayer.sendChatMessage("/booster");
             }
 
-            if(getGG().getSettings().isVanishOnJoin() && getGG().getHelper().showVanishModule(getGG().getPlayerRank()) && !getGG().isVanishActive()) {
+            if(getGG().getSettings().isVanishOnJoin() && getGG().getPlayerRankGroups().hasVanish(getGG().getPlayerRank()) && !getGG().isVanishActive()) {
                 Minecraft.getMinecraft().thePlayer.sendChatMessage("/vanish");
             }
 
-            if(getGG().getSettings().isFlyOnJoin() && getGG().getHelper().hasFlyPermission(getGG().getPlayerRank())) {
+            if(getGG().getSettings().isFlyOnJoin() && getGG().getPlayerRankGroups().hasFly(getGG().getPlayerRank())) {
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {

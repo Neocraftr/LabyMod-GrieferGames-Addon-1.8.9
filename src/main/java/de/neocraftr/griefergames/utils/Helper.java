@@ -274,7 +274,7 @@ public class Helper {
 				if(player.getGameProfile().getName().equals(name)) {
 					if(player.getDisplayName() != null) {
 						String unformttedDisplayName = ModColor.removeColor(player.getDisplayName().getUnformattedText());
-						if(!excludeFromColorNameTag(getPlayerRank(unformttedDisplayName))) {
+						if(getGG().getPlayerRankGroups().canHavePrefix(getPlayerRank(unformttedDisplayName))) {
 							String displayName = player.getDisplayName().getFormattedText();
 							Matcher matcher = tablistColoredPrefixRegex.matcher(displayName);
 							if(matcher.find()) {
@@ -290,54 +290,6 @@ public class Helper {
 
 	public boolean isKeyDown(int key) {
 		return key != -1 && (key >= 0 ? Keyboard.isKeyDown(key) : Mouse.isButtonDown(key + 100));
-	}
-
-	public boolean showVanishModule(String playerRank) {
-		List<String> ranks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "youtuber+", "yt+");
-		return ranks.contains(playerRank);
-	}
-
-	public boolean vanishDefaultState(String playerRank) {
-		List<String> ranks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod");
-		return ranks.contains(playerRank);
-	}
-
-	public boolean doResetBoosterBySubserver(String subServer) {
-		List<String> ranks = Arrays.asList("lobby", "portal", "skyblock", "cb0", "kreativ", "hardcore", "gestrandet");
-		return ranks.contains(subServer.toLowerCase());
-	}
-
-	public boolean isCityBuild(String subServer) {
-		if(subServer.startsWith("CB") && !subServer.equalsIgnoreCase("cb0")) return true;
-		List<String> ranks = Arrays.asList("lava", "wasser", "extreme", "evil", "nature");
-		return ranks.contains(subServer.toLowerCase());
-	}
-
-	public boolean showGodModule(String playerRank) {
-		List<String> ranks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup");
-		return ranks.contains(playerRank);
-	}
-
-	public boolean showAuraModule(String playerRank) {
-		List<String> ranks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "youtuber+", "yt+");
-		return ranks.contains(playerRank);
-	}
-
-	public boolean hasFlyPermission(String playerRank) {
-		List<String> ranks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup", "youtuber+", "yt+");
-		return ranks.contains(playerRank);
-	}
-
-	public boolean excludeFromColorNameTag(String playerRank) {
-		List<String> ranks = Arrays.asList("owner", "admin", "ts-admin", "rang-support", "shop-support", "orga",
-				"obergeier", "developer", "deppelopfer", "dev", "moderator", "mod", "content", "supporter", "sup",
-				"youtuber+", "yt+", "youtuber", "yt");
-		return ranks.contains(playerRank);
 	}
 
 	public CityBuild cityBuildFromServerName(String subServerName, CityBuild defaultCityBuild) {
@@ -417,6 +369,19 @@ public class Helper {
 			LabyMod.getInstance().getDiscordApp().onServerMessage("discord_rpc", serverMessage);
 		}
 
+	}
+
+	public void updateBalance(String type) {
+		if(type.equals("bank") ? !getGG().getSubServerGroups().doShowBankBalance() : !getGG().getSubServerGroups().doShowBalance()) return;
+
+		JsonObject economyOject = new JsonObject();
+		JsonObject cashObject = new JsonObject();
+
+		cashObject.addProperty("visible", type.equals("bank") ? getGG().getSettings().isShowBankBallance() : getGG().getSettings().isShowBalance());
+		cashObject.addProperty("balance", type.equals("bank") ? getGG().getBankBalance() : getGG().getBalance());
+
+		economyOject.add(type, cashObject);
+		LabyMod.getInstance().getPriorityOverlayRenderer().onServerMessage("economy", economyOject);
 	}
 
 	public String readStringFromBuffer(int maxLength, ByteBuf packetBuffer) {

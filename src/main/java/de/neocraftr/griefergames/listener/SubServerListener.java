@@ -7,26 +7,22 @@ import de.neocraftr.griefergames.modules.VanishModule;
 import net.labymod.main.lang.LanguageManager;
 import net.minecraft.client.Minecraft;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class SubServerListener {
 
     private boolean modulesLoaded = false;
 
-    public void onSubServerChanged(String subServerNameOld, String subServerName) {
+    public void onSubServerChanged(String subServerName) {
         getGG().setNickname("");
         getGG().setNewsStart(false);
         getGG().setClearLagTime(0);
 
+        getGG().getHelper().updateBalance("cash");
+        getGG().getHelper().updateBalance("bank");
+
         if(getGG().getSettings().isShowPrefixInDisplayName()) {
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    getGG().getHelper().colorizePlayerNames();
-                }
-            }, 2000);
+            getGG().getHelper().colorizePlayerNames();
         }
 
         if(getGG().getSettings().isLabyChatShowSubServerEnabled()) {
@@ -36,11 +32,11 @@ public class SubServerListener {
             getGG().getHelper().updateDiscordSubServer(subServerName);
         }
 
-        if (getGG().getHelper().doResetBoosterBySubserver(subServerName)) {
+        if (getGG().getSubServerGroups().doResetBooster()) {
             getGG().getBoosterModule().resetBoosters();
         }
 
-        if(getGG().getHelper().isCityBuild(subServerName)) {
+        if(getGG().getSubServerGroups().isCityBuild()) {
             getGG().setCityBuildDelay(false);
             getGG().setWaitTime(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(15));
         } else if(subServerName.equalsIgnoreCase("skyblock")) {
@@ -61,13 +57,13 @@ public class SubServerListener {
                                 if (!modulesLoaded) {
                                     modulesLoaded = true;
 
-                                    if (getGG().getHelper().showGodModule(getGG().getPlayerRank())) {
+                                    if (getGG().getPlayerRankGroups().hasGodMode(getGG().getPlayerRank())) {
                                         new GodmodeModule();
                                     }
-                                    if (getGG().getHelper().showAuraModule(getGG().getPlayerRank())) {
+                                    if (getGG().getPlayerRankGroups().hasAura(getGG().getPlayerRank())) {
                                         new AuraModule();
                                     }
-                                    if (getGG().getHelper().showVanishModule(getGG().getPlayerRank())) {
+                                    if (getGG().getPlayerRankGroups().hasVanish(getGG().getPlayerRank())) {
                                         new VanishModule();
                                     }
                                 }
@@ -93,7 +89,7 @@ public class SubServerListener {
             thread.start();
         }
         getGG().setGodActive(false);
-        getGG().setVanishActive(getGG().getHelper().vanishDefaultState(getGG().getPlayerRank()));
+        getGG().setVanishActive(getGG().getPlayerRankGroups().getDefaultVanishState(getGG().getPlayerRank()));
     }
 
     private GrieferGames getGG() {

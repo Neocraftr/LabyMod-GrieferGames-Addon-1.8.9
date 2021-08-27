@@ -89,6 +89,8 @@ public class ModSettings {
 	private int plotMenuKey;
 	private int addPlotKey;
 	private int itemRemoverNotification;
+	private boolean showBalance;
+	private boolean showBankBallance;
 
 	public void loadConfig() {
 		// comnversion of old amp replacement
@@ -282,6 +284,12 @@ public class ModSettings {
 
 		itemRemoverNotification = getConfig().has("itemRemoverNotification") ?
 				getConfig().get("itemRemoverNotification").getAsInt() : 0;
+
+		showBalance = getConfig().has("showBalance") ?
+				getConfig().get("showBalance").getAsBoolean() : false;
+
+		showBankBallance = getConfig().has("showBankBallance") ?
+				getConfig().get("showBankBallance").getAsBoolean() : false;
 	}
 
 	public void fillSettings(final List<SettingsElement> settings) {
@@ -846,6 +854,10 @@ public class ModSettings {
 				});
 		paymentCategory.getSubSettings().add(openTransactionsLogBtn);
 
+		// Title: Payment
+		paymentCategory.getSubSettings().add(new HeaderElement(""));
+		paymentCategory.getSubSettings().add(new HeaderElement("§b§l"+LanguageManager.translateOrReturnKey("settings_gg_heads_payment")));
+
 		// Payment 2nd chat
 		final BooleanElement payChatRightBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_payChatRight"),
 			new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
@@ -895,6 +907,23 @@ public class ModSettings {
 		}, payHover);
 		paymentCategory.getSubSettings().add(payHoverBtn);
 
+		// Display balance
+		final BooleanElement showBalanceBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_displayBalance"),
+				new ControlElement.IconData("labymod/textures/misc/economy_cash.png"), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean value) {
+				showBalance = value;
+				getConfig().addProperty("showBalance", value);
+				saveConfig();
+				getGG().getHelper().updateBalance("cash");
+			}
+		}, showBalance);
+		paymentCategory.getSubSettings().add(showBalanceBtn);
+
+		// Title: Bank
+		paymentCategory.getSubSettings().add(new HeaderElement(""));
+		paymentCategory.getSubSettings().add(new HeaderElement("§b§l"+LanguageManager.translateOrReturnKey("settings_gg_heads_bank")));
+
 		// Bank 2nd chat
 		final BooleanElement bankChatRightBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_bankChatRight"),
 			new ControlElement.IconData("labymod/textures/settings/settings/chatpositionright.png"),
@@ -908,6 +937,7 @@ public class ModSettings {
 			}, bankChatRight);
 		paymentCategory.getSubSettings().add(bankChatRightBtn);
 
+		// Bank achievement
 		final BooleanElement bankAchievementBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_bankAchievement"),
 				new ControlElement.IconData("labymod/textures/settings/settings/alertsonlinestatus.png"), new Consumer<Boolean>() {
 			@Override
@@ -918,6 +948,19 @@ public class ModSettings {
 			}
 		}, bankAchievement);
 		paymentCategory.getSubSettings().add(bankAchievementBtn);
+
+		// Display balance
+		final BooleanElement showBankBalanceBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_displayBankBalance"),
+				new ControlElement.IconData("labymod/textures/misc/economy_bank.png"), new Consumer<Boolean>() {
+			@Override
+			public void accept(Boolean value) {
+				showBankBallance = value;
+				getConfig().addProperty("showBankBallance", value);
+				saveConfig();
+				getGG().getHelper().updateBalance("bank");
+			}
+		}, showBankBallance);
+		paymentCategory.getSubSettings().add(showBankBalanceBtn);
 
 		// Category: Automations
 		final ListContainerElement automationsCategory = new ListContainerElement("§b§l"+LanguageManager.translateOrReturnKey("settings_gg_category_automations"),
@@ -1430,5 +1473,13 @@ public class ModSettings {
 
 	public int getItemRemoverNotification() {
 		return itemRemoverNotification;
+	}
+
+	public boolean isShowBalance() {
+		return showBalance;
+	}
+
+	public boolean isShowBankBallance() {
+		return showBankBallance;
 	}
 }

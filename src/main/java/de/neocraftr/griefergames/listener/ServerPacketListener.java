@@ -5,6 +5,9 @@ import net.labymod.utils.Consumer;
 import net.labymod.utils.ModColor;
 import net.minecraft.network.play.server.S3EPacketTeams;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class ServerPacketListener implements Consumer<Object> {
 
     @Override
@@ -18,8 +21,13 @@ public class ServerPacketListener implements Consumer<Object> {
                 value = ModColor.removeColor(value);
                 if(value.trim().equals("") || value.contains("Lade")) return;
                 if(!getGG().getSubServer().equals(value)) {
-                    getGG().callSubServerEvent(getGG().getSubServer(), value);
                     getGG().setSubServer(value);
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            getGG().callSubServerEvent(getGG().getSubServer());
+                        }
+                    }, 1000);
                 }
             }
         }
