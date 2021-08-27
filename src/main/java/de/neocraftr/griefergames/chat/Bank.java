@@ -10,10 +10,9 @@ import net.labymod.main.lang.LanguageManager;
 import net.labymod.servermanager.ChatDisplayAction;
 
 public class Bank extends Chat {
-	private static Pattern bankPayInMessageRegexp = Pattern.compile("^\\[GrieferBank\\] Du hast (\\d+) auf dein Bankkonto eingezahlt\\.$");
-	private static Pattern bankPayOutMessageRegexp = Pattern.compile("^\\[GrieferBank\\] Du hast (\\d+) von deinem Bankkonto abgehoben\\.$");
-	//private static Pattern bankBalanceMessageRegexp = Pattern.compile("^\\[GrieferBank\\] (?:Dein )?Kontostand: (\\d+)$");
-	private static Pattern bankMessageOtherRegexp = Pattern.compile("^\\[GrieferBank\\] ");
+	private static Pattern bankPayInMessageRegexp = Pattern.compile("^\\[Bank\\] Du hast (\\d+) auf dein Bankkonto eingezahlt\\.$");
+	private static Pattern bankPayOutMessageRegexp = Pattern.compile("^\\[Bank\\] Du hast (\\d+) von deinem Bankkonto abgehoben\\.$");
+	private static Pattern bankMessageOtherRegexp = Pattern.compile("^\\[Bank\\] ");
 	private static Pattern moneyBankRegexp = Pattern.compile("\\s(\\d+)");
 
 	@Override
