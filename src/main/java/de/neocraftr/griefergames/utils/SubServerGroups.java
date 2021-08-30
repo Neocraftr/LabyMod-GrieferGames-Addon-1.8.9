@@ -17,20 +17,20 @@ public class SubServerGroups {
     }
 
     public boolean doShowBalance() {
-        if(getSubServer().startsWith("CB")) return true;
-        return showBalanceServers.contains(getSubServer().toLowerCase());
+        if(getSubServer().startsWith("cb")) return true;
+        return showBalanceServers.contains(getSubServer());
     }
 
     public boolean doShowBankBalance() {
         if(getSubServer().equalsIgnoreCase("cb0")) return false;
-        if(getSubServer().startsWith("CB")) return true;
-        return showBankBalanceServers.contains(getSubServer().toLowerCase());
+        if(getSubServer().startsWith("cb")) return true;
+        return showBankBalanceServers.contains(getSubServer());
     }
 
     public boolean isCityBuild() {
         if(getSubServer().equalsIgnoreCase("cb0")) return false;
-        if(getSubServer().startsWith("CB")) return true;
-        return cityBuilds.contains(getSubServer().toLowerCase());
+        if(getSubServer().startsWith("cb")) return true;
+        return cityBuilds.contains(getSubServer());
     }
 
     public String getSubServer() {
