@@ -55,7 +55,6 @@ public class GrieferGames extends LabyModAddon {
 	private boolean redstoneActive = false;
 	private boolean newsStart = false;
 	private boolean afk = false;
-	private boolean firstJoin = false;
 	private boolean hideBoosterMenu = false;
 	private boolean cityBuildDelay = false;
 	private ModuleCategory moduleCategory;
@@ -345,14 +344,6 @@ public class GrieferGames extends LabyModAddon {
 
 	public void callSubServerEvent(String subServerName) {
 		subServerListener.onSubServerChanged(subServerName);
-	}
-
-	public boolean isFirstJoin() {
-		return firstJoin;
-	}
-
-	public void setFirstJoin(boolean firstJoin) {
-		this.firstJoin = firstJoin;
 	}
 
 	public long getLastActiveTime() {

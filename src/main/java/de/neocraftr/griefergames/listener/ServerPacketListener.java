@@ -18,8 +18,8 @@ public class ServerPacketListener implements Consumer<Object> {
             String value = scoreboardPacket.func_149311_e();
 
             if(name.equals("server_value")) {
-                value = ModColor.removeColor(value);
-                if(value.trim().equals("") || value.contains("Lade")) return;
+                value = ModColor.removeColor(value).toLowerCase();
+                if(value.trim().equals("") || value.contains("lade")) return;
                 if(!getGG().getSubServer().equals(value)) {
                     getGG().setSubServer(value);
                     new Timer().schedule(new TimerTask() {
