@@ -19,6 +19,7 @@ import net.labymod.utils.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -173,6 +174,13 @@ public class GrieferGamesServer extends Server {
 
 		try {
 			IChatComponent msg = (IChatComponent) o;
+
+			// Brings locally sent messages in the proper format
+			if(!msg.getUnformattedTextForChat().equals("")) {
+				IChatComponent newMsg = new ChatComponentText("");
+				newMsg.getSiblings().add(msg);
+				msg = newMsg;
+			}
 
 			List<Chat> chatModules = getGG().getChatModules();
 			for (Chat chatModule : chatModules) {
