@@ -17,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 public class PrivateMessage extends Chat {
 	private static Pattern privateMessageRegex = Pattern.compile("\\[([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) -> mir\\] (.*)$");
 	private static Pattern privateMessageSentRegex = Pattern.compile("\\[mir -> ([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16})\\] (.*)$");
+	private long lastAfkMessage = 0;
 
 	@Override
 	public String getName() {
@@ -90,11 +91,12 @@ public class PrivateMessage extends Chat {
 				}
 			}
 
-			if(getSettings().isAfkMsgAnswear() && getGG().isAfk()) {
+			if(getSettings().isAfkMsgAnswer() && getGG().isAfk() && lastAfkMessage+1000 <= System.currentTimeMillis()) {
 				String message = getSettings().getAfkMsgText();
 				if(message.length() > 0) {
 					if(message.startsWith("~")) message = message.replaceFirst("~", "");
 					Minecraft.getMinecraft().thePlayer.sendChatMessage("/msg " + playerName + " " + message);
+					lastAfkMessage = System.currentTimeMillis();
 				}
 			}
 		}

@@ -53,7 +53,7 @@ public class ModSettings {
 	private boolean afkNick;
 	private String afkNickname;
 	private int afkTime;
-	private boolean afkMsgAnswear;
+	private boolean afkMsgAnswer;
 	private String afkMsgText;
 	private boolean payChatRight;
 	private boolean payAchievement;
@@ -171,7 +171,7 @@ public class ModSettings {
 		afkNick = getConfig().has("afkNick") ?
 				getConfig().get("afkNick").getAsBoolean() : false;
 
-		afkMsgAnswear = getConfig().has("afkMsgAnswear") ?
+		afkMsgAnswer = getConfig().has("afkMsgAnswear") ?
 				getConfig().get("afkMsgAnswear").getAsBoolean() : false;
 
 		afkMsgText = getConfig().has("afkMsgText") ?
@@ -400,7 +400,7 @@ public class ModSettings {
 				new ControlElement.IconData("labymod/textures/settings/settings/second_chat.png"));
 		settings.add(chatCategory);
 
-		// Click to answear
+		// Click to answer
 		final BooleanElement msgDisplayNameClickBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_clickToAnswer"),
 				new ControlElement.IconData("labymod/textures/settings/settings/chatshortcuts.png"), new Consumer<Boolean>() {
 			@Override
@@ -1096,18 +1096,18 @@ public class ModSettings {
 		});
 		automationsCategory.getSubSettings().add(afkNicknameSetting);
 
-		// AFK answear
-		final BooleanElement afkMsgAnswearBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_afkMsgAnswear"),
+		// AFK answer
+		final BooleanElement afkMsgAnswerBtn = new BooleanElement(LanguageManager.translateOrReturnKey("settings_gg_afkMsgAnswer"),
 				new ControlElement.IconData("labymod/textures/settings/modules/afk_timer.png"),
 				new Consumer<Boolean>() {
 					@Override
 					public void accept(Boolean value) {
-						afkMsgAnswear = value;
+						afkMsgAnswer = value;
 						getConfig().addProperty("afkMsgAnswear", value);
 						saveConfig();
 					}
-				}, afkMsgAnswear);
-		automationsCategory.getSubSettings().add(afkMsgAnswearBtn);
+				}, afkMsgAnswer);
+		automationsCategory.getSubSettings().add(afkMsgAnswerBtn);
 
 		// AFK message
 		final StringElement afkMsgTextSetting = new StringElement(LanguageManager.translateOrReturnKey("settings_gg_afkMsgText"),
@@ -1343,8 +1343,8 @@ public class ModSettings {
 		return afkNick;
 	}
 
-	public boolean isAfkMsgAnswear() {
-		return afkMsgAnswear;
+	public boolean isAfkMsgAnswer() {
+		return afkMsgAnswer;
 	}
 
 	public String getAfkMsgText() {
