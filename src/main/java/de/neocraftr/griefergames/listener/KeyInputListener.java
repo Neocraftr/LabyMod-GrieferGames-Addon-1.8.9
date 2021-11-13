@@ -2,6 +2,7 @@ package de.neocraftr.griefergames.listener;
 
 import de.neocraftr.griefergames.GrieferGames;
 import de.neocraftr.griefergames.enums.CityBuild;
+import de.neocraftr.griefergames.grieferwert.GrieferWertGui;
 import de.neocraftr.griefergames.plots.gui.PlotsGuiAdd;
 import de.neocraftr.griefergames.settings.ModSettings;
 import net.labymod.core.LabyModCore;
@@ -62,6 +63,10 @@ public class KeyInputListener {
         if(getGG().getHelper().isKeyDown(getGG().getSettings().getAddPlotKey())) {
             CityBuild currentCityBuild = getGG().getHelper().cityBuildFromServerName(getGG().getSubServer(), CityBuild.ALL);
             Minecraft.getMinecraft().displayGuiScreen(new PlotsGuiAdd(null, currentCityBuild, -1));
+        }
+
+        if(getGG().getHelper().isKeyDown(getGG().getSettings().getGrieferWertKey())) {
+            Minecraft.getMinecraft().displayGuiScreen(new GrieferWertGui(null));
         }
     }
 

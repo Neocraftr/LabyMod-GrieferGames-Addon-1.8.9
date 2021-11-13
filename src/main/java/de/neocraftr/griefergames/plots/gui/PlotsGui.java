@@ -134,7 +134,7 @@ public class PlotsGui extends GuiScreen {
     private void drawEntry(int index, Plot plot, double y, int mouseX, int mouseY) {
         int x = this.width / 2 - ENTRY_WIDTH / 2;
 
-        boolean hovered = (mouseX > x && mouseX < x + ENTRY_WIDTH && mouseY > y && mouseY < y + ENTRY_HEIGHT && mouseX > 32 && mouseY < this.height - 32);
+        boolean hovered = (mouseX > x && mouseX < x + ENTRY_WIDTH && mouseY > y && mouseY < y + ENTRY_HEIGHT && mouseY > 41 && mouseY < this.height - 32);
         if (hovered) this.hoveredIndex = index;
 
         int borderColor = (this.selectedIndex == index) ? ModColor.toRGB(240, 240, 240, 240) : Integer.MIN_VALUE;

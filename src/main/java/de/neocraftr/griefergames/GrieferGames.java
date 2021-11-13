@@ -9,6 +9,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
+import de.neocraftr.griefergames.grieferwert.GrieferWertManager;
 import de.neocraftr.griefergames.listener.SubServerListener;
 import de.neocraftr.griefergames.modules.BoosterModule;
 import de.neocraftr.griefergames.plots.PlotManager;
@@ -47,6 +48,7 @@ public class GrieferGames extends LabyModAddon {
 	private BoosterModule boosterModule;
 	private SubServerGroups subServerGroups;
 	private PlayerRankGroups playerRankGroups;
+	private GrieferWertManager grieferWertManager;
 
 	private boolean onGrieferGames = false;
 	private boolean vanishActive = false;
@@ -88,6 +90,9 @@ public class GrieferGames extends LabyModAddon {
 		plotSwitchGui = new PlotSwitchGui();
 		subServerGroups = new SubServerGroups();
 		playerRankGroups = new PlayerRankGroups();
+		grieferWertManager = new GrieferWertManager();
+
+		grieferWertManager.downloadList();
 
 		System.out.println("[GrieferGames-Addon] enabled.");
 	}
@@ -210,6 +215,10 @@ public class GrieferGames extends LabyModAddon {
 
 	public PlayerRankGroups getPlayerRankGroups() {
 		return playerRankGroups;
+	}
+
+	public GrieferWertManager getGrieferWertManager() {
+		return grieferWertManager;
 	}
 
 	public void setBoosterModule(BoosterModule boosterModule) {
