@@ -33,8 +33,6 @@ public class GrieferWertGui extends GuiScreen {
         this.items = getGG().getGrieferWertManager().getItems();
 
         this.scrollbar = new Scrollbar(0);
-
-        System.out.println(LabyMod.getInstance().getDrawUtils().listFormattedStringToWidth("", 0, 0).size());
     }
 
     @Override
@@ -154,6 +152,8 @@ public class GrieferWertGui extends GuiScreen {
     protected void keyTyped(char typedChar, int keyCode) {
         if(keyCode == Keyboard.KEY_ESCAPE) {
             Minecraft.getMinecraft().displayGuiScreen(this.lastScreen);
+        } else if(!this.searchTextField.isFocused()) {
+            this.searchTextField.setFocused(true);
         }
 
         if(this.searchTextField.textboxKeyTyped(typedChar, keyCode)) {
