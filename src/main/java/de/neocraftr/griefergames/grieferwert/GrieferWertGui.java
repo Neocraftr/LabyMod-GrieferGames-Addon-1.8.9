@@ -41,7 +41,7 @@ public class GrieferWertGui extends GuiScreen {
 
         this.scrollbar.init();
         this.scrollbar.setPosition(this.width / 2 + 152, 44, this.width / 2 + 156, this.height - 10 - 3);
-        this.scrollbar.setSpeed(10);
+        this.scrollbar.setSpeed(30);
 
         Keyboard.enableRepeatEvents(true);
         this.searchTextField = new ModTextField(-1, LabyModCore.getMinecraft().getFontRenderer(), this.width/2 - ENTRY_WIDTH/2, 10, ENTRY_WIDTH, 18);
