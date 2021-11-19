@@ -11,7 +11,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 
 public class MobRemover extends Chat {
-	private static Pattern mobRemoverMessageRegex = Pattern.compile("^\\[MobRemover\\] Achtung, in ([0-9]+) Minuten? werden alle Tiere gelöscht\\.$");
 	private static Pattern mobRemoverDoneMessageRegex = Pattern.compile("^\\[MobRemover\\] Es wurden ([0-9]+) Tiere entfernt\\.$");
 
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -23,10 +22,8 @@ public class MobRemover extends Chat {
 
 	@Override
 	public boolean doActionHandleChatMessage(String unformatted, String formatted) {
-		if(getSettings().isMobRemoverChatRight() && unformatted.trim().length() > 0) {
-			Matcher mobRemoverMessage = mobRemoverMessageRegex.matcher(unformatted);
-			Matcher mobRemoverDoneMessage = mobRemoverDoneMessageRegex.matcher(unformatted);
-			return mobRemoverMessage.find() || mobRemoverDoneMessage.find();
+		if(getSettings().isMobRemoverChatRight()) {
+			return unformatted.startsWith("[MobRemover]");
 		}
 		return false;
 	}
