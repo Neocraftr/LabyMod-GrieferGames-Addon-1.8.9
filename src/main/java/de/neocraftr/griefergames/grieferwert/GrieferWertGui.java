@@ -107,7 +107,8 @@ public class GrieferWertGui extends GuiScreen {
             textX = 24 + 10;
         }
 
-        List<String> lines = LabyMod.getInstance().getDrawUtils().listFormattedStringToWidth(this.formatDescription(item), ENTRY_WIDTH - textX - 10, 2);
+        String description = "§7" + item.getName() + " §8| §a" + (item.getPriceRange() != null ? item.getPriceRange() : LanguageManager.translateOrReturnKey("gui_gg_gw_noPrice"));
+        List<String> lines = LabyMod.getInstance().getDrawUtils().listFormattedStringToWidth(description, ENTRY_WIDTH - textX - 10, 2);
         if(lines.size() <= 1) {
             LabyMod.getInstance().getDrawUtils().drawString(lines.get(0), x + textX, y + 11.0D);
         } else {
@@ -168,16 +169,6 @@ public class GrieferWertGui extends GuiScreen {
     @Override
     public void updateScreen() {
         this.searchTextField.updateCursorCounter();
-    }
-
-    private String formatDescription(GrieferWertItem item) {
-        String text = "§7" + item.getName() + " §8| §a";
-        if(item.getPrice() == null) {
-            text += LanguageManager.translateOrReturnKey("gui_gg_gw_noPrice");
-        } else {
-            text += item.getPrice() + (item.getPriceRange() != null ? " §8| §7"+item.getPriceRange() : "");
-        }
-        return text;
     }
 
     private GrieferGames getGG() {
