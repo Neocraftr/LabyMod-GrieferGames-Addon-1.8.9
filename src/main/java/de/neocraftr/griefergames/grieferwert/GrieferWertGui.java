@@ -15,7 +15,6 @@ import org.lwjgl.input.Keyboard;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 public class GrieferWertGui extends GuiScreen {
@@ -120,10 +119,10 @@ public class GrieferWertGui extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        if (this.hoveredIndex != -1) {
+        if (this.hoveredIndex != -1 && this.items.get(this.hoveredIndex).getUrl() != null) {
             try {
                 Desktop.getDesktop().browse(new URI(this.items.get(this.hoveredIndex).getUrl()));
-            } catch (URISyntaxException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
