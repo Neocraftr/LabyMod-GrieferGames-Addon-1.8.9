@@ -18,7 +18,7 @@ import java.net.URI;
 import java.util.List;
 
 public class GrieferWertGui extends GuiScreen {
-    private static final int ENTRY_HEIGHT = 30, ENTRY_WIDTH = 300;
+    private static final int ENTRY_HEIGHT = 30, ENTRY_WIDTH = 350;
 
     private Scrollbar scrollbar;
     private ModTextField searchTextField;
@@ -39,7 +39,7 @@ public class GrieferWertGui extends GuiScreen {
         super.initGui();
 
         this.scrollbar.init();
-        this.scrollbar.setPosition(this.width / 2 + 152, 44, this.width / 2 + 156, this.height - 10 - 3);
+        this.scrollbar.setPosition(this.width/2 + ENTRY_WIDTH/2 + 2, 44, this.width/2 + ENTRY_WIDTH/2 + 6, this.height - 10 - 3);
         this.scrollbar.setSpeed(30);
 
         Keyboard.enableRepeatEvents(true);
@@ -106,14 +106,8 @@ public class GrieferWertGui extends GuiScreen {
             textX = 24 + 10;
         }
 
-        String description = "§7" + item.getName() + " §8| §a" + (item.getPriceRange() != null ? item.getPriceRange() : LanguageManager.translateOrReturnKey("gui_gg_gw_noPrice"));
-        List<String> lines = LabyMod.getInstance().getDrawUtils().listFormattedStringToWidth(description, ENTRY_WIDTH - textX - 10, 2);
-        if(lines.size() <= 1) {
-            LabyMod.getInstance().getDrawUtils().drawString(lines.get(0), x + textX, y + 11.0D);
-        } else {
-            LabyMod.getInstance().getDrawUtils().drawString(lines.get(0), x + textX, y + 5.0D);
-            LabyMod.getInstance().getDrawUtils().drawString(lines.get(1), x + textX, y + 17.0D);
-        }
+        LabyMod.getInstance().getDrawUtils().drawString("§7" + formatName(item.getName()), x + textX, y + 5.0D);
+        LabyMod.getInstance().getDrawUtils().drawString("§a" + (item.getPriceRange() != null ? item.getPriceRange() : LanguageManager.translateOrReturnKey("gui_gg_gw_noPrice")), x + textX, y + 17.0D);
     }
 
     @Override
@@ -172,5 +166,12 @@ public class GrieferWertGui extends GuiScreen {
 
     private GrieferGames getGG() {
         return GrieferGames.getGriefergames();
+    }
+
+    private String formatName(String name) {
+        return name
+                .replace("(Stück)", "§6(Stück)")
+                .replace("(Stack)", "§9(Stack)")
+                .replace("(DK)", "§c(DK)");
     }
 }

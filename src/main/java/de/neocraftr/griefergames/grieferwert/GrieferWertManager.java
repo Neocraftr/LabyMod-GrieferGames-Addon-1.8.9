@@ -2,6 +2,7 @@ package de.neocraftr.griefergames.grieferwert;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import de.neocraftr.griefergames.GrieferGames;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class GrieferWertManager {
 
-    private final String API_URL = "http://neoservices.ml/api/grieferwert.json";
+    private final String API_URL = "https://neoservices.ml/api/grieferwert.json?addonVer="+GrieferGames.VERSION;
     private final Gson gson = new Gson();
     private final Type gwItemType = new TypeToken<List<GrieferWertItem>>(){}.getType();
 
