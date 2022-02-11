@@ -2,7 +2,7 @@ package de.neocraftr.griefergames.grieferwert;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import de.neocraftr.griefergames.GrieferGames;
+import net.minecraft.item.ItemStack;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class GrieferWertManager {
 
-    private final String API_URL = "https://neoservices.ml/api/grieferwert.json?addonVer="+GrieferGames.VERSION;
+    private final String API_URL = "https://neoservices.ml/api/grieferwert.json";
     private final Gson gson = new Gson();
     private final Type gwItemType = new TypeToken<List<GrieferWertItem>>(){}.getType();
 
@@ -31,6 +31,10 @@ public class GrieferWertManager {
         } catch (IOException e) {
             System.out.println("[GrieferGames-Addon] Error while downloading GrieferWert list: "+e);
         }
+    }
+
+    public void onItemTooltip(ItemStack stack, List<String> toolTip) {
+        // TODO: Display price tooltip
     }
 
     public List<GrieferWertItem> searchByName(String name) {

@@ -3,8 +3,11 @@ package de.neocraftr.griefergames.utils;
 import de.neocraftr.griefergames.GrieferGames;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreenBook;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 public class BytecodeMethods {
 
@@ -20,6 +23,15 @@ public class BytecodeMethods {
             }
         }
         return false;
+    }
+
+    public static void onItemToolTip(ItemStack itemStack, EntityPlayer entityPlayer, List<String> tooltip, boolean showAdvancedItemTooltips) {
+        if(getGG() != null && getGG().getGrieferWertManager() != null) {
+            if(!getGG().getSettings().isModEnabled() || !getGG().isOnGrieferGames()) return;
+            // TODO: setting
+
+            getGG().getGrieferWertManager().onItemTooltip(itemStack, tooltip);
+        }
     }
 
     private static GrieferGames getGG() {
