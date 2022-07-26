@@ -33,7 +33,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GrieferGames extends LabyModAddon {
 	public static final String PREFIX = "§8[§6GrieferGames-Addon§8] §r";
-	public static final String VERSION = "1.17.3";
+	public static final String VERSION = "1.17.4";
 	public static final String SERVER_IP = "griefergames.net", SECOND_SERVER_IP = "griefergames.de";
 
 	private static GrieferGames griefergames;
