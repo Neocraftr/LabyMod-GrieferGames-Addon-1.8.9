@@ -9,8 +9,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
 public class Teleport extends Chat {
-	private static Pattern tpaMesssageRegexp = Pattern.compile("^([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) fragt, ob er sich zu dir teleportieren darf\\.$");
-	private static Pattern tpahereMesssageRegexp = Pattern.compile("^([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) fragt, ob du dich zu ihm teleportierst\\.$");
+	private static Pattern tpaMesssageRegexp = Pattern.compile("^([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) möchte sich zu dir teleportieren\\.$");
+	private static Pattern tpahereMesssageRegexp = Pattern.compile("^([A-Za-z\\-\\+]+) \\u2503 (~?\\!?\\w{1,16}) möchte, dass du dich zu der Person teleportierst\\.$");
 
 	@Override
 	public String getName() {
