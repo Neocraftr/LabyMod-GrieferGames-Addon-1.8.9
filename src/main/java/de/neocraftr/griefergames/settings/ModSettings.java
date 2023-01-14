@@ -1245,6 +1245,7 @@ public class ModSettings {
 			text += ")";
 		}
 
+		text += "\n§7Website: §ahttps://mc.im1random.org";
 		text += "\n§7GitHub: §ahttps://github.com/Neocraftr/LabyMod-GrieferGames-Addon-1.8.9";
 		infoText.setText(text);
 	}
