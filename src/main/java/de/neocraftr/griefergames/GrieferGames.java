@@ -92,7 +92,7 @@ public class GrieferGames extends LabyModAddon {
 		playerRankGroups = new PlayerRankGroups();
 		grieferWertManager = new GrieferWertManager();
 
-		grieferWertManager.downloadList();
+		//grieferWertManager.downloadList();
 
 		System.out.println("[GrieferGames-Addon] enabled.");
 	}
